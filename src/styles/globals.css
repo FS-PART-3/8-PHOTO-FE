@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/* Font Face */
+@font-face {
+  font-family: 'BaeSeKinRabinS';
+  src: url('/assets/fonts/BR B.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Import Noto Sans KR from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+
+:root {
+  /* Color Variables */
+  --color-black: #0f0f0f;
+  --color-white: #ffffff;
+
+  /* Gray Scale */
+  --color-gray-500: #161616;
+  --color-gray-400: #5a5a5a;
+  --color-gray-300: #a4a4a4;
+  --color-gray-200: #dddddd;
+  --color-gray-100: #eeeeee;
+
+  /* Brand Colors */
+  --color-red: #ff483d;
+  --color-blue: #29c9f9;
+  --color-purple: #a77eff;
+  --color-pink: #ff2a6a;
+  --color-main: #efff04;
+
+  /* Font Variables */
+  --font-primary: 'Noto Sans KR', sans-serif;
+  --font-secondary: 'BaeSeKinRabinS', sans-serif;
+  --letter-spacing-normal: 0%;
+  --letter-spacing-tight: -3%;
+}
+
+body {
+  font-family: var(--font-primary);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+/* BaeSeKinRabinS Typography Styles */
+.beskin-h1 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 62px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
+
+.beskin-h2 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 48px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
+
+.beskin-h3 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 46px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
+
+.beskin-h4 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 40px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
+
+.beskin-h5 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
+
+.beskin-h6 {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.2;
+}
