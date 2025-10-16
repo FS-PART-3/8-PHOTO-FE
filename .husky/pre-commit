@@ -1,1 +1,4 @@
+#!/bin/sh
+. ~/.nvm/nvm.sh
+
 npx lint-staged
