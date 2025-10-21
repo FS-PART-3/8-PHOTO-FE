@@ -14,11 +14,25 @@ export default function KwangchePage() {
       <Button disabled>비활성화</Button>
       <Button variant="secondary">두번째 스타일</Button>
 
-      <Button size="2">사이즈 2</Button>
-      <Button size="3">사이즈 3</Button>
-      <Button size="4">사이즈 4</Button>
-      <Button size="5">사이즈 5</Button>
-      <Button size="6">사이즈 6</Button>
+      <Button thikness="thick" size="l">
+        굵기 : thick, 사이즈 : l
+      </Button>
+      <Button thikness="thick" size="m">
+        굵기 : thick, 사이즈 : m
+      </Button>
+
+      <Button thikness="thin" size="l">
+        굵기 : thin, 사이즈 : l
+      </Button>
+      <Button thikness="thin" size="m">
+        굵기 : thin, 사이즈 : m
+      </Button>
+      <Button thikness="thin" size="s">
+        굵기 : thin, 사이즈 : s
+      </Button>
+      <Button thikness="thin" size="xs">
+        굵기 : thin, 사이즈 : xs
+      </Button>
     </div>
   );
 }

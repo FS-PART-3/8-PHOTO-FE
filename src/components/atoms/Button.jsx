@@ -4,7 +4,8 @@
 export default function Button({
   children,
   variant = 'primary',
-  size = 'medium',
+  size = 'l',
+  thikness = 'thick',
   disabled = false,
   onClick,
   ...props
@@ -28,21 +29,28 @@ export default function Button({
   };
 
   const getSizeClasses = () => {
-    switch (size) {
-      case '1':
-        return 'max-w-[440px] min-h-[80px] text-[20px]';
-      case '2':
-        return 'max-w-[345px] min-h-[75px] text-[18px]';
-      case '3':
-        return 'max-w-[520px] min-h-[60px] text-[18px]';
-      case '4':
-        return 'max-w-[440px] min-h-[55px] text-[16px]';
-      case '5':
-        return 'max-w-[345px] min-h-[55px] text-[16px]';
-      case '6':
-        return 'max-w-[150px] min-h-[40px] text-[12px]';
-      default:
-        return 'max-w-[440px] min-h-[80px] text-[20px]';
+    if (thikness === 'thick') {
+      switch (size) {
+        case 'l':
+          return 'max-w-[440px] min-h-[80px] text-[20px]';
+        case 'm':
+          return 'max-w-[345px] min-h-[75px] text-[18px]';
+        default:
+          return 'max-w-[440px] min-h-[80px] text-[20px]';
+      }
+    } else if (thikness === 'thin') {
+      switch (size) {
+        case 'l':
+          return 'max-w-[520px] min-h-[60px] text-[18px]';
+        case 'm':
+          return 'max-w-[440px] min-h-[55px] text-[16px]';
+        case 's':
+          return 'max-w-[345px] min-h-[55px] text-[16px]';
+        case 'xs':
+          return 'max-w-[150px] min-h-[40px] text-[12px]';
+        default:
+          return 'max-w-[520px] min-h-[60px] text-[18px]';
+      }
     }
   };
 
