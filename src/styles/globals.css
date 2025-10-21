@@ -36,15 +36,16 @@
   --font-secondary: 'BaeSeKinRabinS', sans-serif;
   --letter-spacing-normal: 0%;
   --letter-spacing-tight: -3%;
-}
 
-@theme {
-  --breakpoint-xs: 24rem; /* 24rem = 384px */
+  --screen-pc: 1200px;
+  --screen-tablet: 768px;
+  --screen-mobile: 480px;
 }
 
 body {
   font-family: var(--font-primary);
   letter-spacing: var(--letter-spacing-normal);
+  background-color: var(--color-black);
 }
 
 /* BaeSeKinRabinS Typography Styles */
