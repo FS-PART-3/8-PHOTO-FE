@@ -1,17 +1,24 @@
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/ko';
+
+// dayjs 플러그인 및 로케일 설정
+dayjs.extend(relativeTime);
+dayjs.locale('ko');
+
 // 시간 포맷팅 함수
 export const formatTimeAgo = timestamp => {
   if (!timestamp) return '';
 
-  const now = new Date();
-  const targetTime = new Date(timestamp);
-  const diffInMs = now - targetTime;
+  const now = dayjs();
+  const targetTime = dayjs(timestamp);
 
-  // 밀리초를 각 단위로 변환
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-  const diffInWeeks = Math.floor(diffInDays / 7);
-  const diffInMonths = Math.floor(diffInDays / 30);
-  const diffInYears = Math.floor(diffInDays / 365);
+  // 시간 차이 계산
+  const diffInHours = now.diff(targetTime, 'hour');
+  const diffInDays = now.diff(targetTime, 'day');
+  const diffInWeeks = now.diff(targetTime, 'week');
+  const diffInMonths = now.diff(targetTime, 'month');
+  const diffInYears = now.diff(targetTime, 'year');
 
   // 1시간~23시간 내는 시간으로 표시
   if (diffInHours >= 1 && diffInHours <= 23) {
