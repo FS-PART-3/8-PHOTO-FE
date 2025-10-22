@@ -2,6 +2,29 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Alarm from '../Alarm';
+import AlarmButton from '@/components/atoms/AlarmButton';
+
+const alarmList = [
+  {
+    id: 1,
+    isRead: false,
+    message: '알림 메시지',
+    createdAt: '2025-10-21 14:00:00',
+  },
+  {
+    id: 2,
+    isRead: true,
+    message: '알림 메시지',
+    createdAt: '2025-04-21 06:00:00',
+  },
+  {
+    id: 3,
+    isRead: false,
+    message: '알림 메시지',
+    createdAt: '2023-07-21 06:00:00',
+  },
+];
 
 export default function LoginedNav() {
   const handleClickShowMenu = () => {
@@ -10,6 +33,7 @@ export default function LoginedNav() {
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
+    setIsAlarmOpen(!isAlarmOpen);
   };
 
   const handleClickLogout = () => {
@@ -21,7 +45,12 @@ export default function LoginedNav() {
     point: 1540,
   });
 
-  const [isAlarm, setIsAlarm] = useState(false);
+  const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
+  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+
+  const handleClickCloseAlarm = () => {
+    setIsAlarmOpen(false);
+  };
 
   return (
     <>
@@ -33,17 +62,14 @@ export default function LoginedNav() {
           </span>
         </li>
         {/* 알림 */}
-        <li>
-          <button onClick={handleClickShowAlarm} className="cursor-pointer">
-            <span>
-              <Image
-                src={`/assets/icons/ic_alarm_${isAlarm ? 'active' : 'default'}.svg`}
-                alt="alarm"
-                width={24}
-                height={24}
-              />
-            </span>
-          </button>
+        <li className="relative">
+          <AlarmButton
+            isAlarm={hasUnreadAlarms}
+            onClick={handleClickShowAlarm}
+          />
+          {isAlarmOpen && (
+            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
+          )}
         </li>
         {/* 사용자 */}
         <li>
@@ -64,16 +90,13 @@ export default function LoginedNav() {
       {/* 모바일 네비게이션 */}
       <ul className="xs:hidden flex flex-col items-center gap-4">
         <li className="h-[24px]">
-          <button onClick={handleClickShowAlarm} className="cursor-pointer">
-            <span>
-              <Image
-                src={`/assets/icons/ic_alarm_${isAlarm ? 'active' : 'default'}.svg`}
-                alt="alarm"
-                width={24}
-                height={24}
-              />
-            </span>
-          </button>
+          <AlarmButton
+            isAlarm={hasUnreadAlarms}
+            onClick={handleClickShowAlarm}
+          />
+          {isAlarmOpen && (
+            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
+          )}
         </li>
       </ul>
     </>

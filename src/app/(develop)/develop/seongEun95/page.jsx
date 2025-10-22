@@ -1,3 +1,5 @@
+'use client';
+
 import Footer from '@/components/organisms/Footer';
 import Header from '@/components/organisms/header/Header';
 
