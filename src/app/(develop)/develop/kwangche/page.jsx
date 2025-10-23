@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Button from '@/components/atoms/Button';
 import Pagination from '@/components/molecules/Pagination';
+import DropDown from '@/components/molecules/DropDown';
 
 // 임시 데이터 생성 함수 (100개의 아이템)
 const generateMockData = () => {
@@ -33,6 +34,15 @@ export default function KwangchePage() {
     setCurrentPage(page);
   };
 
+  const list = [
+    { label: '김', value: 'kim' },
+    { label: '나', value: 'na' },
+    { label: '박', value: 'pak' },
+    { label: '이', value: 'lee' },
+  ];
+  const handleLits = option => {
+    console.log('선택된 옵션:', option);
+  };
   return (
     <div className="developer-page min-h-screen bg-[var(--color-black)]">
       <h2 className="text-[var(--color-white)]">kwangche 개발자 페이지</h2>
@@ -40,6 +50,23 @@ export default function KwangchePage() {
         컴포넌트 테스트 및 개발 작업을 위한 페이지입니다.
       </p>
       {/* 개발자가 작업할 컴포넌트들이 여기에 추가될 예정 */}
+      <div className="flex flex-row">
+        <DropDown
+          options={list} // 리스트 옵션들
+          value={''} // 현재값
+          onChange={handleLits}
+          placeholder={'최고의가수'} // 표기값
+        />
+
+        <DropDown
+          options={list} // 리스트 옵션들
+          value={''} // 현재값
+          onChange={handleLits}
+          placeholder={'최고의가수'} // 표기값
+          type={'filter'}
+          openFilter={() => alert('필터 열기')}
+        />
+      </div>
       <div className="mb-8">
         <h3 className="mb-4 text-xl text-[var(--color-white)]">
           페이지네이션 테스트
