@@ -21,6 +21,11 @@
   color: var(--white-white, #fff);
 }
 
+.inpu:focus {
+  border: 1px solid var(--error-C41013, #c41013) !important;
+  outline: none;
+}
+
 .input.error {
   border: 1px solid var(--error-C41013, #c41013);
 }

@@ -1,10 +1,11 @@
+'use client';
 import styles from './Input.module.css';
 
 export default function Input({
-  label = '',
   name = '',
-  value = null,
-  onChange = null,
+  value,
+  onChange,
+  label = '',
   error = '',
   placeholder = '',
   ...props
@@ -12,13 +13,19 @@ export default function Input({
   return (
     <div className={styles.inputGroup}>
       <div className="flex w-[100%] flex-col gap-[10px]">
-        {label && <label className={styles.label}>{label}</label>}
+        {label && (
+          <label htmlFor={name} className={styles.label}>
+            {label}
+          </label>
+        )}
         <input
           className={`${styles.input} ${error ? styles.error : ''}`}
-          // value={value}
-          // onChange={onChange}
-          placeholder={placeholder}
           {...props}
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
         />
       </div>
       {error && <span className={styles.errorMsg}>{error}</span>}
