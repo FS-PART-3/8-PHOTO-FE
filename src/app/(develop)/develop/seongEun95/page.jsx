@@ -3,6 +3,7 @@
 import Pagination from '@/components/molecules/Pagination';
 import Footer from '@/components/organisms/Footer';
 import Header from '@/components/organisms/header/Header';
+import ProductCard from '@/components/organisms/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -62,22 +63,30 @@ const MyPhotoCards = ({ data }) => {
 // seongEun95 개발자 컴포넌트 테스트 페이지
 export default function SeongEun95Page() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading, error } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ['my-photo-cards', currentPage],
     queryFn: () => fetchData(currentPage),
   });
-  console.log(data);
 
   const handlePageChange = page => {
     console.log(`페이지 ${page}로 이동`);
     setCurrentPage(page);
   };
+
+  console.log('data : ', data);
+
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="developer-page">
       {/* 개발자가 작업할 컴포넌트들이 여기에 추가될 예정 */}
       <Header />
-      <main className="flex min-h-[300px] items-center justify-center">
-        <MyPhotoCards data={data?.cards || []} />
+      <main className="mx-auto grid min-h-[300px] w-[min(1200px,92vw)] grid-cols-3 gap-4 py-8">
+        {/* <MyPhotoCards data={data?.cards || []} /> */}
+        {data?.cards?.map(card => (
+          <ProductCard key={card.id} type="original" cards={card} />
+        ))}
       </main>
       <Pagination
         currentPage={currentPage}
