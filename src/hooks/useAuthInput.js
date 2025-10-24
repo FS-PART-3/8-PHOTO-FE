@@ -74,10 +74,8 @@ export function useAuthInput() {
   //입력칸이 모두(태그 제외) 빈칸이면 등록 버튼 비활성화
   useEffect(() => {
     setLoginSubmitActive(
-      values.name !== '' &&
-        values.email !== '' &&
+      values.email !== '' &&
         values.password !== '' &&
-        errors.name === '' &&
         errors.email === '' &&
         errors.password === '',
     );

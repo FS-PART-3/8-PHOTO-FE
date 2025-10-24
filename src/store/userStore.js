@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import defaultUrl from '@/utils/url';
+const defaultUrl = 'https://eight-photo-be.onrender.com/api/auth';
 
 /* 기본 리스폰스 처리 */
 async function responseHandler(res) {
@@ -23,12 +23,29 @@ const useAuth = create(
   persist(
     (set, get) => ({
       accessToken: null,
+      signup: async (name, email, password) => {
+        const body = {
+          name,
+          email,
+          password,
+        };
+        const result = await fetch(`${defaultUrl}/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+          .then(responseHandler)
+          .catch(errorHandler);
+
+        //window.location.href = '/login';
+        return result;
+      },
       login: async (email, password) => {
         const body = {
           email,
           password,
         };
-        const result = await fetch(`${defaultUrl}/auth/login`, {
+        const result = await fetch(`${defaultUrl}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -42,7 +59,7 @@ const useAuth = create(
       },
       logout: async () => {
         //백에 쿠키(리프레쉬토큰)를 지워달라고 하고,
-        const result = await fetch(`${defaultUrl}/auth/logout`, {
+        const result = await fetch(`${defaultUrl}/logout`, {
           method: 'POST',
           credentials: 'include',
         })
@@ -58,7 +75,7 @@ const useAuth = create(
         set({ accessToken });
       },
       getRefreshToken: async accessToken => {
-        const result = await fetch(`${defaultUrl}/auth/getrefresh`, {
+        const result = await fetch(`${defaultUrl}/getrefresh`, {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -73,7 +90,7 @@ const useAuth = create(
         return result;
       },
       refresh: async () => {
-        const result = await fetch(`${defaultUrl}/auth/refresh`, {
+        const result = await fetch(`${defaultUrl}/refresh`, {
           method: 'POST',
           credentials: 'include', // 쿠키 기반 인증 시 필요
         })
@@ -99,7 +116,7 @@ const useAuth = create(
 
         // Access Token 만료 시 (예: 401 Unauthorized)
         if (result.status === 401) {
-          await fetch(`${defaultUrl}/auth/refresh`, {
+          await fetch(`${defaultUrl}/refresh`, {
             method: 'POST',
             credentials: 'include', // 쿠키 기반 인증 시 필요
           })
@@ -130,7 +147,7 @@ const useAuth = create(
       //페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
       checkAuth: async () => {
         const result = get()
-          .authFetch(`${defaultUrl}/auth/check`, {
+          .authFetch(`${defaultUrl}/check`, {
             method: 'POST',
           })
           .then(responseHandler)

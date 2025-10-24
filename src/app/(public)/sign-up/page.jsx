@@ -10,14 +10,21 @@ import Input from './(components)/input';
 import Button from '@/components/atoms/Button';
 import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
-import { useState } from 'react';
+import useAuth from '@/store/userStore';
+import { useRouter } from 'next/navigation';
 
-export default function SignInPage() {
+export default function SignUpPage() {
+  const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
-  const [value, setValue] = useState('');
+  const { signup } = useAuth();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+    const { name, email, password } = values;
+    const result = await signup(name, email, password);
+    if (result?.name) {
+      router.push('/sign-in');
+    }
   };
 
   return (
@@ -64,16 +71,14 @@ export default function SignInPage() {
               placeholder="비밀번호를 한번 더 입력해주세요"
             />
           </div>
-          <Button thikness="thin" disabled={isSignUpSubmitActive}>
+          <Button thikness="thin" disabled={!isSignUpSubmitActive}>
             가입하기
           </Button>
         </form>
-        <div className="flex gap-[10px] text-[var(--font-16-regular)]">
-          <p className="text-[var(--white-white, #FFF)]">
-            이미 최애의 포토 회원이신가요?
-          </p>
+        <div className="flex gap-[10px]">
+          <p className={styles.white}>이미 최애의 포토 회원이신가요?</p>
           <Link href="/sign-in">
-            <span className="text-[var(--main-main, #EFFF04)]">로그인하기</span>
+            <span className={styles.yellow}>로그인하기</span>
           </Link>
         </div>
       </div>
