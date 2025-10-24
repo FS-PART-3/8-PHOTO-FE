@@ -5,9 +5,9 @@
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
 
-import styles from './styles/auth.module.css';
+import styles from '@/styles/components/auth.module.css';
 
-import Input from '@/components/atoms/Input/Input.jsx';
+import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button';
 import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
