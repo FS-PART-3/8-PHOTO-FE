@@ -1,9 +1,30 @@
-// 마켓플레이스 페이지
-export default function MarketPage() {
+import { fetchMarketplaceListings } from '@/lib/api/marketplace';
+import ProductCard from '@/components/cards/ProductCard';
+
+export const revalidate = 0;
+
+export default async function MarketPage() {
+  const items = await fetchMarketplaceListings();
+
   return (
-    <div className="market-page">
-      <h1>마켓플레이스</h1>
-      {/* MarketPage 컴포넌트가 여기에 추가될 예정 */}
-    </div>
+    <section className="mx-auto w-[min(1200px,92vw)] py-8">
+      <h1 className="mb-6 text-2xl font-semibold text-white">마켓플레이스</h1>
+
+      {items.length === 0 ? (
+        <p className="text-white/70">판매 중인 카드가 없습니다.</p>
+      ) : (
+        <div
+          className="
+            grid gap-4
+            sm:grid-cols-2 md:gap-5 md:grid-cols-3
+            xl:grid-cols-4
+          "
+        >
+          {items.map((it) => (
+            <ProductCard key={it.id} {...it} />
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

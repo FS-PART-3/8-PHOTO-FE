@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import Providers from '@/app/providers';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const metadata = {
   title: '최애의 포토',
@@ -10,7 +11,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Providers>
       </body>
     </html>
   );
