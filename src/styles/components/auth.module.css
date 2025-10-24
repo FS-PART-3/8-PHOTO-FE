@@ -1,0 +1,29 @@
+.authBox {
+  width: 100%;
+  max-width: 520px;
+  height: fit-content;
+  margin: auto 15px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 40px;
+}
+
+.white {
+  font: var(--font-16-regular);
+  color: var(--white-white, #fff);
+}
+
+.yellow {
+  font: var(--font-16-regular);
+  color: var(--main-main, #efff04);
+  text-decoration: underline;
+}
+
+@media (min-width: 744px) {
+  .authBox {
+    margin: auto 20px;
+  }
+}
