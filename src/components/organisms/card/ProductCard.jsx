@@ -47,7 +47,12 @@ export default function ProductCard({
   return (
     <article className="border-white-10 block w-full border p-10">
       <Link href={`/market/${cardId}`} className="">
-        <CardImage imageUrl={imageUrl} title={title} status={status} />
+        <CardImage
+          imageUrl={imageUrl}
+          title={title}
+          status={status}
+          type={type}
+        />
       </Link>
 
       <div className="mt-6">

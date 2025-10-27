@@ -22,7 +22,10 @@ export default function CardPriceInfo({ price, quantity, initQuantity, type }) {
             {type === 'my-card' ? '수량' : '잔여'}
           </span>
           <strong className="text-[18px] text-white">
-            {quantity} {type === 'original' && ` / ${initQuantity ?? 0}`}
+            {quantity}{' '}
+            <span className="text-gray-300">
+              {type === 'original' && ` / ${initQuantity ?? 0}`}
+            </span>
           </strong>
         </div>
       </div>
