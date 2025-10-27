@@ -3,6 +3,7 @@
 import Pagination from '@/components/molecules/Pagination';
 import Footer from '@/components/organisms/Footer';
 import Header from '@/components/organisms/header/Header';
+import ProductCard from '@/components/organisms/card/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -62,22 +63,48 @@ const MyPhotoCards = ({ data }) => {
 // seongEun95 개발자 컴포넌트 테스트 페이지
 export default function SeongEun95Page() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading, error } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ['my-photo-cards', currentPage],
     queryFn: () => fetchData(currentPage),
   });
-  console.log(data);
 
   const handlePageChange = page => {
     console.log(`페이지 ${page}로 이동`);
     setCurrentPage(page);
   };
+
+  console.log('data : ', data);
+
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="developer-page">
-      {/* 개발자가 작업할 컴포넌트들이 여기에 추가될 예정 */}
       <Header />
-      <main className="flex min-h-[300px] items-center justify-center">
-        <MyPhotoCards data={data?.cards || []} />
+      <main className="mx-auto grid min-h-[300px] w-[min(1200px,92vw)] grid-cols-3 gap-4 py-8">
+        {data?.cards?.map(card => (
+          <ProductCard
+            key={card.id}
+            type="original"
+            cardId={card.id}
+            title={card.title}
+            grade={card.grade}
+            genre={card.genre}
+            imageUrl={card.imgUrl}
+            status={card.status}
+            userName={card.user?.name}
+            price={card.price}
+            quantity={card.quantity}
+            initQuantity={card.initQuantity}
+            description={'예시 설명 입니다 이걸 어떻게 넣을까'}
+            onReject={() => {
+              console.log('거절');
+            }}
+            onApprove={() => {
+              console.log('승인');
+            }}
+          />
+        ))}
       </main>
       <Pagination
         currentPage={currentPage}

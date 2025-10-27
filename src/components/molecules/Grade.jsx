@@ -1,5 +1,7 @@
 'use client';
 
+import { GRADE_DISPLAY_MAP } from '@/constants/productConstants';
+
 export default function Grade({
   grade,
   variant = 'card', // 'card' | 'detail' | 'my_card'
@@ -58,14 +60,14 @@ function normalizeGrade(input) {
     .replace(/\s+/g, ' ')
     .toUpperCase();
 
-  const allowed = ['COMMON', 'RARE', 'SUPER RARE', 'LEGENDARY'];
+  const allowed = Object.keys(GRADE_DISPLAY_MAP);
   const key = allowed.includes(prepared) ? prepared : null;
   if (!key) return unknownMeta();
 
   const paletteVar = {
     COMMON: '--color-main',
     RARE: '--color-blue',
-    'SUPER RARE': '--color-purple',
+    SUPER_RARE: '--color-purple',
     LEGENDARY: '--color-pink',
   }[key];
 

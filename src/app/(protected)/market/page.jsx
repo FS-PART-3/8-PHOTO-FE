@@ -1,5 +1,5 @@
-import { fetchMarketplaceListings } from '@/lib/marketplace';
-import ProductCard from '@/components/cards/ProductCard';
+import { fetchMarketplaceListings } from '@/lib/api/marketplace';
+import ProductCard from '@/components/organisms/card/ProductCard';
 
 export const revalidate = 0;
 
@@ -13,14 +13,8 @@ export default async function MarketPage() {
       {items.length === 0 ? (
         <p className="text-white/70">판매 중인 카드가 없습니다.</p>
       ) : (
-        <div
-          className="
-            grid gap-4
-            sm:grid-cols-2 md:gap-5 md:grid-cols-3
-            xl:grid-cols-4
-          "
-        >
-          {items.map((it) => (
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
+          {items.map(it => (
             <ProductCard key={it.id} {...it} />
           ))}
         </div>
