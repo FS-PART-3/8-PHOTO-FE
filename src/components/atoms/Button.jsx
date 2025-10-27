@@ -11,7 +11,7 @@ export default function Button({
   ...props
 }) {
   const defaultStyles =
-    'rounded-[2px] transition duration-200 ease-in-out hover:opacity-90 w-full flex items-center justify-center font-bold';
+    'rounded-[2px] transition duration-200 ease-in-out hover:opacity-90 w-full flex items-center justify-center font-bold cursor-pointer';
 
   const getVariantClasses = () => {
     if (disabled) {
