@@ -10,8 +10,7 @@ const DEFAULT_IMAGE_URL = '/assets/images/card-img.png';
  * @param status - 카드 상태
  */
 export default function CardImage({ imageUrl, title, status, type }) {
-  const isForSale =
-    status !== 'SOLD_OUT' && status !== undefined && type === 'for-sale';
+  const isForSale = status !== 'SOLD_OUT' && type === 'for-sale';
 
   return (
     <div className="relative">
@@ -31,7 +30,7 @@ export default function CardImage({ imageUrl, title, status, type }) {
             e.currentTarget.src = DEFAULT_IMAGE_URL;
           }}
         />
-        {status === 'SOLD_OUT' && (
+        {status === 'SOLD_OUT' && type === 'for-sale' && (
           <div className="absolute inset-0 grid place-items-center bg-black/55 backdrop-blur-[1px]">
             <Image
               src="/assets/icons/ic-sold-out.svg"
