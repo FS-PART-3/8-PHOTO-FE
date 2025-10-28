@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import CardDetailBase from './CardDetailBase';
 import Grade from '@/components/molecules/Grade';
 import Button from '@/components/atoms/Button';
 
@@ -29,15 +28,9 @@ export default function CardSellerInfo({
   preferredGrade,
   preferredGenre,
   preferredDescription,
+  onUpdate, // 수정하기 handleUpdate
+  onDelete, // 판매 내리기 handleDelete
 }) {
-  const handleUpdate = async () => {
-    // 판매 카드 정보 수정 API
-  };
-
-  const handleDelete = async () => {
-    // 판매 카드 등록 취소 API
-  };
-
   return (
     <section className="mx-10 w-[440px]">
       <div className="flex w-full justify-between">
@@ -128,10 +121,10 @@ export default function CardSellerInfo({
         </div>
 
         <div className="flex flex-col gap-5">
-          <Button thikness="thick" size="l" onClick={handleUpdate}>
+          <Button thikness="thick" size="l" onClick={onUpdate}>
             수정하기
           </Button>
-          <Button variant="secondary" onClick={handleDelete}>
+          <Button variant="secondary" onClick={onDelete}>
             판매 내리기
           </Button>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Grade from '@/components/molecules/Grade';
 import Button from '@/components/atoms/Button';
@@ -24,6 +24,7 @@ export default function CardBuyerInfo({
   price,
   quantity,
   initQuantity,
+  onBuy, // 구매하기 handleBuy
 }) {
   const [count, setCount] = useState(1);
   const totalPrice = (price || 0) * count;
@@ -34,10 +35,6 @@ export default function CardBuyerInfo({
 
   const handleDecrease = () => {
     if (count > 1) setCount(count - 1);
-  };
-
-  const handleBuy = async () => {
-    // 구매하기 API
   };
 
   return (
@@ -132,7 +129,7 @@ export default function CardBuyerInfo({
           </div>
         </div>
 
-        <Button thikness="thick" size="l" onClick={handleBuy}>
+        <Button thikness="thick" size="l" onClick={() => onBuy(count)}>
           포토카드 구매하기
         </Button>
       </div>
