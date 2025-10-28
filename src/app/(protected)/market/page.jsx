@@ -1,4 +1,4 @@
-import { fetchMarketplaceListings } from '@/lib/api/marketplace';
+import { fetchMarketplaceListings } from '@/lib/marketplace';
 import ProductCard from '@/components/organisms/card/ProductCard';
 
 export const revalidate = 0;
