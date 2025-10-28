@@ -1,13 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Button from '@/components/atoms/Button';
 import Grade from '@/components/molecules/Grade';
-import ProductCard from '@/components/organisms/card/ProductCard';
+import Button from '@/components/atoms/Button';
 
-// chaewon127 개발자 컴포넌트 테스트 페이지
-export default function Chaewon127Page({
+/**
+ * 카드 상세 정보 표시 컴포넌트
+ * @param userName - 카드 판매자 이름
+ * @param grade - 카드 등급 (COMMON, RARE, SUPER RARE, LEGENDARY)
+ * @param genre - 카드 장르 (풍경, 인물, 동물, 식물, 사물)
+ * @param description - 교환 설명 (exchange 타입일 때만 사용)
+ *
+ * @param price - 카드 가격
+ * @param quantity - 카드 수량
+ * @param initQuantity - 초기 수량 (original 타입일 때만 사용)
+ */
+export default function CardBuyerInfo({
   userName,
   grade,
   genre,
