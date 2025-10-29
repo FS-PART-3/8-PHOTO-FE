@@ -7,19 +7,77 @@ import Image from 'next/image';
 import DetailPageHeader from '@/components/organisms/header/DetailPageHeader';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
-import DropDown from '@/components/molecules/DropDown';
 import {
   CREATE_GRADE_OPTIONS,
   CREATE_GENRE_OPTIONS,
 } from '@/constants/productConstants';
 import { validatePhotoForm } from '@/schema/photoSchema';
 import { photoService } from '@/services/photoService';
-import useAuth from '@/store/userStore';
+import Title from '../molecules/Title';
+
+// 커스텀 드롭다운 컴포넌트
+function InputDropdown({
+  label,
+  value,
+  options,
+  onChange,
+  placeholder,
+  error,
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSelect = optionValue => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <label className="mb-[10px] block text-[16px] font-medium text-white">
+        {label}
+      </label>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-3 text-left text-[16px] text-white"
+      >
+        <span className={value ? 'text-white' : 'text-[var(--color-gray-200)]'}>
+          {value || placeholder}
+        </span>
+        <Image
+          src="/assets/icons/ic_down.svg"
+          alt="arrow"
+          width={24}
+          height={24}
+          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-black)]">
+          {options.map(option => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => handleSelect(option.value)}
+              className="w-full px-4 py-3 text-left text-[16px] text-white transition-colors hover:bg-[var(--color-gray-500)]"
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {error && (
+        <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // 포토카드 생성/편집 페이지 컴포넌트
 export default function MyPhotoEditPage() {
   const router = useRouter();
-  const { accessToken } = useAuth();
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -37,8 +95,7 @@ export default function MyPhotoEditPage() {
 
   // 포토카드 생성 mutation
   const createPhotoMutation = useMutation({
-    mutationFn: ({ formData: data, token }) =>
-      photoService.createPhoto(data, token),
+    mutationFn: formData => photoService.createPhoto(formData),
     onSuccess: response => {
       alert(response.message || '포토카드가 성공적으로 생성되었습니다!');
       router.push('/market/my-photo');
@@ -84,33 +141,19 @@ export default function MyPhotoEditPage() {
     fileInputRef.current?.click();
   };
 
-  // 등급 변경
-  const handleGradeChange = option => {
-    setFormData(prev => ({ ...prev, grade: option.value }));
+  // 등급 선택
+  const handleGradeSelect = value => {
+    setFormData(prev => ({ ...prev, grade: value }));
     if (errors.grade) {
       setErrors(prev => ({ ...prev, grade: '' }));
     }
   };
 
-  // 장르 변경
-  const handleGenreChange = option => {
-    setFormData(prev => ({ ...prev, genre: option.value }));
+  // 장르 선택
+  const handleGenreSelect = value => {
+    setFormData(prev => ({ ...prev, genre: value }));
     if (errors.genre) {
       setErrors(prev => ({ ...prev, genre: '' }));
-    }
-  };
-
-  // 수량 증가
-  const handleQuantityIncrease = () => {
-    if (formData.quantity < 10) {
-      setFormData(prev => ({ ...prev, quantity: prev.quantity + 1 }));
-    }
-  };
-
-  // 수량 감소
-  const handleQuantityDecrease = () => {
-    if (formData.quantity > 1) {
-      setFormData(prev => ({ ...prev, quantity: prev.quantity - 1 }));
     }
   };
 
@@ -138,17 +181,16 @@ export default function MyPhotoEditPage() {
     }
 
     // API 호출
-    createPhotoMutation.mutate({ formData: submitData, token: accessToken });
+    createPhotoMutation.mutate(submitData);
   };
 
   return (
     <div className="min-h-screen bg-[var(--color-black)] text-white">
-      <DetailPageHeader />
-      <div className="mx-auto max-w-[830px] px-4 py-8">
-        <h1 className="mb-12 border-b-2 border-white pb-4 text-left text-[32px] font-bold">
-          포토카드 생성
-        </h1>
+      <div className="mx-auto mt-[60px] max-w-[1200px] border-b-[2px] border-[var(--color-gray-100)] pb-[20px]">
+        <Title text={'포토카드 생성'} />
+      </div>
 
+      <div className="mx-auto max-w-[520px] px-4 py-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           {/* 포토카드 이름 */}
           <div>
@@ -163,50 +205,24 @@ export default function MyPhotoEditPage() {
           </div>
 
           {/* 등급 */}
-          <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              등급
-            </label>
-            <DropDown
-              options={CREATE_GRADE_OPTIONS}
-              value={
-                CREATE_GRADE_OPTIONS.find(
-                  opt => opt.value === formData.grade,
-                ) || {}
-              }
-              onChange={handleGradeChange}
-              placeholder="등급을 선택해 주세요"
-              fontSize="text-[16px]"
-            />
-            {errors.grade && (
-              <span className="mt-2 block text-[14px] text-[var(--color-red)]">
-                {errors.grade}
-              </span>
-            )}
-          </div>
+          <InputDropdown
+            label="등급"
+            value={formData.grade}
+            options={CREATE_GRADE_OPTIONS}
+            onChange={handleGradeSelect}
+            placeholder="등급을 선택해 주세요"
+            error={errors.grade}
+          />
 
           {/* 장르 */}
-          <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              장르
-            </label>
-            <DropDown
-              options={CREATE_GENRE_OPTIONS}
-              value={
-                CREATE_GENRE_OPTIONS.find(
-                  opt => opt.value === formData.genre,
-                ) || {}
-              }
-              onChange={handleGenreChange}
-              placeholder="장르를 선택해 주세요"
-              fontSize="text-[16px]"
-            />
-            {errors.genre && (
-              <span className="mt-2 block text-[14px] text-[var(--color-red)]">
-                {errors.genre}
-              </span>
-            )}
-          </div>
+          <InputDropdown
+            label="장르"
+            value={formData.genre}
+            options={CREATE_GENRE_OPTIONS}
+            onChange={handleGenreSelect}
+            placeholder="장르를 선택해 주세요"
+            error={errors.genre}
+          />
 
           {/* 가격 */}
           <div>
@@ -224,45 +240,17 @@ export default function MyPhotoEditPage() {
 
           {/* 총 발행량 */}
           <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              총 발행량
-            </label>
-            <div className="flex w-[220px] items-center justify-between rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-4">
-              <button
-                type="button"
-                onClick={handleQuantityDecrease}
-                disabled={formData.quantity <= 1}
-                className="disabled:opacity-30"
-              >
-                <Image
-                  src="/assets/icons/ic_-.svg"
-                  alt="- icon"
-                  width={24}
-                  height={24}
-                />
-              </button>
-              <span className="text-[18px] font-medium">
-                {formData.quantity}
-              </span>
-              <button
-                type="button"
-                onClick={handleQuantityIncrease}
-                disabled={formData.quantity >= 10}
-                className="disabled:opacity-30"
-              >
-                <Image
-                  src="/assets/icons/ic_+.svg"
-                  alt="+ icon"
-                  width={24}
-                  height={24}
-                />
-              </button>
-            </div>
-            {errors.quantity && (
-              <span className="mt-2 block text-[14px] text-[var(--color-red)]">
-                {errors.quantity}
-              </span>
-            )}
+            <Input
+              name="quantity"
+              type="number"
+              label="총 발행량"
+              value={formData.quantity}
+              onChange={handleInputChange}
+              placeholder="발행량을 입력해 주세요 (1-10)"
+              error={errors.quantity}
+              min="1"
+              max="10"
+            />
             <p className="mt-2 text-[12px] text-[var(--color-red)]">
               총 발행량은 1개에서 10개 사이입니다.
             </p>
@@ -273,30 +261,27 @@ export default function MyPhotoEditPage() {
             <label className="mb-[10px] block text-[16px] font-medium text-white">
               사진 업로드
             </label>
-            <input
+            <Input
               ref={fileInputRef}
               type="file"
               accept="image/*"
               onChange={handleImageChange}
               className="hidden"
             />
-            <div className="flex items-center gap-4">
-              <input
+            <div className="flex w-full items-center gap-4">
+              <Input
                 type="text"
                 value={formData.image?.name || ''}
                 placeholder="사진 업로드"
                 readOnly
-                className="flex-1 rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-3 text-[16px] text-white placeholder:text-[var(--color-gray-300)]"
+                className="w-full flex-1 rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-4 text-[16px] text-white placeholder:text-[var(--color-gray-300)]"
               />
-              <Button
-                type="button"
-                variant="primary"
-                size="xs"
-                thikness="thin"
+              <button
+                className="flex h-[60px] w-full max-w-[120px] items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
                 onClick={handleImageButtonClick}
               >
                 파일 선택
-              </Button>
+              </button>
             </div>
             {imagePreview && (
               <div className="mt-4">
