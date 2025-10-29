@@ -1,3 +1,4 @@
+import useAuth from '@/store/userStore';
 /**
  * API 요청을 위한 fetch 클라이언트
  */
@@ -6,7 +7,7 @@ const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 /**
  * 기본 request 함수
  */
-async function request(endpoint, options = {}) {
+async function request(endpoint, options = {}, authRequired = false) {
   const url = `${baseURL}${endpoint}`;
   const config = {
     ...options,
@@ -17,7 +18,10 @@ async function request(endpoint, options = {}) {
   };
 
   try {
-    const response = await fetch(url, config);
+    const authFetch = useAuth.getState().authFetch;
+    const response = authRequired
+      ? await fetch(url, config)
+      : await authFetch(url, options);
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({
@@ -43,6 +47,16 @@ async function get(endpoint, options = {}) {
     method: 'GET',
   });
 }
+async function authGet(endpoint, options = {}) {
+  return request(
+    endpoint,
+    {
+      ...options,
+      method: 'GET',
+    },
+    true,
+  );
+}
 
 /**
  * POST 요청
@@ -53,6 +67,18 @@ async function post(endpoint, data, options = {}) {
     method: 'POST',
     body: JSON.stringify(data),
   });
+}
+
+async function authPost(endpoint, data, options = {}) {
+  return request(
+    endpoint,
+    {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data),
+    },
+    true,
+  );
 }
 
 /**
@@ -66,6 +92,18 @@ async function put(endpoint, data, options = {}) {
   });
 }
 
+async function authPut(endpoint, data, options = {}) {
+  return request(
+    endpoint,
+    {
+      ...options,
+      method: 'PUT',
+      body: JSON.stringify(data),
+    },
+    true,
+  );
+}
+
 /**
  * DELETE 요청
  */
@@ -74,6 +112,17 @@ async function deleteFn(endpoint, options = {}) {
     ...options,
     method: 'DELETE',
   });
+}
+
+async function authDelete(endpoint, options = {}) {
+  return request(
+    endpoint,
+    {
+      ...options,
+      method: 'DELETE',
+    },
+    true,
+  );
 }
 
 /**
@@ -87,6 +136,18 @@ async function patch(endpoint, data, options = {}) {
   });
 }
 
+async function authPatch(endpoint, data, options = {}) {
+  return request(
+    endpoint,
+    {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    },
+    true,
+  );
+}
+
 export const fetchClient = {
   request,
   get,
@@ -94,6 +155,11 @@ export const fetchClient = {
   put,
   delete: deleteFn,
   patch,
+  authGet,
+  authPost,
+  authPut,
+  authDelete,
+  authPatch,
 };
 
 export default fetchClient;
