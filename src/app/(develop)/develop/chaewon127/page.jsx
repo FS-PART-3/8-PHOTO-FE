@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/atoms/Button';
 import Grade from '@/components/molecules/Grade';
+import QuantitySelector from '@/components/molecules/QuantitySelector';
 import { global } from 'styled-jsx/css';
 import ProductCard from '@/components/organisms/card/ProductCard';
 
@@ -14,7 +15,7 @@ export default function Chaewon127Page({
   genre,
   description,
   price,
-  quantity,
+  quantity = 5,
   initQuantity,
   onBuy,
   preferredGrade,
@@ -24,18 +25,13 @@ export default function Chaewon127Page({
   onDelete,
 }) {
   const [count, setCount] = useState(1);
+  const [localPrice, setLocalPrice] = useState(price ?? '');
+
   const totalPrice = (price || 0) * count;
 
-  const handleIncrease = () => {
-    if (count < quantity) setCount(count + 1);
-  };
-
-  const handleDecrease = () => {
-    if (count > 1) setCount(count - 1);
-  };
-
-  const handleBuy = async () => {
-    // 구매하기 API
+  const handleCountChange = val => {
+    if (val > 3) return;
+    setCount(val);
   };
 
   return (
@@ -47,6 +43,7 @@ export default function Chaewon127Page({
         </p>
         {/* 개발자가 작업할 컴포넌트들이 여기에 추가될 예정 */}
       </div>
+
       <div className="flex">
         <section className="mx-10 w-[440px]">
           <div className="flex w-full justify-between">
@@ -54,9 +51,9 @@ export default function Chaewon127Page({
               <Grade grade={grade} variant="card" size="L" />
               {/* {myPhotoCard.grade} */}
 
-              <div className="h-[25px] border-l border-[#5a5a5a]" />
+              <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-              <p className="text-2xl font-bold text-[#a4a4a4]">
+              <p className="text-2xl font-bold text-[var(--color-gray-300)]">
                 {genre}
                 {/* {myPhotoCard.genre} */}
               </p>
@@ -67,33 +64,37 @@ export default function Chaewon127Page({
             </p>
           </div>
 
-          <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+          <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
           <p className="text-lg font-normal text-white">
             {description}
             {/* {myPhotoCard.description} */}
           </p>
 
-          <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+          <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
           <div className="w-full">
             <div className="mb-[10px] flex justify-between">
-              <p className="text-xl font-normal text-[#a4a4a4]">가격</p>
+              <p className="text-xl font-normal text-[var(--color-gray-300)]">
+                가격
+              </p>
               <p className="text-2xl font-bold text-white">
                 {price} p{/* {listing.price} */}
               </p>
             </div>
             <div className="flex justify-between">
               <div>
-                <p className="text-xl font-normal text-[#a4a4a4]">잔여</p>
+                <p className="text-xl font-normal text-[var(--color-gray-300)]">
+                  잔여
+                </p>
               </div>
               <div className="flex text-2xl">
                 <p className="font-bold text-white">
                   {quantity}
                   {/* {listing.quantity} */}
                 </p>
-                <p className="font-normal text-[#a4a4a4]">/</p>
-                <p className="font-normal text-[#a4a4a4]">
+                <p className="font-normal text-[var(--color-gray-300)]">/</p>
+                <p className="font-normal text-[var(--color-gray-300)]">
                   {initQuantity}
                   {/* {listing.initQuantity} */}
                 </p>
@@ -102,34 +103,16 @@ export default function Chaewon127Page({
           </div>
 
           <div className="w-full">
-            <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+            <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
             <div className="mb-20">
               <div className="mb-5 flex justify-between">
                 <p className="text-xl font-normal text-white">구매수량</p>
-                {/* QuantitySelector 컴포넌트 분리 */}
-                <div className="w-[180px] rounded-xs border border-(--gray-gray200) px-3 py-2">
-                  <div className="flex items-center justify-between text-white">
-                    <button onClick={handleDecrease}>
-                      <Image
-                        src="/assets/icons/ic_-.svg"
-                        alt="- icon"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-                    <p>{count}</p>
-                    <button onClick={handleIncrease}>
-                      <Image
-                        src="/assets/icons/ic_+.svg"
-                        alt="+ icon"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-                  </div>
-                </div>
-                {/* QuantitySelector 컴포넌트 분리 */}
+                <QuantitySelector
+                  quantity={quantity}
+                  count={count}
+                  onChange={setCount}
+                />
               </div>
 
               <div className="flex justify-between">
@@ -138,7 +121,7 @@ export default function Chaewon127Page({
                   <p className="text-2xl font-bold text-white">
                     {totalPrice} p
                   </p>
-                  <p className="text-xl font-normal text-[#a4a4a4]">
+                  <p className="text-xl font-normal text-[var(--color-gray-300)]">
                     {count} 장
                   </p>
                 </div>
@@ -157,9 +140,9 @@ export default function Chaewon127Page({
               <Grade grade={grade} variant="card" size="L" />
               {/* {myPhotoCard.grade} */}
 
-              <div className="h-[25px] border-l border-[#5a5a5a]" />
+              <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-              <p className="text-2xl font-bold text-[#a4a4a4]">
+              <p className="text-2xl font-bold text-[var(--color-gray-300)]">
                 {genre}
                 {/* {myPhotoCard.genre} */}
               </p>
@@ -170,33 +153,37 @@ export default function Chaewon127Page({
             </p>
           </div>
 
-          <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+          <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
           <p className="text-lg font-normal text-white">
             {description}
             {/* {myPhotoCard.description} */}
           </p>
 
-          <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+          <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
           <div className="w-full">
             <div className="mb-[10px] flex justify-between">
-              <p className="text-xl font-normal text-[#a4a4a4]">가격</p>
+              <p className="text-xl font-normal text-[var(--color-gray-300)]">
+                가격
+              </p>
               <p className="text-2xl font-bold text-white">
                 {price} p{/* {listing.price} */}
               </p>
             </div>
             <div className="flex justify-between">
               <div>
-                <p className="text-xl font-normal text-[#a4a4a4]">잔여</p>
+                <p className="text-xl font-normal text-[var(--color-gray-300)]">
+                  잔여
+                </p>
               </div>
               <div className="flex text-2xl">
                 <p className="font-bold text-white">
                   {quantity}
                   {/* {listing.quantity} */}
                 </p>
-                <p className="font-normal text-[#a4a4a4]">/</p>
-                <p className="font-normal text-[#a4a4a4]">
+                <p className="font-normal text-[var(--color-gray-300)]">/</p>
+                <p className="font-normal text-[var(--color-gray-300)]">
                   {initQuantity}
                   {/* {listing.initQuantity} */}
                 </p>
@@ -217,7 +204,7 @@ export default function Chaewon127Page({
                   교환 희망 정보
                 </p>
               </div>
-              <hr className="mb-8 w-full border-t border-[#eeeeee]" />
+              <hr className="mb-8 w-full border-t border-[var(--color-gray-100)]" />
             </div>
 
             <div>
@@ -225,15 +212,15 @@ export default function Chaewon127Page({
                 <Grade grade={preferredGrade} variant="card" size="L" />
                 {/* {listing.preferredGrade} */}
 
-                <div className="h-[25px] border-l border-[#5a5a5a]" />
+                <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-                <p className="text-2xl font-bold text-[#a4a4a4]">
+                <p className="text-2xl font-bold text-[var(--color-gray-300)]">
                   {preferredGenre}
                   {/* {listing.preferredGenre} */}
                 </p>
               </div>
 
-              <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+              <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
               <p className="mb-20 text-lg font-normal text-white">
                 {preferredDescription}
@@ -259,9 +246,9 @@ export default function Chaewon127Page({
             <Grade grade={grade} variant="card" size="L" />
             {/* {myPhotoCard.grade} */}
 
-            <div className="h-[25px] border-l border-[#5a5a5a]" />
+            <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-            <p className="text-2xl font-bold text-[#a4a4a4]">
+            <p className="text-2xl font-bold text-[var(--color-gray-300)]">
               {genre}
               {/* {myPhotoCard.genre} */}
             </p>
@@ -272,38 +259,20 @@ export default function Chaewon127Page({
           </p>
         </div>
 
-        <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+        <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
         <div className="w-full">
           <div className="mb-5 flex justify-between">
             <p className="text-xl font-normal text-white">총 판매 수량</p>
             <div className="flex">
-              {/* QuantitySelector 컴포넌트 분리 */}
-              <div className="w-[176px] rounded-xs border border-(--gray-gray200) px-3 py-2">
-                <div className="flex items-center justify-between text-white">
-                  <button onClick={handleDecrease}>
-                    <Image
-                      src="/assets/icons/ic_-.svg"
-                      alt="- icon"
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-                  <p>{count}</p>
-                  <button onClick={handleIncrease}>
-                    <Image
-                      src="/assets/icons/ic_+.svg"
-                      alt="+ icon"
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-                </div>
-              </div>
-              {/* QuantitySelector 컴포넌트 분리 */}
+              <QuantitySelector
+                quantity={quantity}
+                count={count}
+                onChange={handleCountChange}
+              />
               <div className="ml-5">
                 <p className="text-xl font-bold text-white">/3</p>
-                <p className="text-sm font-light text-(--gray-gray200)">
+                <p className="text-sm font-light text-[var(--color-gray-200)]">
                   최대 3장
                 </p>
               </div>
@@ -316,8 +285,9 @@ export default function Chaewon127Page({
                 type="number"
                 id="price"
                 placeholder="숫자만 입력"
-                value={price}
-                className="w-[245px] appearance-none rounded-xs border border-(--gray-gray200) px-3 py-2 text-base font-light text-white placeholder-(--gray-gray200)"
+                value={localPrice}
+                onChange={e => setLocalPrice(e.target.value)}
+                className="w-[245px] rounded-xs border border-[var(--color-gray-200)] px-3 py-2 text-base font-light text-white placeholder-[var(--color-gray-200)]"
               />
               <div className="absolute top-1/2 right-3 -translate-y-1/2 text-xl font-bold text-white">
                 P

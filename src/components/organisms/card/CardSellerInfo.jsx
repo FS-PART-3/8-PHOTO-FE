@@ -38,9 +38,9 @@ export default function CardSellerInfo({
           <Grade grade={grade} variant="card" size="L" />
           {/* {myPhotoCard.grade} */}
 
-          <div className="h-[25px] border-l border-[#5a5a5a]" />
+          <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-          <p className="text-2xl font-bold text-[#a4a4a4]">
+          <p className="text-2xl font-bold text-[var(--color-gray-300)]">
             {genre}
             {/* {myPhotoCard.genre} */}
           </p>
@@ -51,33 +51,37 @@ export default function CardSellerInfo({
         </p>
       </div>
 
-      <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+      <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
       <p className="text-lg font-normal text-white">
         {description}
         {/* {myPhotoCard.description} */}
       </p>
 
-      <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+      <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
       <div className="w-full">
         <div className="mb-[10px] flex justify-between">
-          <p className="text-xl font-normal text-[#a4a4a4]">가격</p>
+          <p className="text-xl font-normal text-[var(--color-gray-300)]">
+            가격
+          </p>
           <p className="text-2xl font-bold text-white">
             {price} p{/* {listing.price} */}
           </p>
         </div>
         <div className="flex justify-between">
           <div>
-            <p className="text-xl font-normal text-[#a4a4a4]">잔여</p>
+            <p className="text-xl font-normal text-[var(--color-gray-300)]">
+              잔여
+            </p>
           </div>
           <div className="flex text-2xl">
             <p className="font-bold text-white">
               {quantity}
               {/* {listing.quantity} */}
             </p>
-            <p className="font-normal text-[#a4a4a4]">/</p>
-            <p className="font-normal text-[#a4a4a4]">
+            <p className="font-normal text-[var(--color-gray-300)]">/</p>
+            <p className="font-normal text-[var(--color-gray-300)]">
               {initQuantity}
               {/* {listing.initQuantity} */}
             </p>
@@ -96,7 +100,7 @@ export default function CardSellerInfo({
             />
             <p className="text-[28px] font-bold text-white">교환 희망 정보</p>
           </div>
-          <hr className="mb-8 w-full border-t border-[#eeeeee]" />
+          <hr className="mb-8 w-full border-t border-[var(--color-gray-100)]" />
         </div>
 
         <div>
@@ -104,15 +108,15 @@ export default function CardSellerInfo({
             <Grade grade={preferredGrade} variant="card" size="L" />
             {/* {listing.preferredGrade} */}
 
-            <div className="h-[25px] border-l border-[#5a5a5a]" />
+            <div className="h-[25px] border-l border-[var(--color-gray-400)]" />
 
-            <p className="text-2xl font-bold text-[#a4a4a4]">
+            <p className="text-2xl font-bold text-[var(--color-gray-300)]">
               {preferredGenre}
               {/* {listing.preferredGenre} */}
             </p>
           </div>
 
-          <hr className="my-8 w-full border-t border-[#5a5a5a]" />
+          <hr className="my-8 w-full border-t border-[var(--color-gray-400)]" />
 
           <p className="mb-20 text-lg font-normal text-white">
             {preferredDescription}
