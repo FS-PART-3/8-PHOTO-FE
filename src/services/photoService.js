@@ -48,16 +48,30 @@ export const photoService = {
   },
 
   /**
-   * 포토카드 상세 조회
-   * @param {string} id - 포토카드 ID
+   * 포토카드 생성
+   * @param {FormData} formData - 포토카드 생성 데이터
    * @param {string} token - 인증 토큰
    * @returns {Promise} API 응답
    */
-  async getPhotoDetail(id, token) {
-    return fetchClient.get(`/api/gallery/${id}`, {
+  async createPhoto(formData, token) {
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+    const url = `${baseURL}/api/gallery`;
+
+    const response = await fetch(url, {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      body: formData,
     });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        error: '요청 처리 중 오류가 발생했습니다.',
+      }));
+      throw new Error(error.error || `HTTP Error: ${response.status}`);
+    }
+
+    return response.json();
   },
 };

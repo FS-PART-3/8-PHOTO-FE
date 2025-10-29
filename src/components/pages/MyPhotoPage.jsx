@@ -5,6 +5,7 @@ import useAuth from '@/store/userStore';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
 import Pagination from '../molecules/Pagination';
+import Header from '../organisms/header/Header';
 
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
@@ -70,6 +71,8 @@ export default function MyPhotoPage() {
   return (
     <div className="my-photo-page min-h-screen bg-[var(--color-black)] px-6 py-8">
       <h1 className="mb-6 text-3xl font-bold text-white">마이갤러리</h1>
+
+      <Header />
 
       {/* 결과 정보 */}
       <div className="results-info mb-4">
