@@ -56,6 +56,8 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
+        console.log(result);
+
         set({
           useName: result.name,
           points: result.points,
@@ -74,7 +76,7 @@ const useAuth = create(
 
         // 프론트에서는 로컬(액세스토큰) 지우기.
         set({ accessToken: null, userName: null, points: null });
-        window.location.href = '/login'; // 로그인 페이지로
+        window.location.href = '/sign-in'; // 로그인 페이지로
         return result;
       },
       setAccessToken: async accessToken => {
@@ -142,8 +144,7 @@ const useAuth = create(
               // 리프레시 실패 → 로그아웃 처리
               // 강제 리로드 (hook이나, api 함수 안에서는 router를 쓸 수 없어서 이게 가장 안전하네요.)
               // 전체 페이지 리로드가 발생합니다.
-              get().logout();
-              window.location.href = '/sign-in';
+              //get().logout();
               console.log(err);
             });
         }
@@ -163,7 +164,7 @@ const useAuth = create(
     }),
     {
       name: 'auth-storage',
-      partialize: state => ({ savedValue: state.accessToken }),
+      partialize: state => ({ accessToken: state.accessToken }),
     },
   ),
 );

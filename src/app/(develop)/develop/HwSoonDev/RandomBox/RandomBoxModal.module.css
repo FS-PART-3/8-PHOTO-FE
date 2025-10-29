@@ -1,0 +1,36 @@
+.pointBoxBtn {
+  position: relative;
+  width: 1fr;
+  height: 200px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+  cursor: pointer;
+}
+
+.pointBoxBtn:hover {
+  transform: translateY(-10%);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  filter: brightness(0.95);
+}
+
+.box1 {
+}
+
+.box2 {
+}
+
+.box3 {
+}
+
+@keyframes stamp {
+  0% {
+    width: 1fr;
+    height: 1fr;
+  }
+  100% {
+    width: 300px;
+    height: 250px;
+  }
+}
