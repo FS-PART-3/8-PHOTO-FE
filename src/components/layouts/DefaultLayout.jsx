@@ -1,4 +1,3 @@
-import Title from '../molecules/Title';
 import Header from '../organisms/header/Header';
 
 // 기본 레이아웃 컴포넌트
