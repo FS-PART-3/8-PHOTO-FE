@@ -4,15 +4,16 @@ import { useState } from 'react';
 import Grade from '@/components/molecules/Grade';
 import QuantitySelector from '@/components/molecules/QuantitySelector';
 
-export default function MyCardDetail({
-  grade,
-  genre,
-  userName,
-  quantity = 3,
-  price,
-}) {
+/**
+ * 카드 상세 정보 표시 컴포넌트
+ * @param userName - 카드 판매자 이름
+ * @param grade - 카드 등급 (COMMON, RARE, SUPER RARE, LEGENDARY)
+ * @param genre - 카드 장르 (풍경, 인물, 동물, 식물, 사물)
+ *
+ * @param quantity - 카드 수량
+ */
+export default function MyCardDetail({ grade, genre, userName, quantity = 3 }) {
   const [count, setCount] = useState(1);
-  const [localPrice, setLocalPrice] = useState(price ?? '');
 
   const handleCountChange = val => {
     if (val > 3) return;
@@ -65,8 +66,8 @@ export default function MyCardDetail({
               type="number"
               id="price"
               placeholder="숫자만 입력"
-              value={localPrice}
-              onChange={e => setLocalPrice(e.target.value)}
+              value={price}
+              onChange={e => setprice(e.target.value)}
               className="w-[245px] rounded-xs border border-[var(--color-gray-200)] px-3 py-2 text-base font-light text-white placeholder-[var(--color-gray-200)]"
             />
             <div className="absolute top-1/2 right-3 -translate-y-1/2 text-xl font-bold text-white">
