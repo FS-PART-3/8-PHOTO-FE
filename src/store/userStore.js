@@ -57,7 +57,7 @@ const useAuth = create(
           .catch(errorHandler);
 
         set({
-          useName: result.user.name,
+          useName: result.name,
           points: result.points,
           accessToken: result.accessToken,
         });
