@@ -30,7 +30,7 @@
   border: 1px solid var(--error-C41013, #c41013);
 }
 
-/* 왜 포커스 생상이 안 바뀌고 흰색 고정일까요? */
+/* 왜 포커스 생상이 안 바뀌고 흰색 고정일까요? -> 해결했습니다! */
 .input.error:focus {
   border: 1px solid var(--error-bg-FFA3A5, #ffa3a5) !important;
 }

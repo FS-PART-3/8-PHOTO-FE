@@ -307,7 +307,7 @@ export default function Chaewon127Page({
         </div>
       </section>
 
-      <div className="w-[400px] gap-5">
+      <div className="mx-10 mb-20 flex w-[400px] flex-col gap-6">
         <Input
           label="기본테스트"
           type="text"
