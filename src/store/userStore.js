@@ -163,7 +163,11 @@ const useAuth = create(
     }),
     {
       name: 'auth-storage',
-      partialize: state => ({ savedValue: state.accessToken }),
+      partialize: state => ({
+        accessToken: state.accessToken,
+        useName: state.useName,
+        points: state.points,
+      }),
     },
   ),
 );
