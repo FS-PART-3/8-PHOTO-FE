@@ -39,4 +39,17 @@ export const SOLD_OUT_OPTIONS = [
   { value: '', label: '전체' },
   { value: 'true', label: '품절' },
   { value: 'false', label: '판매 중' },
+// 포토카드 생성용 옵션 (전체 제외)
+export const CREATE_GRADE_OPTIONS = [
+  { value: 'COMMON', label: 'COMMON' },
+  { value: 'RARE', label: 'RARE' },
+  { value: 'SUPERRARE', label: 'SUPER RARE' },
+  { value: 'LEGENDARY', label: 'LEGENDARY' },
+];
+
+export const CREATE_GENRE_OPTIONS = [
+  { value: '풍경', label: '풍경' },
+  { value: '인물', label: '인물' },
+  { value: '도시', label: '도시' },
+  { value: '자연', label: '자연' },
 ];
