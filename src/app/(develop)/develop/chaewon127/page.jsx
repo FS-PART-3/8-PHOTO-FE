@@ -7,6 +7,7 @@ import Grade from '@/components/molecules/Grade';
 import QuantitySelector from '@/components/molecules/QuantitySelector';
 import { global } from 'styled-jsx/css';
 import ProductCard from '@/components/organisms/card/ProductCard';
+import Input from '@/components/atoms/Input';
 
 // chaewon127 개발자 컴포넌트 테스트 페이지
 export default function Chaewon127Page({
@@ -33,6 +34,15 @@ export default function Chaewon127Page({
     if (val > 3) return;
     setCount(val);
   };
+
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [title, setTitle] = useState('');
+  // const [description, setDescription] = useState('');
+  // const [price, setPrice] = useState('');
 
   return (
     <div className="developer-page min-h-screen bg-[var(--color-black)]">
@@ -296,6 +306,64 @@ export default function Chaewon127Page({
           </div>
         </div>
       </section>
+
+      <div className="w-[400px] gap-5">
+        <Input
+          label="기본테스트"
+          type="text"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="기본테스트 Input"
+        />
+        <Input
+          label="비번테스트"
+          type="password"
+          id="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="비번테스트 Input"
+        />
+        <Input
+          label="비번확인테스트"
+          type="password"
+          id="confirm"
+          value={confirm}
+          onChange={e => setConfirm(e.target.value)}
+          placeholder="비번확인테스트 Input"
+        />
+        <Input
+          label="이메일테스트"
+          type="email"
+          id="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="이메일테스트 Input"
+        />
+        <Input
+          label="닉네임테스트"
+          type="text"
+          id="nickname"
+          value={nickname}
+          onChange={e => setNickname(e.target.value)}
+          placeholder="테스트 Input"
+        />
+        <Input
+          label="가격테스트"
+          type="number"
+          id="price"
+          value={localPrice}
+          onChange={e => setLocalPrice(e.target.value)}
+          placeholder="가격테스트 Input"
+        />
+        <Input
+          label="포토카드이름테스트"
+          type="text"
+          id="title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="포토카드이름테스트 Input"
+        />
+      </div>
     </div>
   );
 }
