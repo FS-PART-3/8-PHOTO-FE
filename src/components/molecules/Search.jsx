@@ -36,8 +36,8 @@ export default function Search({
 }) {
   // 검색 제출 핸들러
   const handleSubmit = () => {
-    if (disabled || !value?.trim()) return;
-    onSubmit?.(value);
+    if (disabled) return;
+    onSubmit?.(value?.trim() || '');
   };
 
   // 키보드 이벤트 핸들러
@@ -102,7 +102,7 @@ export default function Search({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={disabled || !value?.trim()}
+            disabled={disabled}
             aria-label="검색"
             className="search-icon-button flex flex-shrink-0 items-center justify-center pr-2 pl-4 transition-opacity duration-200 hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-40"
           >

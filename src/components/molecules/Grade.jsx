@@ -8,6 +8,7 @@ export default function Grade({
   size = 'M', // L | M | S (대문자)
   showLabel = true,
   className = '',
+  num = 0,
 }) {
   const meta = normalizeGrade(grade); // { key, label, colorVar }
 
@@ -46,7 +47,7 @@ export default function Grade({
       style={isMyCard ? { ...commonStyle, ...myCardStyle } : commonStyle}
       title={`등급 ${meta.label}`}
     >
-      {showLabel ? meta.label : meta.key}
+      {showLabel ? meta.label : meta.key} {num > 0 ? ` ${num}장` : ''}
     </span>
   );
 }
@@ -60,14 +61,14 @@ function normalizeGrade(input) {
     .replace(/\s+/g, ' ')
     .toUpperCase();
 
-  const allowed = Object.keys(GRADE_DISPLAY_MAP);
+  const allowed = Object.keys(GRADE_DISPLAY_MAP).map(k => k.replace(/_/g, ' '));
   const key = allowed.includes(prepared) ? prepared : null;
   if (!key) return unknownMeta();
 
   const paletteVar = {
     COMMON: '--color-main',
     RARE: '--color-blue',
-    SUPER_RARE: '--color-purple',
+    'SUPER RARE': '--color-purple',
     LEGENDARY: '--color-pink',
   }[key];
 

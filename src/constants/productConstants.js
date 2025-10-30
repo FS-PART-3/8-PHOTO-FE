@@ -28,3 +28,15 @@ export const GENRE_OPTIONS = [
   { value: '도시', label: '도시' },
   { value: '자연', label: '자연' },
 ];
+
+export const SALE_METHOD_OPTIONS = [
+  { value: '', label: '전체' },
+  { value: 'FOR_SALE', label: '판매' },
+  { value: 'FOR_EXCHANGE', label: '교환' },
+];
+
+export const SOLD_OUT_OPTIONS = [
+  { value: '', label: '전체' },
+  { value: 'true', label: '품절' },
+  { value: 'false', label: '판매 중' },
+];
