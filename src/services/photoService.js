@@ -1,5 +1,4 @@
 import fetchClient from '@/lib/fetchClient';
-import useAuth from '@/store/userStore';
 
 /**
  * 포토카드 관련 API 서비스
@@ -50,26 +49,16 @@ export const photoService = {
 
   /**
    * 포토카드 생성
+   * @param {string} token - 인증 토큰
    * @param {FormData} formData - 포토카드 생성 데이터
    * @returns {Promise} API 응답
    */
-  async createPhoto(formData) {
-    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-    const url = `${baseURL}/api/gallery`;
-    const { authFetch } = useAuth.getState();
-
-    const response = await authFetch(url, {
-      method: 'POST',
-      body: formData,
+  async createPhoto(token, formData) {
+    return fetchClient.post('/api/gallery', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // FormData 전송 시 Content-Type은 브라우저가 자동으로 설정
+      },
     });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        error: '요청 처리 중 오류가 발생했습니다.',
-      }));
-      throw new Error(error.error || `HTTP Error: ${response.status}`);
-    }
-
-    return response.json();
   },
 };

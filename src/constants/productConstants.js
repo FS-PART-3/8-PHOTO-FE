@@ -33,7 +33,7 @@ export const GENRE_OPTIONS = [
 export const CREATE_GRADE_OPTIONS = [
   { value: 'COMMON', label: 'COMMON' },
   { value: 'RARE', label: 'RARE' },
-  { value: 'SUPERRARE', label: 'SUPER RARE' },
+  { value: 'SUPER_RARE', label: 'SUPER RARE' },
   { value: 'LEGENDARY', label: 'LEGENDARY' },
 ];
 
