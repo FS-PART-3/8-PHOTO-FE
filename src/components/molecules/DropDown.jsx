@@ -64,7 +64,7 @@ export default function DropDown({
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="block">
-            {selectedOption.label ? selectedOption.label : placeholder}
+            {selectedOption?.label ? selectedOption?.label : placeholder}
           </span>
           <Image
             src="/assets/icons/ic_down.svg"
