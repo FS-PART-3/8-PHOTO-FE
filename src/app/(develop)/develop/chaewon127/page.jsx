@@ -8,6 +8,7 @@ import QuantitySelector from '@/components/molecules/QuantitySelector';
 import { global } from 'styled-jsx/css';
 import ProductCard from '@/components/organisms/card/ProductCard';
 import Input from '@/components/atoms/Input';
+import Textarea from '@/components/atoms/Textarea';
 
 // chaewon127 개발자 컴포넌트 테스트 페이지
 export default function Chaewon127Page({
@@ -307,13 +308,14 @@ export default function Chaewon127Page({
         </div>
       </section>
 
-      <div className="mx-10 mb-20 flex w-[400px] flex-col gap-6">
+      <div className="mx-10 mb-20 flex flex-col gap-6">
         <Input
           label="기본테스트"
           type="text"
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="기본테스트 Input"
+          size="md"
         />
         <Input
           label="비번테스트"
@@ -322,6 +324,7 @@ export default function Chaewon127Page({
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="비번테스트 Input"
+          size="md"
         />
         <Input
           label="비번확인테스트"
@@ -330,6 +333,7 @@ export default function Chaewon127Page({
           value={confirm}
           onChange={e => setConfirm(e.target.value)}
           placeholder="비번확인테스트 Input"
+          size="md"
         />
         <Input
           label="이메일테스트"
@@ -338,6 +342,7 @@ export default function Chaewon127Page({
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="이메일테스트 Input"
+          size="md"
         />
         <Input
           label="닉네임테스트"
@@ -346,6 +351,7 @@ export default function Chaewon127Page({
           value={nickname}
           onChange={e => setNickname(e.target.value)}
           placeholder="테스트 Input"
+          size="md"
         />
         <Input
           label="가격테스트"
@@ -354,6 +360,7 @@ export default function Chaewon127Page({
           value={localPrice}
           onChange={e => setLocalPrice(e.target.value)}
           placeholder="가격테스트 Input"
+          size="xs"
         />
         <Input
           label="포토카드이름테스트"
@@ -362,6 +369,15 @@ export default function Chaewon127Page({
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="포토카드이름테스트 Input"
+          size="lg"
+        />
+        <Textarea
+          label="포토카드 설명"
+          id="description"
+          placeholder="포토카드 설명 테스트"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          size="lg"
         />
       </div>
     </div>

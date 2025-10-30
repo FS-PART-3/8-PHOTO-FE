@@ -4,13 +4,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/components/Input.module.css';
 
-export default function InputField({
+export default function Input({
   label,
   type = 'text',
   id,
   placeholder,
   value,
   onChange,
+  size = 'md',
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -42,8 +43,15 @@ export default function InputField({
     validate(val);
   };
 
+  const sizeClasses = {
+    lg: '!w-[520px] max-w-full text-base',
+    md: '!w-[440px] max-w-full text-sm',
+    sm: '!w-[345px] max-w-full text-sm',
+    xs: '!w-[245px] max-w-full text-sm',
+  };
+
   return (
-    <div className={styles.inputGroup}>
+    <div className={`${styles.inputGroup} ${sizeClasses[size]}`}>
       <label htmlFor={id} className={styles.label}>
         {label}
       </label>
