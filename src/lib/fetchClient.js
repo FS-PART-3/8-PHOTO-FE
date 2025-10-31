@@ -51,6 +51,7 @@ async function get(endpoint, options = {}) {
     method: 'GET',
   });
 }
+
 async function authGet(endpoint, options = {}) {
   return request(
     endpoint,
