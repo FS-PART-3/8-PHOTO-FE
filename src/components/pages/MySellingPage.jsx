@@ -7,23 +7,15 @@ import Pagination from '../molecules/Pagination';
 import MyCardInfo from '../organisms/MyCardInfo';
 import SellingPhotoFilters from '../organisms/SellingPhotoFilters';
 import SellingPhotoList from '../organisms/SellingPhotoList';
+import useAuth from '@/store/userStore';
 
 const INITIAL_PAGE = 1;
 const ITEMS_PER_PAGE = 12;
 
 // 나의 판매 포토카드 페이지 컴포넌트
 export default function MySellingPage() {
-  const [accessToken, setAccessToken] = useState(null);
+  const { accessToken, useName } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-
-  // 임시 인증 토큰 가져오기
-  useEffect(() => {
-    const auth_storage = localStorage?.getItem('auth-storage');
-    if (auth_storage) {
-      const token = JSON.parse(auth_storage).state['savedValue'];
-      setAccessToken(token);
-    }
-  }, []);
 
   // 통합된 쿼리 상태 관리
   const [query, setQuery] = useState({
@@ -54,15 +46,12 @@ export default function MySellingPage() {
     query,
   );
 
-  const username = data?.cards?.[0]?.user?.name;
-
   return (
     <div className="mx-auto mt-[60px] w-full max-w-[1200px]">
       <Title text="나의 판매 포토카드" />
-      <div className="border-b border-gray-100 pb-[20px]"></div>
 
       {/* 나의 포토카드 정보 */}
-      <MyCardInfo userName={username} countsGroup={data?.countsGroup} />
+      <MyCardInfo userName={useName} countsGroup={data?.countsGroup} />
 
       {/* 판매 포토카드 필터 */}
       <SellingPhotoFilters
