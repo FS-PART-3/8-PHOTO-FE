@@ -29,6 +29,8 @@ export const useMyGalleryPhotos = (token, params = {}, options = {}) => {
     queryFn: () => photoService.getMyGalleryPhotos(token, params),
     enabled: !!token,
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: true, // 윈도우 포커스 시 다시 fetching
+    refetchOnMount: true, // 컴포넌트 마운트 시 다시 fetching
     ...options,
   });
 };

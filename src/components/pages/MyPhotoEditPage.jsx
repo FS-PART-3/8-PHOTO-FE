@@ -2,9 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import DetailPageHeader from '@/components/organisms/header/DetailPageHeader';
 import Input from '@/components/atoms/Input';
 import Textarea from '@/components/atoms/Textarea';
 import Button from '@/components/atoms/Button';
@@ -14,7 +13,7 @@ import {
 } from '@/constants/productConstants';
 import { validatePhotoForm } from '@/schema/photoSchema';
 import { photoService } from '@/services/photoService';
-import Title, { TitleBox } from '../molecules/Title';
+import Title from '../molecules/Title';
 import useAuth from '@/store/userStore';
 
 // 커스텀 드롭다운 컴포넌트
@@ -82,6 +81,7 @@ export default function MyPhotoEditPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
   const { accessToken } = useAuth();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -99,9 +99,18 @@ export default function MyPhotoEditPage() {
   // 포토카드 생성 mutation
   const createPhotoMutation = useMutation({
     mutationFn: formData => photoService.createPhoto(accessToken, formData),
-    onSuccess: response => {
+    onSuccess: async response => {
+      // 캐시 무효화로 마이갤러리 데이터 새로고침
+      await queryClient.invalidateQueries({ queryKey: ['my-gallery'] });
+      // 추가적으로 모든 갤러리 관련 쿼리도 무효화
+      await queryClient.invalidateQueries({ queryKey: ['gallery'] });
+
       alert(response.message || '포토카드가 성공적으로 생성되었습니다!');
-      router.push('/market/my-photo');
+
+      // 디바운스 (캐시 무효화가 완료되도록)
+      setTimeout(() => {
+        router.push('/market/my-photo');
+      }, 100);
     },
     onError: error => {
       alert(error.message || '포토카드 생성에 실패했습니다.');
@@ -199,6 +208,7 @@ export default function MyPhotoEditPage() {
           <div>
             <Input
               name="title"
+              id="title"
               label="포토카드 이름"
               value={formData.title}
               onChange={handleInputChange}
@@ -232,6 +242,7 @@ export default function MyPhotoEditPage() {
           <div>
             <Input
               name="price"
+              id="price"
               type="number"
               label="가격"
               value={formData.price}
@@ -247,6 +258,7 @@ export default function MyPhotoEditPage() {
           <div>
             <Input
               name="quantity"
+              id="quantity"
               type="number"
               label="총 발행량"
               value={formData.quantity}
@@ -274,7 +286,7 @@ export default function MyPhotoEditPage() {
               onChange={handleImageChange}
               className="hidden"
             />
-            <div className="flex w-full items-center gap-4">
+            <div className="flex w-full items-end gap-4">
               <Input
                 type="text"
                 value={formData.image?.name || ''}
@@ -285,7 +297,7 @@ export default function MyPhotoEditPage() {
               />
               <button
                 type="button"
-                className="flex h-[60px] w-full max-w-[120px] items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
+                className="flex h-[55px] w-full max-w-[120px] cursor-pointer items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
                 onClick={handleImageButtonClick}
               >
                 파일 선택
@@ -313,6 +325,7 @@ export default function MyPhotoEditPage() {
           <div>
             <Textarea
               id="description"
+              name="description"
               label="포토카드 설명"
               placeholder="카드 설명을 입력해 주세요"
               value={formData.description}
@@ -340,8 +353,7 @@ export default function MyPhotoEditPage() {
                 !formData.genre ||
                 !formData.price ||
                 !formData.quantity ||
-                !formData.image ||
-                !formData.description
+                !formData.image
               }
             >
               {createPhotoMutation.isPending ? '생성 중...' : '생성하기'}
