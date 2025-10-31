@@ -24,24 +24,27 @@ ChartJS.register(
 export default function PointGraph({ pointHistory }) {
   const date = new Date();
   const year = date.getFullYear();
-  const month = date.getMonth() + 1;
+  const month = date.getMonth();
   const day = date.getDate();
 
   const [labels, setLabels] = useState([]);
   const [dataSet, setDataSet] = useState([]);
 
   useEffect(() => {
-    const lastDay = new Date(year, month, 0).getDate();
+    const lastDay = new Date(year, month + 1, 0).getDate();
     const _labels = [];
     const _pointData = [];
     for (let i = 1; i <= lastDay; i++) {
       _labels.push(
-        `${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
+        `${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
       );
       _pointData.push(0);
     }
     for (let point of pointHistory) {
-      const date = new Date(point.createdAt);
+      const _date = new Date(point.createdAt);
+      if (_date.getFullYear() !== year || _date.getMonth() !== month) {
+        continue;
+      }
       _pointData[date.getDate() - 1] += point.amount;
     }
     for (let i = 2; i <= lastDay; i++) {

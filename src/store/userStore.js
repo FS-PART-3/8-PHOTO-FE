@@ -62,9 +62,9 @@ const useAuth = create(
         set({
           userName: name,
           points,
-          nextRewardTime: new Date().getTime() + 3600000,
           accessToken,
         });
+        get().setNextRewardTime();
 
         return result;
       },
@@ -163,7 +163,7 @@ const useAuth = create(
         return result;
       },
       setNextRewardTime: () => {
-        set({ nextRewardTime: new Date().getTime() + 3600000 });
+        set({ nextRewardTime: new Date().getTime() + 20000 });
       },
       getUserData: async () => {
         const result = await get()

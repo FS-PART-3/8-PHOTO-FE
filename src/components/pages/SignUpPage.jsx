@@ -13,16 +13,18 @@ import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
 import createAuthStore from '@/store/userStore';
 import { useRouter } from 'next/navigation';
+import useAsync from '@/hooks/useAsync';
 
 export default function SignUpPage() {
   const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
   const { signup } = createAuthStore();
+  const [pending, error, signupFunc] = useAsync(signup);
 
   const handleSubmit = async e => {
     e.preventDefault();
     const { name, email, password } = values;
-    const result = await signup(name, email, password);
+    const result = await signupFunc(name, email, password);
     if (result?.name) {
       router.push('/sign-in');
     }
@@ -33,7 +35,9 @@ export default function SignUpPage() {
       <div className={styles.authBox}>
         <h1>회원가입</h1>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
-        <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        <Link href="/">
+          <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        </Link>
         <form
           className="flex w-[100%] flex-col gap-[44px]"
           onSubmit={handleSubmit}
@@ -84,8 +88,8 @@ export default function SignUpPage() {
               size="lg"
             />
           </div>
-          <Button thikness="thin" disabled={!isSignUpSubmitActive}>
-            가입하기
+          <Button thikness="thin" disabled={!isSignUpSubmitActive && !pending}>
+            {pending ? '요청 중...' : '가입하기'}
           </Button>
         </form>
         <div className="flex gap-[10px]">

@@ -6,6 +6,7 @@ import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
 import { useUserData } from '@/providers/AuthProvider';
+import useAuth from '@/store/userStore';
 
 const alarmList = [
   {
@@ -30,6 +31,7 @@ const alarmList = [
 
 export default function LoginedNav() {
   const { naem, points } = useUserData();
+  const { logout } = useAuth();
 
   const handleClickShowMenu = () => {
     console.log('show menu');
@@ -41,6 +43,7 @@ export default function LoginedNav() {
   };
 
   const handleClickLogout = () => {
+    logout();
     console.log('logout');
   };
 

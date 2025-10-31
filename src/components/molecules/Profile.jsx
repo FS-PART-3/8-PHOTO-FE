@@ -7,7 +7,7 @@ import { useUserData } from '@/providers/AuthProvider';
 export default function Profile() {
   const { userName, points } = useUserData();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative z-0 w-fit">

@@ -25,7 +25,7 @@ import pointIcon from './point_icon.svg';
 export default function RandomBoxModal() {
   const { nextRewardTime, setNextRewardTime } = useAuth();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isRecieved, setIsRecieved] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
 
@@ -96,7 +96,7 @@ export default function RandomBoxModal() {
   return (
     <>
       {isOpen && (
-        <div className="flex h-[100%] w-[100%] items-center justify-center bg-[#fff]">
+        <div className="bg-blcak relative z-30 flex h-full w-full items-center justify-center">
           <div className="fixed top-[80px] flex h-fit w-fit flex-col items-center gap-[94px] rounded-[2px] bg-[#161616] px-[100px] py-[80px]">
             <div className="flex flex-col items-center gap-[40px] text-center text-[#fff]">
               <div className="text-[46px]">
