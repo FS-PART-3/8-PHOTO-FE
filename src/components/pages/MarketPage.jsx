@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import Modal from '@/components/organisms/modal/Modal';
+import Modal from '@/components/organisms/modal';
 import Search from '@/components/molecules/Search';
 import DropDown from '@/components/molecules/DropDown';
 import ProductCard from '../organisms/card/ProductCard';
