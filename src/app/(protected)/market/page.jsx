@@ -2,6 +2,7 @@ import Header from '@/components/organisms/header/Header';
 import Title from '@/components/molecules/Title';
 import MarketPage from '@/components/pages/MarketPage';
 
+
 export default function Page() {
   return (
     <>

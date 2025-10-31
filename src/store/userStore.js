@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const defaultUrl = 'https://eight-photo-be.onrender.com/api/auth';
+const defaultUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth`;
 
 /* 기본 리스폰스 처리 */
 async function responseHandler(res) {
@@ -23,6 +23,8 @@ const useAuth = create(
   persist(
     (set, get) => ({
       accessToken: null,
+      useName: null,
+      points: null,
       signup: async (name, email, password) => {
         const body = {
           name,
@@ -37,7 +39,7 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
-        //window.location.href = '/login';
+        // window.location.href = '/login';
         return result;
       },
       login: async (email, password) => {
@@ -54,11 +56,15 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
-        set({ accessToken: result.accessToken });
+        set({
+          useName: result.name,
+          points: result.points,
+          accessToken: result.accessToken,
+        });
         return result;
       },
       logout: async () => {
-        //백에 쿠키(리프레쉬토큰)를 지워달라고 하고,
+        // 백에 쿠키(리프레쉬토큰)를 지워달라고 하고,
         const result = await fetch(`${defaultUrl}/logout`, {
           method: 'POST',
           credentials: 'include',
@@ -66,9 +72,9 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
-        //프론트에서는 로컬(액세스토큰) 지우기.
-        set({ accessToken: null });
-        window.location.href = '/login'; //로그인 페이지로
+        // 프론트에서는 로컬(액세스토큰) 지우기.
+        set({ accessToken: null, userName: null, points: null });
+        window.location.href = '/login'; // 로그인 페이지로
         return result;
       },
       setAccessToken: async accessToken => {
@@ -86,7 +92,7 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
-        //백엔드에서 쿠키를 저장해준다.
+        // 백엔드에서 쿠키를 저장해준다.
         return result;
       },
       refresh: async () => {
@@ -122,7 +128,6 @@ const useAuth = create(
           })
             .then(async res => {
               if (res.ok) {
-                //const data = await refreshResponse.json();
                 const newAccessToken = res.json().accessToken;
                 set({ accessToken: newAccessToken });
 
@@ -138,13 +143,13 @@ const useAuth = create(
               // 강제 리로드 (hook이나, api 함수 안에서는 router를 쓸 수 없어서 이게 가장 안전하네요.)
               // 전체 페이지 리로드가 발생합니다.
               get().logout();
-              window.location.href = '/login';
+              window.location.href = '/sign-in';
               console.log(err);
             });
         }
         return result;
       },
-      //페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
+      // 페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
       checkAuth: async () => {
         const result = get()
           .authFetch(`${defaultUrl}/check`, {
@@ -152,11 +157,14 @@ const useAuth = create(
           })
           .then(responseHandler)
           .catch(errorHandler);
-        //뭔가 혼종이 되었습니다만, 자동 리프레쉬 기능을 달았습니다.
+        // 뭔가 혼종이 되었습니다만, 자동 리프레쉬 기능을 달았습니다.
         return result;
       },
     }),
-    { name: 'auth-storage' },
+    {
+      name: 'auth-storage',
+      partialize: state => ({ savedValue: state.accessToken }),
+    },
   ),
 );
 
