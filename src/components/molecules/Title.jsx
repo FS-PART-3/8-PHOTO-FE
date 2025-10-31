@@ -35,6 +35,9 @@ export default function Title({
   align='center',
   gap=20,
   action,
+  divider = true,
+  dividerOffset = 20,
+  dividerColor = 'var(--color-gray-100)',
 }) {
   const sizeCls = SIZE_CLS[size] ?? SIZE_CLS['62'];
   const gapCls = gap === 10 ? 'gap-[10px]' : 'gap-[20px]';
@@ -62,6 +65,12 @@ export default function Title({
           />
         ) : null}
       </div>
+
+      {divider && (
+        <div
+          style={{ ...widthStyle, marginTop: `${dividerOffset}px`, height: '1px', background: dividerColor }}
+        />
+      )}
     </div>
   );
 }
