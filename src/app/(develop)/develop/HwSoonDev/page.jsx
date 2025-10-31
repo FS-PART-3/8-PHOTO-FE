@@ -1,5 +1,5 @@
-import Profile from './Profile/Profile';
-import RandomBoxModal from './RandomBox/RandomBoxModal';
+import Profile from './Profile/Profile.jsx';
+import RandomBoxModal from '../../../../components/organisms/modal/RandomBoxModal/RandomBoxModal.jsx';
 
 // HwSoonDev 개발자 컴포넌트 테스트 페이지
 export default function HwSoonDevPage() {
