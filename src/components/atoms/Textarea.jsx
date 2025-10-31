@@ -6,6 +6,7 @@ import styles from '@/styles/components/Input.module.css';
 export default function Textarea({
   label,
   id,
+  name,
   placeholder,
   value,
   onChange,
@@ -27,6 +28,7 @@ export default function Textarea({
 
       <textarea
         id={id}
+        name={name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

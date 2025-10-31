@@ -2,10 +2,10 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import DetailPageHeader from '@/components/organisms/header/DetailPageHeader';
 import Input from '@/components/atoms/Input';
+import Textarea from '@/components/atoms/Textarea';
 import Button from '@/components/atoms/Button';
 import {
   CREATE_GRADE_OPTIONS,
@@ -13,7 +13,7 @@ import {
 } from '@/constants/productConstants';
 import { validatePhotoForm } from '@/schema/photoSchema';
 import { photoService } from '@/services/photoService';
-import Title, { TitleBox } from '../molecules/Title';
+import Title from '../molecules/Title';
 import useAuth from '@/store/userStore';
 
 // 커스텀 드롭다운 컴포넌트
@@ -81,6 +81,7 @@ export default function MyPhotoEditPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
   const { accessToken } = useAuth();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -94,16 +95,38 @@ export default function MyPhotoEditPage() {
 
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultMessage, setResultMessage] = useState({
+    title: '',
+    message: '',
+    isSuccess: false,
+  });
 
   // 포토카드 생성 mutation
   const createPhotoMutation = useMutation({
     mutationFn: formData => photoService.createPhoto(accessToken, formData),
-    onSuccess: response => {
-      alert(response.message || '포토카드가 성공적으로 생성되었습니다!');
-      router.push('/market/my-photo');
+    onSuccess: async response => {
+      // 캐시 무효화로 마이갤러리 데이터 새로고침
+      await queryClient.invalidateQueries({ queryKey: ['my-gallery'] });
+      // 추가적으로 모든 갤러리 관련 쿼리도 무효화
+      await queryClient.invalidateQueries({ queryKey: ['gallery'] });
+
+      // 성공 모달 표시
+      setResultMessage({
+        title: '성공',
+        message: response.message || '포토카드가 성공적으로 생성되었습니다!',
+        isSuccess: true,
+      });
+      setShowResultModal(true);
     },
     onError: error => {
-      alert(error.message || '포토카드 생성에 실패했습니다.');
+      // 실패 모달 표시
+      setResultMessage({
+        title: '실패',
+        message: error.message || '포토카드 생성에 실패했습니다.',
+        isSuccess: false,
+      });
+      setShowResultModal(true);
     },
   });
 
@@ -186,156 +209,216 @@ export default function MyPhotoEditPage() {
     createPhotoMutation.mutate(submitData);
   };
 
+  // 마이갤러리로 돌아가기
+  const handleGoToGallery = () => {
+    setShowResultModal(false);
+    router.push('/market/my-photo');
+  };
+
   return (
     <div className="min-h-screen bg-[var(--color-black)] text-white">
-      <TitleBox>
-        <Title text={'포토카드 생성'} />
-      </TitleBox>
-
-      <div className="mx-auto max-w-[520px] px-4 py-8">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          {/* 포토카드 이름 */}
-          <div>
-            <Input
-              name="title"
-              label="포토카드 이름"
-              value={formData.title}
-              onChange={handleInputChange}
-              placeholder="포토카드 이름을 입력해 주세요"
-              error={errors.title}
-            />
-          </div>
-
-          {/* 등급 */}
-          <InputDropdown
-            label="등급"
-            value={formData.grade}
-            options={CREATE_GRADE_OPTIONS}
-            onChange={handleGradeSelect}
-            placeholder="등급을 선택해 주세요"
-            error={errors.grade}
-          />
-
-          {/* 장르 */}
-          <InputDropdown
-            label="장르"
-            value={formData.genre}
-            options={CREATE_GENRE_OPTIONS}
-            onChange={handleGenreSelect}
-            placeholder="장르를 선택해 주세요"
-            error={errors.genre}
-          />
-
-          {/* 가격 */}
-          <div>
-            <Input
-              name="price"
-              type="number"
-              label="가격"
-              value={formData.price}
-              onChange={handleInputChange}
-              placeholder="가격을 입력해 주세요"
-              error={errors.price}
-              min="0"
-            />
-          </div>
-
-          {/* 총 발행량 */}
-          <div>
-            <Input
-              name="quantity"
-              type="number"
-              label="총 발행량"
-              value={formData.quantity}
-              onChange={handleInputChange}
-              placeholder="발행량을 입력해 주세요 (1-10)"
-              error={errors.quantity}
-              min="1"
-              max="10"
-            />
-            <p className="mt-2 text-[12px] text-[var(--color-red)]">
-              총 발행량은 1개에서 10개 사이입니다.
-            </p>
-          </div>
-
-          {/* 사진 업로드 */}
-          <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              사진 업로드
-            </label>
-            <Input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-            <div className="flex w-full items-center gap-4">
-              <Input
-                type="text"
-                value={formData.image?.name || ''}
-                placeholder="사진 업로드"
-                readOnly
-                className="w-full flex-1 rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-4 text-[16px] text-white placeholder:text-[var(--color-gray-300)]"
-              />
-              <button
-                className="flex h-[60px] w-full max-w-[120px] items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
-                onClick={handleImageButtonClick}
+      {showResultModal ? (
+        // 결과 화면
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="flex w-[90%] max-w-[500px] flex-col items-center text-center">
+            {/* 제목 */}
+            <h2 className="mb-6 font-(family-name:--font-secondary) text-[46px] font-bold">
+              포토카드 생성{' '}
+              <span
+                className={`mb-6 text-[46px] font-bold ${
+                  resultMessage.isSuccess
+                    ? 'text-[var(--color-main)]'
+                    : 'text-[var(--color-gray-300)]'
+                }`}
               >
-                파일 선택
-              </button>
-            </div>
-            {imagePreview && (
-              <div className="mt-4">
-                <Image
-                  src={imagePreview}
-                  alt="미리보기"
-                  width={200}
-                  height={200}
-                  className="rounded-[2px] object-cover"
-                />
-              </div>
-            )}
-            {errors.image && (
-              <span className="mt-2 block text-[14px] text-[var(--color-red)]">
-                {errors.image}
+                {resultMessage.title}
               </span>
-            )}
-          </div>
+            </h2>
 
-          {/* 포토카드 설명 */}
-          <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              포토카드 설명
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="카드 설명을 입력해 주세요"
-              className="h-[150px] w-full resize-none rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-3 text-[16px] text-white placeholder:text-[var(--color-gray-300)] focus:ring-1 focus:ring-[var(--color-main)] focus:outline-none"
-            />
-            {errors.description && (
-              <span className="mt-2 block text-[14px] text-[var(--color-red)]">
-                {errors.description}
-              </span>
-            )}
-          </div>
+            {/* 메시지 */}
+            <p className="mb-8 text-[16px] whitespace-pre-wrap text-white">
+              {resultMessage.message}
+            </p>
 
-          {/* 생성하기 버튼 */}
-          <div className="mt-6 flex justify-center">
+            {/* 버튼 */}
             <Button
-              type="submit"
               variant="primary"
               size="l"
-              thikness="thick"
-              disabled={createPhotoMutation.isPending}
+              thikness="thin"
+              onClick={handleGoToGallery}
             >
-              {createPhotoMutation.isPending ? '생성 중...' : '생성하기'}
+              마이갤러리로 돌아가기
             </Button>
           </div>
-        </form>
-      </div>
+        </div>
+      ) : (
+        // 생성 폼 화면
+        <>
+          <div className="mx-auto mt-[60px] max-w-[1200px] pb-4">
+            <Title text={'포토카드 생성'} />
+          </div>
+
+          <div className="mx-auto max-w-[520px] px-4 py-8">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              {/* 포토카드 이름 */}
+              <div>
+                <Input
+                  name="title"
+                  id="title"
+                  label="포토카드 이름"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  placeholder="포토카드 이름을 입력해 주세요"
+                  error={errors.title}
+                  size="lg"
+                />
+              </div>
+
+              {/* 등급 */}
+              <InputDropdown
+                label="등급"
+                value={formData.grade}
+                options={CREATE_GRADE_OPTIONS}
+                onChange={handleGradeSelect}
+                placeholder="등급을 선택해 주세요"
+                error={errors.grade}
+              />
+
+              {/* 장르 */}
+              <InputDropdown
+                label="장르"
+                value={formData.genre}
+                options={CREATE_GENRE_OPTIONS}
+                onChange={handleGenreSelect}
+                placeholder="장르를 선택해 주세요"
+                error={errors.genre}
+              />
+
+              {/* 가격 */}
+              <div>
+                <Input
+                  name="price"
+                  id="price"
+                  type="number"
+                  label="가격"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  placeholder="가격을 입력해 주세요"
+                  error={errors.price}
+                  size="lg"
+                  min="0"
+                />
+              </div>
+
+              {/* 총 발행량 */}
+              <div>
+                <Input
+                  name="quantity"
+                  id="quantity"
+                  type="number"
+                  label="총 발행량"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  placeholder="발행량을 입력해 주세요 (1-10)"
+                  error={errors.quantity}
+                  size="lg"
+                  min="1"
+                  max="10"
+                />
+                <p className="mt-2 text-[12px] text-[var(--color-red)]">
+                  총 발행량은 1개에서 10개 사이입니다.
+                </p>
+              </div>
+
+              {/* 사진 업로드 */}
+              <div>
+                <label className="mb-[10px] block text-[16px] font-medium text-white">
+                  사진 업로드
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <div className="flex w-full items-end gap-4">
+                  <Input
+                    type="text"
+                    value={formData.image?.name || ''}
+                    placeholder="사진 업로드"
+                    readOnly
+                    size="lg"
+                    onChange={handleImageChange}
+                  />
+                  <button
+                    type="button"
+                    className="flex h-[55px] w-full max-w-[120px] cursor-pointer items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
+                    onClick={handleImageButtonClick}
+                  >
+                    파일 선택
+                  </button>
+                </div>
+                {imagePreview && (
+                  <div className="mt-4">
+                    <Image
+                      src={imagePreview}
+                      alt="미리보기"
+                      width={200}
+                      height={200}
+                      className="rounded-[2px] object-cover"
+                    />
+                  </div>
+                )}
+                {errors.image && (
+                  <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+                    {errors.image}
+                  </span>
+                )}
+              </div>
+
+              {/* 포토카드 설명 */}
+              <div>
+                <Textarea
+                  id="description"
+                  name="description"
+                  label="포토카드 설명"
+                  placeholder="카드 설명을 입력해 주세요"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  size="lg"
+                />
+                {errors.description && (
+                  <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+                    {errors.description}
+                  </span>
+                )}
+              </div>
+
+              {/* 생성하기 버튼 */}
+              <div className="mt-6 flex justify-center">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="l"
+                  thikness="thin"
+                  disabled={
+                    createPhotoMutation.isPending ||
+                    !formData.title ||
+                    !formData.grade ||
+                    !formData.genre ||
+                    !formData.price ||
+                    !formData.quantity ||
+                    !formData.image
+                  }
+                >
+                  {createPhotoMutation.isPending ? '생성 중...' : '생성하기'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </>
+      )}
     </div>
   );
 }
