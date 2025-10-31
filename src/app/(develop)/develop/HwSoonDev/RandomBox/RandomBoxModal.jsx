@@ -10,9 +10,7 @@ import closeIcon from './cancel_icon.svg';
 import pointIcon from './point_icon.svg';
 import { useEffect, useState } from 'react';
 
-import fetchClient from '@/lib/fetchClient.js';
-import useAuth from '@/store/userStore.js';
-import { getTestTable } from '@/utils/testAuthApi.js';
+import useAuth from '@/store/userStore';
 import Button from '@/components/atoms/Button';
 
 //랜덤 상자가 1시간 마다 포인트를 주는데
@@ -24,13 +22,11 @@ import Button from '@/components/atoms/Button';
 //2. api 기능
 
 export default function RandomBoxModal() {
+  const { authFetch, nextRewardTime, setNextRewardTime } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isRecieved, setIsRecieved] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
-  const [isRewardActive, setIsRewardActive] = useState(false);
-  const [nextRewardTime, setnextRewardTime] = useState(
-    new Date().getTime() + 2000,
-  ); //1시간
 
   const covertToTimerOutput = diff => {
     const abs = Math.abs(diff > 0 ? diff : diff - 1000);
@@ -49,14 +45,13 @@ export default function RandomBoxModal() {
   const [outForm, setOutForm] = useState(covertToTimerOutput(3600000));
 
   const makeTimer = () => {
-    const targetTime = nextRewardTime; //남은 시간을 통해 새로운 타겟 타임 설정.
     return setInterval(() => {
       //화살표 함수는 선언 시점 스코프를 따르기 때문에 한번만 targetTime을 설정해주면 계속 작동.
-      const diff = targetTime - new Date().getTime();
+      const diff = nextRewardTime - new Date().getTime();
       if (diff < 0) {
-        setIsRewardActive(true);
-        setIsOpen(true);
-        setnextRewardTime(new Date().getTime() + 3600000);
+        setIsRecieved(false); //리워드 수령 안함 상태
+        setNextRewardTime(); //다음 수령 시간 재설정
+        setIsOpen(true); //모달 오픈
       }
       //  setTimeLeft(diff);
       setOutForm(covertToTimerOutput(diff));
@@ -64,6 +59,9 @@ export default function RandomBoxModal() {
   };
 
   useEffect(() => {
+    if (!nextRewardTime) {
+      return;
+    }
     let timer = null;
     timer = makeTimer();
 
@@ -80,15 +78,18 @@ export default function RandomBoxModal() {
   const handleGetPoint = async () => {
     const _amount = getRandomInt(50, 200);
     setAmount(_amount);
-    const authFetch = useAuth.getState().authFetch;
-    const result = await authFetch('http://localhost:4000/api/points/reward', {
-      method: 'POST',
-      body: JSON.stringify({
-        amount: _amount,
-      }),
-    });
+    //  const authFetch = useAuth.getState().authFetch;
+    const result = await authFetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/points/reward`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: _amount,
+        }),
+      },
+    );
     setIsRecieved(true);
-    console.log(result);
   };
 
   const isSelected = num => {

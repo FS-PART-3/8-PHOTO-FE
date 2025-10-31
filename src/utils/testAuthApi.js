@@ -1,10 +1,10 @@
 //예시 authFetch
 import url from './url.js';
-import useAuth from '@/store/userStore.js';
+import createAuthStore from '@/store/userStore.js';
 //authFetch 만드는 법
 
 export async function getTestTable() {
-  const authFetch = useAuth.getState().authFetch;
+  const authFetch = createAuthStore.getState().authFetch;
   const result = await authFetch(`${url}/api/auth/test`).then(res =>
     res.json(),
   );
@@ -12,7 +12,7 @@ export async function getTestTable() {
 }
 
 export async function postTestTable(content) {
-  const authFetch = useAuth.getState().authFetch;
+  const authFetch = createAuthStore.getState().authFetch;
   const body = {
     content,
   };

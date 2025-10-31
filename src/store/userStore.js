@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create, createStore } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const defaultUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth`;
@@ -23,8 +23,9 @@ const useAuth = create(
   persist(
     (set, get) => ({
       accessToken: null,
-      useName: null,
+      userName: null,
       points: null,
+      nextRewardTime: null,
       signup: async (name, email, password) => {
         const body = {
           name,
@@ -56,11 +57,10 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
-        console.log(result);
-
         set({
-          useName: result.name,
+          userName: result.name,
           points: result.points,
+          nextRewardTime: new Date().getTime() + 2000,
           accessToken: result.accessToken,
         });
         return result;
@@ -152,19 +152,34 @@ const useAuth = create(
       },
       // 페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
       checkAuth: async () => {
-        const result = get()
+        const result = await get()
           .authFetch(`${defaultUrl}/check`, {
             method: 'POST',
           })
           .then(responseHandler)
           .catch(errorHandler);
-        // 뭔가 혼종이 되었습니다만, 자동 리프레쉬 기능을 달았습니다.
         return result;
+      },
+      setNextRewardTime: () => {
+        set({ nextRewardTime: new Date().getTime() + 3600000 });
+      },
+      getUserData: async () => {
+        const result = await get()
+          .authFetch(`${defaultUrl}/userdata`, {
+            method: 'GET',
+          })
+          .then(responseHandler)
+          .catch(errorHandler);
+        const { name, points } = result;
+        set({ userName: name, points: points });
       },
     }),
     {
       name: 'auth-storage',
-      partialize: state => ({ accessToken: state.accessToken }),
+      partialize: state => ({
+        accessToken: state.accessToken,
+        nextRewardTime: state.nextRewardTime,
+      }),
     },
   ),
 );

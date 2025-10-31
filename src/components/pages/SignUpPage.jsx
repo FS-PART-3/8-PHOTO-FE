@@ -11,13 +11,13 @@ import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button';
 import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
-import useAuth from '@/store/userStore';
+import createAuthStore from '@/store/userStore';
 import { useRouter } from 'next/navigation';
 
 export default function SignUpPage() {
   const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
-  const { signup } = useAuth();
+  const { signup } = createAuthStore();
 
   const handleSubmit = async e => {
     e.preventDefault();

@@ -15,15 +15,6 @@
   filter: brightness(0.95);
 }
 
-.box1 {
-}
-
-.box2 {
-}
-
-.box3 {
-}
-
 @keyframes stamp {
   0% {
     width: 1fr;

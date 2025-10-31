@@ -1,4 +1,4 @@
-import useAuth from '@/store/userStore';
+import createAuthStore from '@/store/userStore';
 /**
  * API 요청을 위한 fetch 클라이언트
  */
@@ -18,7 +18,7 @@ async function request(endpoint, options = {}, authRequired = false) {
   };
 
   try {
-    const authFetch = useAuth.getState().authFetch;
+    const authFetch = createAuthStore.getState().authFetch;
     const response = authRequired
       ? await fetch(url, config)
       : await authFetch(url, options);
@@ -47,6 +47,7 @@ async function get(endpoint, options = {}) {
     method: 'GET',
   });
 }
+
 async function authGet(endpoint, options = {}) {
   return request(
     endpoint,
