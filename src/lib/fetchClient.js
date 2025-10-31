@@ -9,19 +9,23 @@ const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
  */
 async function request(endpoint, options = {}, authRequired = false) {
   const url = `${baseURL}${endpoint}`;
+
+  // FormData인 경우 Content-Type을 설정하지 않음 (브라우저가 자동으로 설정)
+  const isFormData = options.body instanceof FormData;
+  const headers = isFormData
+    ? { ...options.headers }
+    : { 'Content-Type': 'application/json', ...options.headers };
+
   const config = {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
   };
 
   try {
-    const authFetch = useAuth.getState().authFetch;
+    const { authFetch } = useAuth.getState();
     const response = authRequired
-      ? await fetch(url, config)
-      : await authFetch(url, options);
+      ? await authFetch(url, config)
+      : await fetch(url, config);
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({
@@ -62,20 +66,26 @@ async function authGet(endpoint, options = {}) {
  * POST 요청
  */
 async function post(endpoint, data, options = {}) {
+  // FormData인 경우 JSON.stringify 하지 않음
+  const isFormData = data instanceof FormData;
+
   return request(endpoint, {
     ...options,
     method: 'POST',
-    body: JSON.stringify(data),
+    body: isFormData ? data : JSON.stringify(data),
   });
 }
 
 async function authPost(endpoint, data, options = {}) {
+  // FormData인 경우 JSON.stringify 하지 않음
+  const isFormData = data instanceof FormData;
+
   return request(
     endpoint,
     {
       ...options,
       method: 'POST',
-      body: JSON.stringify(data),
+      body: isFormData ? data : JSON.stringify(data),
     },
     true,
   );

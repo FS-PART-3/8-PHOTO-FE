@@ -13,7 +13,8 @@ import {
 } from '@/constants/productConstants';
 import { validatePhotoForm } from '@/schema/photoSchema';
 import { photoService } from '@/services/photoService';
-import Title from '../molecules/Title';
+import Title, { TitleBox } from '../molecules/Title';
+import useAuth from '@/store/userStore';
 
 // 커스텀 드롭다운 컴포넌트
 function InputDropdown({
@@ -79,6 +80,7 @@ function InputDropdown({
 export default function MyPhotoEditPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
+  const { accessToken } = useAuth();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -95,7 +97,7 @@ export default function MyPhotoEditPage() {
 
   // 포토카드 생성 mutation
   const createPhotoMutation = useMutation({
-    mutationFn: formData => photoService.createPhoto(formData),
+    mutationFn: formData => photoService.createPhoto(accessToken, formData),
     onSuccess: response => {
       alert(response.message || '포토카드가 성공적으로 생성되었습니다!');
       router.push('/market/my-photo');
@@ -186,9 +188,9 @@ export default function MyPhotoEditPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-black)] text-white">
-      <div className="mx-auto mt-[60px] max-w-[1200px] border-b-[2px] border-[var(--color-gray-100)] pb-[20px]">
+      <TitleBox>
         <Title text={'포토카드 생성'} />
-      </div>
+      </TitleBox>
 
       <div className="mx-auto max-w-[520px] px-4 py-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -324,7 +326,7 @@ export default function MyPhotoEditPage() {
           <div className="mt-6 flex justify-center">
             <Button
               type="submit"
-              variant="secondary"
+              variant="primary"
               size="l"
               thikness="thick"
               disabled={createPhotoMutation.isPending}

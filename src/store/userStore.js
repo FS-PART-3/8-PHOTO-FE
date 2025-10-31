@@ -115,7 +115,6 @@ const useAuth = create(
         options.headers = {
           ...options.headers,
           Authorization: `Bearer ${get().accessToken}`,
-          'Content-Type': 'application/json',
         };
 
         let result = await fetch(url, options);
@@ -163,7 +162,11 @@ const useAuth = create(
     }),
     {
       name: 'auth-storage',
-      partialize: state => ({ savedValue: state.accessToken }),
+      partialize: state => ({
+        accessToken: state.accessToken,
+        useName: state.useName,
+        points: state.points,
+      }),
     },
   ),
 );

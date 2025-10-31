@@ -5,8 +5,7 @@ import useAuth from '@/store/userStore';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
 import Pagination from '../molecules/Pagination';
-import Header from '../organisms/header/Header';
-import Title from '../molecules/Title';
+import Title, { TitleBox } from '../molecules/Title';
 
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
@@ -71,13 +70,15 @@ export default function MyPhotoPage() {
 
   return (
     <div className="my-photo-page min-h-screen bg-[var(--color-black)] px-6 py-8">
-      {/* 결과 정보 */}
-      <div className="results-info mb-4">
-        <p className="text-sm text-gray-400">
-          전체 {pagination.total}개 중 {photos.length}개 표시
-        </p>
-      </div>
-
+      <TitleBox>
+        <Title
+          text="마이갤러리"
+          action={{
+            label: '포토카드 생성하기',
+            href: '/market/my-photo/edit',
+          }}
+        />
+      </TitleBox>
       {/* 포토카드 그리드 */}
       {photos.length > 0 ? (
         <>
