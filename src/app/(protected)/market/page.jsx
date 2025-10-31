@@ -1,4 +1,3 @@
-import Header from '@/components/organisms/header/Header';
 import Title from '@/components/molecules/Title';
 import MarketPage from '@/components/pages/MarketPage';
 
@@ -6,7 +5,6 @@ import MarketPage from '@/components/pages/MarketPage';
 export default function Page() {
   return (
     <>
-      <Header />
       <div className="mt-[60px] mx-auto max-w-[1200px]">
         <Title
           text="마켓플레이스"

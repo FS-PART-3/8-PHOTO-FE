@@ -8,26 +8,19 @@ import Search from '@/components/molecules/Search';
 import DropDown from '@/components/molecules/DropDown';
 import ProductCard from '../organisms/card/ProductCard';
 
+import { GRADE_OPTIONS, GENRE_OPTIONS, SOLD_OUT_OPTIONS as SOLD_OPTIONS, } from '@/constants/productConstants';
+
+const GENRE_VALUE_MAP = {
+  풍경: 'landscape',
+  인물: 'portrait',
+  도시: 'city',
+  자연: 'nature',
+};
+
 const SORT_OPTIONS = [
   { label: '최신순', value: 'latest' },
   { label: '낮은 가격순', value: 'price_asc' },
   { label: '높은 가격순', value: 'price_desc' },
-];
-const GRADE_OPTIONS = [
-  { label: 'COMMON', value: 'COMMON' },
-  { label: 'RARE', value: 'RARE' },
-  { label: 'EPIC', value: 'EPIC' },
-];
-const GENRE_OPTIONS = [
-  { label: '전체', value: '' },
-  { label: '풍경', value: 'landscape' },
-  { label: '인물', value: 'portrait' },
-  { label: '야경', value: 'night' },
-];
-const SOLD_OPTIONS = [
-  { label: '전체', value: '' },
-  { label: '판매중', value: 'on' },
-  { label: '매진', value: 'soldout' },
 ];
 
 export default function MarketPage() {
@@ -67,12 +60,13 @@ export default function MarketPage() {
       out = out.filter((it) => it.photoCards?.[0]?.grade === grade.value);
     }
  
-    if (genre.value) {
-      out = out.filter((it) => it.photoCards?.[0]?.genre === genre.value);
+    const selectedGenre = GENRE_VALUE_MAP[genre.value] ?? genre.value;
+    if (selectedGenre) {
+      out = out.filter((it) => it.photoCards?.[0]?.genre === selectedGenre);
     }
 
-    if (sold.value === 'on') out = out.filter((it) => (it.quantity ?? 0) > 0);
-    if (sold.value === 'soldout') out = out.filter((it) => (it.quantity ?? 0) <= 0);
+    if (sold.value === 'false') out = out.filter((it) => (it.quantity ?? 0) > 0);
+    if (sold.value === 'true') out = out.filter((it) => (it.quantity ?? 0) <= 0);
 
     return out;
   }, [raw, grade.value, genre.value, sold.value]);
