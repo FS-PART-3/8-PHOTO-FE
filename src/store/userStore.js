@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create, createStore } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const defaultUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth`;
@@ -23,8 +23,9 @@ const useAuth = create(
   persist(
     (set, get) => ({
       accessToken: null,
-      useName: null,
+      userName: null,
       points: null,
+      nextRewardTime: null,
       signup: async (name, email, password) => {
         const body = {
           name,
@@ -57,8 +58,9 @@ const useAuth = create(
           .catch(errorHandler);
 
         set({
-          useName: result.name,
+          userName: result.name,
           points: result.points,
+          nextRewardTime: new Date().getTime() + 2000,
           accessToken: result.accessToken,
         });
         return result;
@@ -74,7 +76,7 @@ const useAuth = create(
 
         // 프론트에서는 로컬(액세스토큰) 지우기.
         set({ accessToken: null, userName: null, points: null });
-        window.location.href = '/login'; // 로그인 페이지로
+        window.location.href = '/sign-in'; // 로그인 페이지로
         return result;
       },
       setAccessToken: async accessToken => {
@@ -141,8 +143,7 @@ const useAuth = create(
               // 리프레시 실패 → 로그아웃 처리
               // 강제 리로드 (hook이나, api 함수 안에서는 router를 쓸 수 없어서 이게 가장 안전하네요.)
               // 전체 페이지 리로드가 발생합니다.
-              get().logout();
-              window.location.href = '/sign-in';
+              //get().logout();
               console.log(err);
             });
         }
@@ -150,22 +151,33 @@ const useAuth = create(
       },
       // 페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
       checkAuth: async () => {
-        const result = get()
+        const result = await get()
           .authFetch(`${defaultUrl}/check`, {
             method: 'POST',
           })
           .then(responseHandler)
           .catch(errorHandler);
-        // 뭔가 혼종이 되었습니다만, 자동 리프레쉬 기능을 달았습니다.
         return result;
+      },
+      setNextRewardTime: () => {
+        set({ nextRewardTime: new Date().getTime() + 3600000 });
+      },
+      getUserData: async () => {
+        const result = await get()
+          .authFetch(`${defaultUrl}/userdata`, {
+            method: 'GET',
+          })
+          .then(responseHandler)
+          .catch(errorHandler);
+        const { name, points } = result;
+        set({ userName: name, points: points });
       },
     }),
     {
       name: 'auth-storage',
       partialize: state => ({
         accessToken: state.accessToken,
-        useName: state.useName,
-        points: state.points,
+        nextRewardTime: state.nextRewardTime,
       }),
     },
   ),
