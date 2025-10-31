@@ -7,10 +7,10 @@ export default function Profile({ userName, point }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative w-fit">
+    <div className="relative">
       <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-        <span className="w-fit font-['BR_B'] text-[18px] font-bold text-gray-200">
-          {userName}
+        <span className="font-['BR_B'] text-[18px] font-bold text-gray-200">
+          {userName || '유저'}
         </span>
       </button>
       {isOpen && (

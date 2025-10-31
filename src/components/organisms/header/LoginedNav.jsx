@@ -30,16 +30,10 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
-  const { accessToken } = useAuth();
+  const { accessToken, userName, points, logout } = useAuth();
   const { data: notificationList } = useNotificationList(accessToken);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
-  const { useName, points } = useAuth();
-
-  // points가 배열이고 첫 번째 요소가 객체인 경우 amount 값을 추출
-  const pointsDisplay = Array.isArray(points)
-    ? points.reduce((sum, pt) => sum + (pt?.amount || 0), 0)
-    : 0;
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -48,6 +42,7 @@ export default function LoginedNav() {
 
   const handleClickLogout = () => {
     console.log('logout');
+    logout();
   };
 
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
@@ -62,7 +57,7 @@ export default function LoginedNav() {
       <ul className="xs:flex hidden items-center gap-4 sm:gap-7">
         <li>
           <span className="text-[14px] font-bold text-gray-200">
-            {pointsDisplay} P
+            {points} P
           </span>
         </li>
         {/* 알림 */}
@@ -75,12 +70,7 @@ export default function LoginedNav() {
         </li>
         {/* 사용자 */}
         <li>
-          {/* <button onClick={handleClickShowMenu} className="cursor-pointer">
-            <span className="beskin-h6 text-[14px] font-bold text-gray-200">
-              {userName || '유저'}
-            </span>
-          </button> */}
-          <Profile userName={useName} point={pointsDisplay} />
+          <Profile userName={userName} point={points} />
         </li>
         <li className="h-4 w-px bg-gray-200 text-white"></li>
         <li>
