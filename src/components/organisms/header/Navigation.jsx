@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import UnLoginedNav from './UnLoginedNav';
 import LoginedNav from './LoginedNav';
+import useAuth from '@/store/userStore';
 
 export default function Navigation() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { accessToken } = useAuth();
 
   return (
     <nav>
-      {isLoggedIn ? (
+      {accessToken ? (
         /* 로그인 유저 */
         <LoginedNav />
       ) : (

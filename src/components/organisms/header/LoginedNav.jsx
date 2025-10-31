@@ -1,9 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
+import useAuth from '@/store/userStore';
+import Profile from '@/components/organisms/Profile';
+import { useNotificationList } from '@/state/useNotificationQuery';
 
 const alarmList = [
   {
@@ -27,9 +30,16 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
-  const handleClickShowMenu = () => {
-    console.log('show menu');
-  };
+  const { accessToken } = useAuth();
+  const { data: notificationList } = useNotificationList(accessToken);
+
+  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  const { useName, points } = useAuth();
+
+  // points가 배열이고 첫 번째 요소가 객체인 경우 amount 값을 추출
+  const pointsDisplay = Array.isArray(points)
+    ? points.reduce((sum, pt) => sum + (pt?.amount || 0), 0)
+    : 0;
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -40,13 +50,7 @@ export default function LoginedNav() {
     console.log('logout');
   };
 
-  const [userInfo, setUserInfo] = useState({
-    name: '기타',
-    point: 1540,
-  });
-
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
-  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -58,7 +62,7 @@ export default function LoginedNav() {
       <ul className="xs:flex hidden items-center gap-4 sm:gap-7">
         <li>
           <span className="text-[14px] font-bold text-gray-200">
-            {userInfo.point} P
+            {pointsDisplay} P
           </span>
         </li>
         {/* 알림 */}
@@ -67,17 +71,16 @@ export default function LoginedNav() {
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
-          {isAlarmOpen && (
-            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
-          )}
+          {isAlarmOpen && <Alarm alarmList={notificationList} />}
         </li>
         {/* 사용자 */}
         <li>
-          <button onClick={handleClickShowMenu} className="cursor-pointer">
+          {/* <button onClick={handleClickShowMenu} className="cursor-pointer">
             <span className="beskin-h6 text-[14px] font-bold text-gray-200">
-              {userInfo.name}
+              {userName || '유저'}
             </span>
-          </button>
+          </button> */}
+          <Profile userName={useName} point={pointsDisplay} />
         </li>
         <li className="h-4 w-px bg-gray-200 text-white"></li>
         <li>
