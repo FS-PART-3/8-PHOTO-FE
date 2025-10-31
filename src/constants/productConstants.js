@@ -39,6 +39,7 @@ export const SOLD_OUT_OPTIONS = [
   { value: '', label: '전체' },
   { value: 'true', label: '품절' },
   { value: 'false', label: '판매 중' },
+];
 // 포토카드 생성용 옵션 (전체 제외)
 export const CREATE_GRADE_OPTIONS = [
   { value: 'COMMON', label: 'COMMON' },
