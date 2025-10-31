@@ -112,13 +112,9 @@ const useAuth = create(
       3) refreshToken도 만료 시 로그인 창으로 강제 이동.
       */
       authFetch: async (url, options = {}) => {
-        // FormData인 경우 Content-Type을 설정하지 않음 (브라우저가 자동으로 설정)
-        const isFormData = options.body instanceof FormData;
-
         options.headers = {
           ...options.headers,
           Authorization: `Bearer ${get().accessToken}`,
-          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         };
 
         let result = await fetch(url, options);
