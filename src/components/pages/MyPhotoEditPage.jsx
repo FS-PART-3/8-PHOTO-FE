@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import DetailPageHeader from '@/components/organisms/header/DetailPageHeader';
 import Input from '@/components/atoms/Input';
+import Textarea from '@/components/atoms/Textarea';
 import Button from '@/components/atoms/Button';
 import {
   CREATE_GRADE_OPTIONS,
@@ -188,9 +189,9 @@ export default function MyPhotoEditPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-black)] text-white">
-      <TitleBox>
+      <div className="mx-auto mt-[60px] max-w-[1200px] pb-4">
         <Title text={'포토카드 생성'} />
-      </TitleBox>
+      </div>
 
       <div className="mx-auto max-w-[520px] px-4 py-8">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -203,6 +204,7 @@ export default function MyPhotoEditPage() {
               onChange={handleInputChange}
               placeholder="포토카드 이름을 입력해 주세요"
               error={errors.title}
+              size="lg"
             />
           </div>
 
@@ -236,6 +238,7 @@ export default function MyPhotoEditPage() {
               onChange={handleInputChange}
               placeholder="가격을 입력해 주세요"
               error={errors.price}
+              size="lg"
               min="0"
             />
           </div>
@@ -250,6 +253,7 @@ export default function MyPhotoEditPage() {
               onChange={handleInputChange}
               placeholder="발행량을 입력해 주세요 (1-10)"
               error={errors.quantity}
+              size="lg"
               min="1"
               max="10"
             />
@@ -263,7 +267,7 @@ export default function MyPhotoEditPage() {
             <label className="mb-[10px] block text-[16px] font-medium text-white">
               사진 업로드
             </label>
-            <Input
+            <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
@@ -276,9 +280,11 @@ export default function MyPhotoEditPage() {
                 value={formData.image?.name || ''}
                 placeholder="사진 업로드"
                 readOnly
-                className="w-full flex-1 rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-4 text-[16px] text-white placeholder:text-[var(--color-gray-300)]"
+                size="lg"
+                onChange={handleImageChange}
               />
               <button
+                type="button"
                 className="flex h-[60px] w-full max-w-[120px] items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
                 onClick={handleImageButtonClick}
               >
@@ -305,15 +311,13 @@ export default function MyPhotoEditPage() {
 
           {/* 포토카드 설명 */}
           <div>
-            <label className="mb-[10px] block text-[16px] font-medium text-white">
-              포토카드 설명
-            </label>
-            <textarea
-              name="description"
+            <Textarea
+              id="description"
+              label="포토카드 설명"
+              placeholder="카드 설명을 입력해 주세요"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="카드 설명을 입력해 주세요"
-              className="h-[150px] w-full resize-none rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-3 text-[16px] text-white placeholder:text-[var(--color-gray-300)] focus:ring-1 focus:ring-[var(--color-main)] focus:outline-none"
+              size="lg"
             />
             {errors.description && (
               <span className="mt-2 block text-[14px] text-[var(--color-red)]">
@@ -328,8 +332,17 @@ export default function MyPhotoEditPage() {
               type="submit"
               variant="primary"
               size="l"
-              thikness="thick"
-              disabled={createPhotoMutation.isPending}
+              thikness="thin"
+              disabled={
+                createPhotoMutation.isPending ||
+                !formData.title ||
+                !formData.grade ||
+                !formData.genre ||
+                !formData.price ||
+                !formData.quantity ||
+                !formData.image ||
+                !formData.description
+              }
             >
               {createPhotoMutation.isPending ? '생성 중...' : '생성하기'}
             </Button>
