@@ -1,1 +1,7 @@
-npx lint-staged
+#!/bin/sh
+
+if [ -s "~/.nvm/nvm.sh" ]; then
+  . "~/.nvm/nvm.sh"
+  npx lint-staged
+fi
+# 윈도우에서는 호환이 안되서 mac에서만 작동하도록 수정했습니다(승찬)

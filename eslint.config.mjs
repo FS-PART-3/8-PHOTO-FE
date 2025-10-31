@@ -50,6 +50,7 @@ const eslintConfig = [
       'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }], // JSX를 .js 파일에서도 허용
       'import/prefer-default-export': 'off', // 단일 export 시 default export 강제 비활성화
       camelcase: 'off', // Next.js 폰트 변수명 허용
+      'import/extensions': 'off', // 확장자명 없이 import 허용
     },
   },
 ];

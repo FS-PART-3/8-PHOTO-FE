@@ -1,9 +1,424 @@
+'use client';
+
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
+import Input from '@/components/atoms/Input';
+import Textarea from '@/components/atoms/Textarea';
+import Button from '@/components/atoms/Button';
+import {
+  CREATE_GRADE_OPTIONS,
+  CREATE_GENRE_OPTIONS,
+} from '@/constants/productConstants';
+import { validatePhotoForm } from '@/schema/photoSchema';
+import { photoService } from '@/services/photoService';
+import Title from '../molecules/Title';
+import useAuth from '@/store/userStore';
+
+// 커스텀 드롭다운 컴포넌트
+function InputDropdown({
+  label,
+  value,
+  options,
+  onChange,
+  placeholder,
+  error,
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSelect = optionValue => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <label className="mb-[10px] block text-[16px] font-medium text-white">
+        {label}
+      </label>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-gray-500)] px-4 py-3 text-left text-[16px] text-white"
+      >
+        <span className={value ? 'text-white' : 'text-[var(--color-gray-200)]'}>
+          {value || placeholder}
+        </span>
+        <Image
+          src="/assets/icons/ic_down.svg"
+          alt="arrow"
+          width={24}
+          height={24}
+          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-[2px] border border-[var(--color-gray-200)] bg-[var(--color-black)]">
+          {options.map(option => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => handleSelect(option.value)}
+              className="w-full px-4 py-3 text-left text-[16px] text-white transition-colors hover:bg-[var(--color-gray-500)]"
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {error && (
+        <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
+
 // 포토카드 생성/편집 페이지 컴포넌트
 export default function MyPhotoEditPage() {
+  const router = useRouter();
+  const fileInputRef = useRef(null);
+  const { accessToken } = useAuth();
+  const queryClient = useQueryClient();
+
+  const [formData, setFormData] = useState({
+    title: '',
+    grade: '',
+    genre: '',
+    price: '',
+    quantity: 1,
+    description: '',
+    image: null,
+  });
+
+  const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultMessage, setResultMessage] = useState({
+    title: '',
+    message: '',
+    isSuccess: false,
+  });
+
+  // 포토카드 생성 mutation
+  const createPhotoMutation = useMutation({
+    mutationFn: formData => photoService.createPhoto(accessToken, formData),
+    onSuccess: async response => {
+      // 캐시 무효화로 마이갤러리 데이터 새로고침
+      await queryClient.invalidateQueries({ queryKey: ['my-gallery'] });
+      // 추가적으로 모든 갤러리 관련 쿼리도 무효화
+      await queryClient.invalidateQueries({ queryKey: ['gallery'] });
+
+      // 성공 모달 표시
+      setResultMessage({
+        title: '성공',
+        message: response.message || '포토카드가 성공적으로 생성되었습니다!',
+        isSuccess: true,
+      });
+      setShowResultModal(true);
+    },
+    onError: error => {
+      // 실패 모달 표시
+      setResultMessage({
+        title: '실패',
+        message: error.message || '포토카드 생성에 실패했습니다.',
+        isSuccess: false,
+      });
+      setShowResultModal(true);
+    },
+  });
+
+  // 입력값 변경 핸들러
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+    // 입력 시 해당 필드의 에러 제거
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  // 이미지 선택 핸들러
+  const handleImageChange = e => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, image: file }));
+      // 미리보기 생성
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      // 에러 제거
+      if (errors.image) {
+        setErrors(prev => ({ ...prev, image: '' }));
+      }
+    }
+  };
+
+  // 이미지 선택 버튼 클릭
+  const handleImageButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // 등급 선택
+  const handleGradeSelect = value => {
+    setFormData(prev => ({ ...prev, grade: value }));
+    if (errors.grade) {
+      setErrors(prev => ({ ...prev, grade: '' }));
+    }
+  };
+
+  // 장르 선택
+  const handleGenreSelect = value => {
+    setFormData(prev => ({ ...prev, genre: value }));
+    if (errors.genre) {
+      setErrors(prev => ({ ...prev, genre: '' }));
+    }
+  };
+
+  // 폼 제출
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    // 유효성 검증
+    const validationErrors = validatePhotoForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // FormData 생성
+    const submitData = new FormData();
+    submitData.append('image', formData.image);
+    submitData.append('title', formData.title);
+    submitData.append('grade', formData.grade);
+    submitData.append('genre', formData.genre);
+    submitData.append('price', formData.price);
+    submitData.append('quantity', formData.quantity);
+    if (formData.description) {
+      submitData.append('description', formData.description);
+    }
+
+    // API 호출
+    createPhotoMutation.mutate(submitData);
+  };
+
+  // 마이갤러리로 돌아가기
+  const handleGoToGallery = () => {
+    setShowResultModal(false);
+    router.push('/market/my-photo');
+  };
+
   return (
-    <div className="my-photo-edit-page">
-      <h1>포토카드 생성하기</h1>
-      {/* 포토카드 생성/편집 폼이 여기에 추가될 예정 */}
+    <div className="min-h-screen bg-[var(--color-black)] text-white">
+      {showResultModal ? (
+        // 결과 화면
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="flex w-[90%] max-w-[500px] flex-col items-center text-center">
+            {/* 제목 */}
+            <h2 className="mb-6 font-(family-name:--font-secondary) text-[46px] font-bold">
+              포토카드 생성{' '}
+              <span
+                className={`mb-6 text-[46px] font-bold ${
+                  resultMessage.isSuccess
+                    ? 'text-[var(--color-main)]'
+                    : 'text-[var(--color-gray-300)]'
+                }`}
+              >
+                {resultMessage.title}
+              </span>
+            </h2>
+
+            {/* 메시지 */}
+            <p className="mb-8 text-[16px] whitespace-pre-wrap text-white">
+              {resultMessage.message}
+            </p>
+
+            {/* 버튼 */}
+            <Button
+              variant="primary"
+              size="l"
+              thikness="thin"
+              onClick={handleGoToGallery}
+            >
+              마이갤러리로 돌아가기
+            </Button>
+          </div>
+        </div>
+      ) : (
+        // 생성 폼 화면
+        <>
+          <div className="mx-auto mt-[60px] max-w-[1200px] pb-4">
+            <Title text={'포토카드 생성'} />
+          </div>
+
+          <div className="mx-auto max-w-[520px] px-4 py-8">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              {/* 포토카드 이름 */}
+              <div>
+                <Input
+                  name="title"
+                  id="title"
+                  label="포토카드 이름"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  placeholder="포토카드 이름을 입력해 주세요"
+                  error={errors.title}
+                  size="lg"
+                />
+              </div>
+
+              {/* 등급 */}
+              <InputDropdown
+                label="등급"
+                value={formData.grade}
+                options={CREATE_GRADE_OPTIONS}
+                onChange={handleGradeSelect}
+                placeholder="등급을 선택해 주세요"
+                error={errors.grade}
+              />
+
+              {/* 장르 */}
+              <InputDropdown
+                label="장르"
+                value={formData.genre}
+                options={CREATE_GENRE_OPTIONS}
+                onChange={handleGenreSelect}
+                placeholder="장르를 선택해 주세요"
+                error={errors.genre}
+              />
+
+              {/* 가격 */}
+              <div>
+                <Input
+                  name="price"
+                  id="price"
+                  type="number"
+                  label="가격"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  placeholder="가격을 입력해 주세요"
+                  error={errors.price}
+                  size="lg"
+                  min="0"
+                />
+              </div>
+
+              {/* 총 발행량 */}
+              <div>
+                <Input
+                  name="quantity"
+                  id="quantity"
+                  type="number"
+                  label="총 발행량"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  placeholder="발행량을 입력해 주세요 (1-10)"
+                  error={errors.quantity}
+                  size="lg"
+                  min="1"
+                  max="10"
+                />
+                <p className="mt-2 text-[12px] text-[var(--color-red)]">
+                  총 발행량은 1개에서 10개 사이입니다.
+                </p>
+              </div>
+
+              {/* 사진 업로드 */}
+              <div>
+                <label className="mb-[10px] block text-[16px] font-medium text-white">
+                  사진 업로드
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <div className="flex w-full items-end gap-4">
+                  <Input
+                    type="text"
+                    value={formData.image?.name || ''}
+                    placeholder="사진 업로드"
+                    readOnly
+                    size="lg"
+                    onChange={handleImageChange}
+                  />
+                  <button
+                    type="button"
+                    className="flex h-[55px] w-full max-w-[120px] cursor-pointer items-center justify-center border-1 border-[var(--color-main)] text-[var(--color-main)]"
+                    onClick={handleImageButtonClick}
+                  >
+                    파일 선택
+                  </button>
+                </div>
+                {imagePreview && (
+                  <div className="mt-4">
+                    <Image
+                      src={imagePreview}
+                      alt="미리보기"
+                      width={200}
+                      height={200}
+                      className="rounded-[2px] object-cover"
+                    />
+                  </div>
+                )}
+                {errors.image && (
+                  <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+                    {errors.image}
+                  </span>
+                )}
+              </div>
+
+              {/* 포토카드 설명 */}
+              <div>
+                <Textarea
+                  id="description"
+                  name="description"
+                  label="포토카드 설명"
+                  placeholder="카드 설명을 입력해 주세요"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  size="lg"
+                />
+                {errors.description && (
+                  <span className="mt-2 block text-[14px] text-[var(--color-red)]">
+                    {errors.description}
+                  </span>
+                )}
+              </div>
+
+              {/* 생성하기 버튼 */}
+              <div className="mt-6 flex justify-center">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="l"
+                  thikness="thin"
+                  disabled={
+                    createPhotoMutation.isPending ||
+                    !formData.title ||
+                    !formData.grade ||
+                    !formData.genre ||
+                    !formData.price ||
+                    !formData.quantity ||
+                    !formData.image
+                  }
+                >
+                  {createPhotoMutation.isPending ? '생성 중...' : '생성하기'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </>
+      )}
     </div>
   );
 }

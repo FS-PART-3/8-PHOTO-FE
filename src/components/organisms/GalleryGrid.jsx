@@ -1,13 +1,8 @@
 // 갤러리 그리드 컴포넌트
-export default function GalleryGrid({ items = [] }) {
+export default function GalleryGrid({ children }) {
   return (
-    <div className="gallery-grid">
-      {/* 갤러리 그리드 로직이 여기에 추가될 예정 */}
-      {items.map((item, index) => (
-        <div key={index} className="gallery-grid__item">
-          {/* 갤러리 아이템 내용 */}
-        </div>
-      ))}
+    <div className="gallery-grid mx-auto grid min-h-[300px] w-[min(1200px,92vw)] grid-cols-3 gap-4 py-8">
+      {children}
     </div>
   );
 }
