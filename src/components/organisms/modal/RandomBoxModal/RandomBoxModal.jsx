@@ -1,6 +1,6 @@
 'use client';
 
-import styles from './RandomBoxModal.module.css';
+import styles from '../../../../styles/components/RandomBoxModal.module.css';
 
 import Image from 'next/image';
 import randomBox_1 from './randomBox_1.png';
