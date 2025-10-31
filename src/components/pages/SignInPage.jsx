@@ -13,15 +13,23 @@ import styles from '@/styles/components/auth.module.css';
 
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
+import { useRouter } from 'next/navigation';
+import useAsync from '@/hooks/useAsync';
 
 export default function SignInPage() {
   const { values, errors, isLogInSubmitActive, onChange } = useAuthInput();
   const { login } = useAuth();
+  const [pending, error, loginFunc] = useAsync(login);
+
+  const router = useRouter();
 
   const handleSubmit = async e => {
     e.preventDefault();
     const { email, password } = values;
-    const result = await login(email, password);
+    const result = await loginFunc(email, password);
+    if (result?.id) {
+      router.push('/market');
+    }
   };
 
   return (
@@ -29,7 +37,9 @@ export default function SignInPage() {
       <div className={styles.authBox}>
         <h1>회원가입</h1>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
-        <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        <Link href="/">
+          <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        </Link>
         <form
           className="flex w-[100%] flex-col gap-[44px]"
           onSubmit={handleSubmit}
@@ -44,6 +54,7 @@ export default function SignInPage() {
               onChange={onChange}
               error={errors.email}
               placeholder="이메일을 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호"
@@ -54,10 +65,11 @@ export default function SignInPage() {
               onChange={onChange}
               error={errors.password}
               placeholder="비밀번호를 입력해주세요"
+              size="lg"
             />
           </div>
-          <Button thikness="thin" disabled={!isLogInSubmitActive}>
-            로그인
+          <Button thikness="thin" disabled={!isLogInSubmitActive && !pending}>
+            {pending ? '요청 중...' : '로그인'}
           </Button>
         </form>
         <div className="flex gap-[10px]">

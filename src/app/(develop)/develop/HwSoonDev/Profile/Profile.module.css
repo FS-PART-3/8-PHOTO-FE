@@ -1,21 +1,3 @@
-.userName {
-  width: fit-content;
-  color: var(--gray-gray200, #ddd);
-  font-family: 'BR B';
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-}
-
-.profileMsg {
-  color: var(--white-white, #fff);
-  font-family: 'Noto Sans KR';
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-}
-
 .pointLabel {
   color: var(--gray-gray300, #a4a4a4);
   font-family: 'Noto Sans KR';

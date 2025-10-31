@@ -7,14 +7,14 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   // 인증 로직이 여기에 추가될 예정
-  const { userName, getUserData } = useAuth();
+  const { userName, points, getUserData } = useAuth();
   useEffect(() => {
     if (!userName) {
       getUserData();
     }
   }, [userName]);
 
-  const value = { nothing: null };
+  const value = { userName, points };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
