@@ -37,6 +37,8 @@ export default function SignInPage() {
           <div className="flex w-[100%] flex-col gap-[34px]">
             <Input
               label="이메일"
+              type="email"
+              id="email"
               name="email"
               value={values.email}
               onChange={onChange}
@@ -45,6 +47,8 @@ export default function SignInPage() {
             />
             <Input
               label="비밀번호"
+              type="password"
+              id="password"
               name="password"
               value={values.password}
               onChange={onChange}

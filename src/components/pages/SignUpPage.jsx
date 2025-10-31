@@ -41,6 +41,8 @@ export default function SignUpPage() {
           <div className="flex w-[100%] flex-col gap-[34px]">
             <Input
               label="이메일"
+              type="email"
+              id="email"
               name="email"
               value={values.email}
               onChange={onChange}
@@ -49,6 +51,8 @@ export default function SignUpPage() {
             />
             <Input
               label="닉네임"
+              type="text"
+              id="name"
               name="name"
               value={values.name}
               onChange={onChange}
@@ -57,6 +61,8 @@ export default function SignUpPage() {
             />
             <Input
               label="비밀번호"
+              type="password"
+              id="password"
               name="password"
               value={values.password}
               onChange={onChange}
@@ -65,6 +71,8 @@ export default function SignUpPage() {
             />
             <Input
               label="비밀번호 확인"
+              type="password"
+              id="passwordCheck"
               name="passwordCheck"
               value={values.passwordCheck}
               onChange={onChange}
