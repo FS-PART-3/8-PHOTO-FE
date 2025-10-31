@@ -22,7 +22,7 @@ export const photoCreateSchema = {
       if (!value) {
         return '등급을 선택해 주세요.';
       }
-      const validGrades = ['COMMON', 'RARE', 'SUPERRARE', 'LEGENDARY'];
+      const validGrades = ['COMMON', 'RARE', 'SUPER_RARE', 'LEGENDARY'];
       if (!validGrades.includes(value)) {
         return '올바른 등급을 선택해 주세요.';
       }

@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
 import { useUserData } from '@/providers/AuthProvider';
 import useAuth from '@/store/userStore';
+import { useNotificationList } from '@/state/useNotificationQuery';
 
 const alarmList = [
   {
@@ -31,11 +32,11 @@ const alarmList = [
 
 export default function LoginedNav() {
   const { naem, points } = useUserData();
-  const { logout } = useAuth();
+  const { accessToken, logout } = useAuth();
 
-  const handleClickShowMenu = () => {
-    console.log('show menu');
-  };
+  const { data: notificationList } = useNotificationList(accessToken);
+
+  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -48,7 +49,6 @@ export default function LoginedNav() {
   };
 
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
-  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -69,9 +69,7 @@ export default function LoginedNav() {
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
-          {isAlarmOpen && (
-            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
-          )}
+          {isAlarmOpen && <Alarm alarmList={notificationList} />}
         </li>
         {/* 사용자 */}
         <li>
