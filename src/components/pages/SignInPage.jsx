@@ -44,6 +44,7 @@ export default function SignInPage() {
               onChange={onChange}
               error={errors.email}
               placeholder="이메일을 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호"
@@ -54,6 +55,7 @@ export default function SignInPage() {
               onChange={onChange}
               error={errors.password}
               placeholder="비밀번호를 입력해주세요"
+              size="lg"
             />
           </div>
           <Button thikness="thin" disabled={!isLogInSubmitActive}>

@@ -1,4 +1,9 @@
 'use client';
+import { useEffect, useState } from 'react';
+import useAuth from '@/store/userStore';
+
+import Button from '@/components/atoms/Button';
+import fetchClient from '@/lib/fetchClient';
 
 import styles from '../../../../styles/components/RandomBoxModal.module.css';
 
@@ -8,10 +13,6 @@ import randomBox_2 from './randomBox_2.png';
 import randomBox_3 from './randomBox_3.png';
 import closeIcon from './cancel_icon.svg';
 import pointIcon from './point_icon.svg';
-import { useEffect, useState } from 'react';
-
-import useAuth from '@/store/userStore';
-import Button from '@/components/atoms/Button';
 
 //랜덤 상자가 1시간 마다 포인트를 주는데
 //유일한 통화 발행처이기 때문에 중요합니다.
@@ -22,7 +23,7 @@ import Button from '@/components/atoms/Button';
 //2. api 기능
 
 export default function RandomBoxModal() {
-  const { authFetch, nextRewardTime, setNextRewardTime } = useAuth();
+  const { nextRewardTime, setNextRewardTime } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isRecieved, setIsRecieved] = useState(false);
@@ -78,17 +79,10 @@ export default function RandomBoxModal() {
   const handleGetPoint = async () => {
     const _amount = getRandomInt(50, 200);
     setAmount(_amount);
-    //  const authFetch = useAuth.getState().authFetch;
-    const result = await authFetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/points/reward`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: _amount,
-        }),
-      },
-    );
+    const result = await fetchClient.authPost(`/api/points/reward`, {
+      amount: _amount,
+    });
+    console.log(result);
     setIsRecieved(true);
   };
 

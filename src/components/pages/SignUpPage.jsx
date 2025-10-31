@@ -48,6 +48,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.email}
               placeholder="이메일을 입력해주세요"
+              size="lg"
             />
             <Input
               label="닉네임"
@@ -58,6 +59,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.name}
               placeholder="닉네임을 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호"
@@ -68,6 +70,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.password}
               placeholder="비밀번호를 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호 확인"
@@ -78,6 +81,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.passwordCheck}
               placeholder="비밀번호를 한번 더 입력해주세요"
+              size="lg"
             />
           </div>
           <Button thikness="thin" disabled={!isSignUpSubmitActive}>

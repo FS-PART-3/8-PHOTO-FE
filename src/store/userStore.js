@@ -57,12 +57,15 @@ const useAuth = create(
           .then(responseHandler)
           .catch(errorHandler);
 
+        const { name, points, accessToken } = result;
+
         set({
-          userName: result.name,
-          points: result.points,
-          nextRewardTime: new Date().getTime() + 2000,
-          accessToken: result.accessToken,
+          userName: name,
+          points,
+          nextRewardTime: new Date().getTime() + 3600000,
+          accessToken,
         });
+
         return result;
       },
       logout: async () => {

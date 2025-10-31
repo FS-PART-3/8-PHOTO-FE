@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
+import Profile from '@/components/molecules/Profile';
+import { useUserData } from '@/providers/AuthProvider';
 
 const alarmList = [
   {
@@ -27,6 +29,8 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
+  const { naem, points } = useUserData();
+
   const handleClickShowMenu = () => {
     console.log('show menu');
   };
@@ -39,11 +43,6 @@ export default function LoginedNav() {
   const handleClickLogout = () => {
     console.log('logout');
   };
-
-  const [userInfo, setUserInfo] = useState({
-    name: '기타',
-    point: 1540,
-  });
 
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
@@ -58,7 +57,7 @@ export default function LoginedNav() {
       <ul className="xs:flex hidden items-center gap-4 sm:gap-7">
         <li>
           <span className="text-[14px] font-bold text-gray-200">
-            {userInfo.point} P
+            {points} P
           </span>
         </li>
         {/* 알림 */}
@@ -73,11 +72,7 @@ export default function LoginedNav() {
         </li>
         {/* 사용자 */}
         <li>
-          <button onClick={handleClickShowMenu} className="cursor-pointer">
-            <span className="beskin-h6 text-[14px] font-bold text-gray-200">
-              {userInfo.name}
-            </span>
-          </button>
+          <Profile />
         </li>
         <li className="h-4 w-px bg-gray-200 text-white"></li>
         <li>
