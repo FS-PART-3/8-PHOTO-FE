@@ -8,40 +8,18 @@ export default function Input({
   label,
   type = 'text',
   id,
+  name,
   placeholder,
   value,
   onChange,
+  error = '',
   size = 'md',
 }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
 
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type;
   const isPrice = type === 'number';
-
-  const validate = val => {
-    if (type === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(val)) setError('이메일 형식이 아닙니다.');
-      else setError('');
-    } else if (type === 'password' && id === 'confirm') {
-      const passwordEl = document.getElementById('password');
-      if (passwordEl && passwordEl.value !== val)
-        setError('비밀번호가 일치하지 않습니다.');
-      else setError('');
-    } else if (type === 'text' && id === 'title') {
-      if (val.length > 30)
-        setError('포토카드 이름은 최대 30자까지 입력 가능합니다.');
-      else setError('');
-    } else setError('');
-  };
-
-  const handleChange = e => {
-    const val = e.target.value;
-    onChange(e);
-    validate(val);
-  };
 
   const sizeClasses = {
     lg: '!w-[520px] max-w-full text-base',
@@ -52,21 +30,24 @@ export default function Input({
 
   return (
     <div className={`${styles.inputGroup} ${sizeClasses[size]}`}>
-      <label htmlFor={id} className={styles.label}>
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id || name} className={styles.label}>
+          {label}
+        </label>
+      )}
       <div className="relative">
         <input
           type={inputType}
-          id={id}
+          id={id || name}
+          name={name}
           placeholder={placeholder}
           value={value}
-          onChange={handleChange}
+          onChange={onChange}
           className={`${styles.input} ${error ? styles.error : ''}`}
           required
         />
 
-        {isPassword && (
+        {type === 'password' && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
