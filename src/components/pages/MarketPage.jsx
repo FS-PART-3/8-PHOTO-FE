@@ -3,12 +3,16 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import Modal from '@/components/organisms/Modal';
+import Modal from '@/components/organisms/modal/Modal';
 import Search from '@/components/molecules/Search';
 import DropDown from '@/components/molecules/DropDown';
 import ProductCard from '../organisms/card/ProductCard';
 
-import { GRADE_OPTIONS, GENRE_OPTIONS, SOLD_OUT_OPTIONS as SOLD_OPTIONS, } from '@/constants/productConstants';
+import {
+  GRADE_OPTIONS,
+  GENRE_OPTIONS,
+  SOLD_OUT_OPTIONS as SOLD_OPTIONS,
+} from '@/constants/productConstants';
 
 const GENRE_VALUE_MAP = {
   풍경: 'landscape',
@@ -57,16 +61,16 @@ export default function MarketPage() {
     let out = [...raw];
 
     if (grade.value) {
-      out = out.filter((it) => it.photoCards?.[0]?.grade === grade.value);
-    }
- 
-    const selectedGenre = GENRE_VALUE_MAP[genre.value] ?? genre.value;
-    if (selectedGenre) {
-      out = out.filter((it) => it.photoCards?.[0]?.genre === selectedGenre);
+      out = out.filter(it => it.photoCards?.[0]?.grade === grade.value);
     }
 
-    if (sold.value === 'false') out = out.filter((it) => (it.quantity ?? 0) > 0);
-    if (sold.value === 'true') out = out.filter((it) => (it.quantity ?? 0) <= 0);
+    const selectedGenre = GENRE_VALUE_MAP[genre.value] ?? genre.value;
+    if (selectedGenre) {
+      out = out.filter(it => it.photoCards?.[0]?.genre === selectedGenre);
+    }
+
+    if (sold.value === 'false') out = out.filter(it => (it.quantity ?? 0) > 0);
+    if (sold.value === 'true') out = out.filter(it => (it.quantity ?? 0) <= 0);
 
     return out;
   }, [raw, grade.value, genre.value, sold.value]);
@@ -85,7 +89,7 @@ export default function MarketPage() {
         if (out?.[0]?.createdAt) {
           out.sort(
             (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
         }
         break;
@@ -93,7 +97,7 @@ export default function MarketPage() {
     return out;
   }, [filtered, sort.value]);
 
-  const handleCardClick = (card) => {
+  const handleCardClick = card => {
     if (!isAuthed) {
       setPendingCardId(card?.id ?? null);
       setLoginOpen(true);
@@ -108,14 +112,14 @@ export default function MarketPage() {
         <div className="flex items-center">
           <form
             className="w-auto"
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               refetch();
             }}
           >
             <Search
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={e => setQ(e.target.value)}
               onSubmit={() => refetch()}
               placeholder="검색어를 입력하세요"
             />
@@ -125,7 +129,7 @@ export default function MarketPage() {
             <DropDown
               options={GRADE_OPTIONS}
               value={grade}
-              onChange={(opt) => setGrade(opt)}
+              onChange={opt => setGrade(opt)}
               placeholder="등급"
               fontSize="text-sm"
             />
@@ -135,7 +139,7 @@ export default function MarketPage() {
             <DropDown
               options={GENRE_OPTIONS}
               value={genre}
-              onChange={(opt) => setGenre(opt)}
+              onChange={opt => setGenre(opt)}
               placeholder="장르"
               fontSize="text-sm"
             />
@@ -145,7 +149,7 @@ export default function MarketPage() {
             <DropDown
               options={SOLD_OPTIONS}
               value={sold}
-              onChange={(opt) => setSold(opt)}
+              onChange={opt => setSold(opt)}
               placeholder="매진여부"
               fontSize="text-sm"
             />
@@ -155,7 +159,7 @@ export default function MarketPage() {
             <DropDown
               options={SORT_OPTIONS}
               value={sort}
-              onChange={(opt) => setSort(opt)}
+              onChange={opt => setSort(opt)}
               placeholder="낮은 가격순"
               fontSize="text-sm"
             />
@@ -171,41 +175,39 @@ export default function MarketPage() {
       )}
 
       <div className="mx-auto grid max-w-[1200px] grid-cols-3 gap-4 py-8">
-        {list.length > 0 ? (
-          list.map((listing) => (
-            <div
-              key={listing.id}
-              className="cursor-pointer"
-              onClick={() =>
-                handleCardClick({
-                  id: listing.id,
-                  title: listing.photoCards?.[0]?.title,
-                })
-              }
-            >
-              <ProductCard
-                type="original"
-                cardId={listing.id}
-                title={listing.photoCards?.[0]?.title}
-                grade={listing.photoCards?.[0]?.grade}
-                genre={listing.photoCards?.[0]?.genre}
-                imageUrl={listing.photoCards?.[0]?.imgUrl}
-                status={listing.status}
-                price={listing.price}
-                quantity={listing.quantity}
-                initQuantity={listing.initQuantity}
-                userName={listing.seller?.name}
-              />
-            </div>
-          ))
-        ) : (
-          !isPending &&
-          !error && (
-            <div className="market-empty mx-auto max-w-[1200px]">
-              등록된 상품이 없습니다.
-            </div>
-          )
-        )}
+        {list.length > 0
+          ? list.map(listing => (
+              <div
+                key={listing.id}
+                className="cursor-pointer"
+                onClick={() =>
+                  handleCardClick({
+                    id: listing.id,
+                    title: listing.photoCards?.[0]?.title,
+                  })
+                }
+              >
+                <ProductCard
+                  type="original"
+                  cardId={listing.id}
+                  title={listing.photoCards?.[0]?.title}
+                  grade={listing.photoCards?.[0]?.grade}
+                  genre={listing.photoCards?.[0]?.genre}
+                  imageUrl={listing.photoCards?.[0]?.imgUrl}
+                  status={listing.status}
+                  price={listing.price}
+                  quantity={listing.quantity}
+                  initQuantity={listing.initQuantity}
+                  userName={listing.seller?.name}
+                />
+              </div>
+            ))
+          : !isPending &&
+            !error && (
+              <div className="market-empty mx-auto max-w-[1200px]">
+                등록된 상품이 없습니다.
+              </div>
+            )}
       </div>
 
       <Modal
