@@ -1,12 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
+<<<<<<< HEAD
 import Profile from '@/components/molecules/Profile';
 import { useUserData } from '@/providers/AuthProvider';
 import useAuth from '@/store/userStore';
+=======
+import useAuth from '@/store/userStore';
+import Profile from '@/components/organisms/Profile';
+import { useNotificationList } from '@/state/useNotificationQuery';
+>>>>>>> develop
 
 const alarmList = [
   {
@@ -30,12 +36,19 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
+<<<<<<< HEAD
   const { naem, points } = useUserData();
   const { logout } = useAuth();
 
   const handleClickShowMenu = () => {
     console.log('show menu');
   };
+=======
+  const { accessToken, userName, points, logout } = useAuth();
+  const { data: notificationList } = useNotificationList(accessToken);
+
+  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+>>>>>>> develop
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -45,10 +58,10 @@ export default function LoginedNav() {
   const handleClickLogout = () => {
     logout();
     console.log('logout');
+    logout();
   };
 
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
-  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -69,13 +82,15 @@ export default function LoginedNav() {
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
-          {isAlarmOpen && (
-            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
-          )}
+          {isAlarmOpen && <Alarm alarmList={notificationList} />}
         </li>
         {/* 사용자 */}
         <li>
+<<<<<<< HEAD
           <Profile />
+=======
+          <Profile userName={userName} point={points} />
+>>>>>>> develop
         </li>
         <li className="h-4 w-px bg-gray-200 text-white"></li>
         <li>
