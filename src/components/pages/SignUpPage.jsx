@@ -13,16 +13,18 @@ import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
 import createAuthStore from '@/store/userStore';
 import { useRouter } from 'next/navigation';
+import useAsync from '@/hooks/useAsync';
 
 export default function SignUpPage() {
   const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
   const { signup } = createAuthStore();
+  const [pending, error, signupFunc] = useAsync(signup);
 
   const handleSubmit = async e => {
     e.preventDefault();
     const { name, email, password } = values;
-    const result = await signup(name, email, password);
+    const result = await signupFunc(name, email, password);
     if (result?.name) {
       router.push('/sign-in');
     }
@@ -32,7 +34,9 @@ export default function SignUpPage() {
     <div className="flex h-lvh w-[100%] items-center justify-center">
       <div className={styles.authBox}>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
-        <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        <Link href="/">
+          <Image src={logo} alt="MainLogo" className="mb-[80px]" />
+        </Link>
         <form
           className="flex w-[100%] flex-col gap-[44px]"
           onSubmit={handleSubmit}
@@ -47,6 +51,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.email}
               placeholder="이메일을 입력해주세요"
+              size="lg"
             />
             <Input
               label="닉네임"
@@ -57,6 +62,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.name}
               placeholder="닉네임을 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호"
@@ -67,6 +73,7 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.password}
               placeholder="비밀번호를 입력해주세요"
+              size="lg"
             />
             <Input
               label="비밀번호 확인"
@@ -77,10 +84,11 @@ export default function SignUpPage() {
               onChange={onChange}
               error={errors.passwordCheck}
               placeholder="비밀번호를 한번 더 입력해주세요"
+              size="lg"
             />
           </div>
-          <Button thikness="thin" disabled={!isSignUpSubmitActive}>
-            가입하기
+          <Button thikness="thin" disabled={!isSignUpSubmitActive && !pending}>
+            {pending ? '요청 중...' : '가입하기'}
           </Button>
         </form>
         <div className="flex gap-[10px]">

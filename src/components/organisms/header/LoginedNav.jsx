@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
+import Profile from '@/components/molecules/Profile';
+import { useUserData } from '@/providers/AuthProvider';
 import useAuth from '@/store/userStore';
-import Profile from '@/components/organisms/Profile';
 import { useNotificationList } from '@/state/useNotificationQuery';
 
 const alarmList = [
@@ -30,7 +31,9 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
-  const { accessToken, userName, points, logout } = useAuth();
+  const { naem, points } = useUserData();
+  const { accessToken, logout } = useAuth();
+
   const { data: notificationList } = useNotificationList(accessToken);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
@@ -41,8 +44,8 @@ export default function LoginedNav() {
   };
 
   const handleClickLogout = () => {
-    console.log('logout');
     logout();
+    console.log('logout');
   };
 
   const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
@@ -70,7 +73,7 @@ export default function LoginedNav() {
         </li>
         {/* 사용자 */}
         <li>
-          <Profile userName={userName} point={points} />
+          <Profile />
         </li>
         <li className="h-4 w-px bg-gray-200 text-white"></li>
         <li>

@@ -108,3 +108,7 @@ body {
   letter-spacing: var(--letter-spacing-tight);
   line-height: 1.2;
 }
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
