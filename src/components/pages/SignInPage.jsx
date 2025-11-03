@@ -13,6 +13,7 @@ import styles from '@/styles/components/auth.module.css';
 
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
+import SocialLogin from '../molecules/socialLogin/SocialLogin';
 
 export default function SignInPage() {
   const { values, errors, isLogInSubmitActive, onChange } = useAuthInput();
@@ -27,7 +28,6 @@ export default function SignInPage() {
   return (
     <div className="flex h-lvh w-[100%] items-center justify-center">
       <div className={styles.authBox}>
-        <h1>회원가입</h1>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Image src={logo} alt="MainLogo" className="mb-[80px]" />
         <form
@@ -59,6 +59,7 @@ export default function SignInPage() {
           <Button thikness="thin" disabled={!isLogInSubmitActive}>
             로그인
           </Button>
+          <SocialLogin />
         </form>
         <div className="flex gap-[10px]">
           <p className={styles.white}>최애의 포토가 처음이신가요?</p>

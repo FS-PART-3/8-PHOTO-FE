@@ -31,7 +31,6 @@ export default function SignUpPage() {
   return (
     <div className="flex h-lvh w-[100%] items-center justify-center">
       <div className={styles.authBox}>
-        <h1>회원가입</h1>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Image src={logo} alt="MainLogo" className="mb-[80px]" />
         <form
