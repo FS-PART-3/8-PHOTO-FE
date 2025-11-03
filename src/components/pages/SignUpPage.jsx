@@ -14,6 +14,7 @@ import { useAuthInput } from '@/hooks/useAuthInput';
 import createAuthStore from '@/store/userStore';
 import { useRouter } from 'next/navigation';
 import useAsync from '@/hooks/useAsync';
+import SocialLogin from '../molecules/socialLogin/SocialLogin';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -33,7 +34,6 @@ export default function SignUpPage() {
   return (
     <div className="flex h-lvh w-[100%] items-center justify-center">
       <div className={styles.authBox}>
-        <h1>회원가입</h1>
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Link href="/">
           <Image src={logo} alt="MainLogo" className="mb-[80px]" />
@@ -91,6 +91,7 @@ export default function SignUpPage() {
           <Button thikness="thin" disabled={!isSignUpSubmitActive && !pending}>
             {pending ? '요청 중...' : '가입하기'}
           </Button>
+          <SocialLogin />
         </form>
         <div className="flex gap-[10px]">
           <p className={styles.white}>이미 최애의 포토 회원이신가요?</p>
