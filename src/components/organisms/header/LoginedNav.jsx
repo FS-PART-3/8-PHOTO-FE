@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
-import { useUserData } from '@/providers/AuthProvider';
+
 import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
 
@@ -31,8 +31,7 @@ const alarmList = [
 ];
 
 export default function LoginedNav() {
-  const { naem, points } = useUserData();
-  const { accessToken, logout } = useAuth();
+  const { accessToken, logout, points } = useAuth();
 
   const { data: notificationList } = useNotificationList(accessToken);
 

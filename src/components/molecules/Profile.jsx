@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useUserData } from '@/providers/AuthProvider';
+import useAuth from '@/store/userStore';
 
 export default function Profile() {
-  const { userName, points } = useUserData();
+  const { userName, points } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
 

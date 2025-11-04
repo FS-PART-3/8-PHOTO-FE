@@ -5,8 +5,6 @@ import useAuth from '@/store/userStore';
 import Button from '@/components/atoms/Button';
 import fetchClient from '@/lib/fetchClient';
 
-import styles from '../../../../styles/components/RandomBoxModal.module.css';
-
 import Image from 'next/image';
 import randomBox_1 from './randomBox_1.png';
 import randomBox_2 from './randomBox_2.png';
@@ -82,7 +80,6 @@ export default function RandomBoxModal() {
     const result = await fetchClient.authPost(`/api/points/reward`, {
       amount: _amount,
     });
-    console.log(result);
     setIsRecieved(true);
   };
 
@@ -129,7 +126,7 @@ export default function RandomBoxModal() {
               <div className="flex flex-col items-center gap-[76px]">
                 <div className="relative grid h-fit w-fit grid-cols-3 items-end gap-[60px]">
                   <button
-                    className={`${styles.pointBoxBtn} ${styles.box1}`}
+                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
                     onClick={() => setSelectedBox(1)}
                   >
                     <Image
@@ -142,7 +139,7 @@ export default function RandomBoxModal() {
                     />
                   </button>
                   <button
-                    className={`${styles.pointBoxBtn} ${styles.box2}`}
+                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
                     onClick={() => setSelectedBox(2)}
                   >
                     <Image
@@ -155,7 +152,7 @@ export default function RandomBoxModal() {
                     />
                   </button>
                   <button
-                    className={`${styles.pointBoxBtn} ${styles.box3}`}
+                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
                     onClick={() => setSelectedBox(3)}
                   >
                     <Image

@@ -8,7 +8,7 @@ import Title from '../molecules/Title';
 import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import PointGraph from '../organisms/PointGraph';
-import { useUserData } from '@/providers/AuthProvider';
+import useAuth from '@/store/userStore';
 
 export default function MyUserPage({}) {
   const [pointHistory, setPointHistory] = useState([]);
@@ -44,7 +44,6 @@ export default function MyUserPage({}) {
       setLoading(true);
       try {
         const result = await fetchClient.authGet('/api/points/history');
-        console.log(result);
         setPointHistory(result.points);
       } catch (err) {
         console.error('포인트 내역 불러오기 실패:', err);
@@ -142,7 +141,7 @@ function PointChart({ pointHistory }) {
 }
 
 function UserData({}) {
-  const { userName, points } = useUserData();
+  const { userName, points } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [editMode, setEditMode] = useState('none');
