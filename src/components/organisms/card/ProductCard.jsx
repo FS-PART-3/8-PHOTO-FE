@@ -7,7 +7,7 @@ import CardExchangeSection from './CardExchangeSection';
 
 /**
  * 프로젝트 전반에 들어가는 상품 카드 컴포넌트
- * @param type - 'original' | 'my-card' | 'exchange' | 'for-sale'
+ * @param type - MARKET_CARD_TYPE.ORIGINAL | MARKET_CARD_TYPE.MY_CARD | MARKET_CARD_TYPE.EXCHANGE | MARKET_CARD_TYPE.FOR_SALE
  * @param cardId - 카드 ID
  * @param title - 카드 제목
  * @param grade - 카드 등급 (COMMON, RARE, SUPER RARE, LEGENDARY)
@@ -23,10 +23,10 @@ import CardExchangeSection from './CardExchangeSection';
  * @param onApprove - 승인 버튼 클릭 핸들러 (exchange 타입일 때만 사용)
  *
  * @type 종류:
- * - original: 메인 포토카드 페이지 카드
- * - my-card: 마이 갤러리 페이지 포토카드
- * - exchange: 교환 페이지 포토카드
- * - for-sale: 나의 판매 포토카드 페이지 포토카드
+ * - MARKET_CARD_TYPE.ORIGINAL: 메인 포토카드 페이지 카드
+ * - MARKET_CARD_TYPE.MY_CARD: 마이 갤러리 페이지 포토카드
+ * - MARKET_CARD_TYPE.EXCHANGE: 교환 페이지 포토카드
+ * - MARKET_CARD_TYPE.FOR_SALE: 나의 판매 포토카드 페이지 포토카드
  */
 export default function ProductCard({
   type,

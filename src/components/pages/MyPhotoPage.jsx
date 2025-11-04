@@ -8,7 +8,11 @@ import Pagination from '../molecules/Pagination';
 import Title, { TitleBox } from '../molecules/Title';
 import Search from '../molecules/Search';
 import DropDown from '../molecules/DropDown';
-import { GRADE_OPTIONS, GENRE_OPTIONS } from '@/constants/productConstants';
+import {
+  GRADE_OPTIONS,
+  GENRE_OPTIONS,
+  MARKET_CARD_TYPE,
+} from '@/constants/productConstants';
 
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
@@ -166,7 +170,7 @@ export default function MyPhotoPage() {
                 {filteredPhotos.map(card => (
                   <ProductCard
                     key={card.id}
-                    type="original"
+                    type={MARKET_CARD_TYPE.MY_CARD}
                     cardId={card.id}
                     title={card.title}
                     grade={card.grade}

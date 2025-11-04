@@ -37,8 +37,8 @@ export const SALE_METHOD_OPTIONS = [
 
 export const SOLD_OUT_OPTIONS = [
   { value: '', label: '전체' },
-  { value: 'true', label: '품절' },
-  { value: 'false', label: '판매 중' },
+  { value: true, label: '품절' },
+  { value: false, label: '판매 중' },
 ];
 // 포토카드 생성용 옵션 (전체 제외)
 export const CREATE_GRADE_OPTIONS = [
@@ -54,3 +54,26 @@ export const CREATE_GENRE_OPTIONS = [
   { value: '도시', label: '도시' },
   { value: '자연', label: '자연' },
 ];
+
+// 정렬 옵션
+export const SORT_OPTIONS = [
+  { label: '최신순', value: 'latest' },
+  { label: '오래된 순', value: 'oldest' },
+  { label: '낮은 가격순', value: 'low-price' },
+  { label: '높은 가격순', value: 'high-price' },
+];
+
+// 장르 매핑 (한글 -> 영문)
+export const GENRE_VALUE_MAP = {
+  풍경: 'landscape',
+  인물: 'portrait',
+  도시: 'city',
+  자연: 'nature',
+};
+
+export const MARKET_CARD_TYPE = {
+  ORIGINAL: 'original',
+  MY_CARD: 'my-card',
+  EXCHANGE: 'exchange',
+  FOR_SALE: 'for-sale',
+};
