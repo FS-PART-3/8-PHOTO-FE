@@ -144,6 +144,9 @@ export default function MyPhotoPage() {
           }}
         />
 
+        {/* 나의 포토카드 정보 */}
+        <MyCardInfo userName={useName} countsGroup={data?.countsGroup} />
+
         <section className="mt-4 mb-6 flex items-center gap-4">
           {/* 검색 및 필터 영역 */}
           <div className="max-w-[320px] flex-1">
