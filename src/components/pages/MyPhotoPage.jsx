@@ -2,18 +2,19 @@
 import { useState, useMemo } from 'react';
 import { useMyGalleryPhotos } from '@/state/useMarketQuery';
 import useAuth from '@/store/userStore';
-import GalleryGrid from '../organisms/GalleryGrid';
-import ProductCard from '../organisms/card/ProductCard';
-import Pagination from '../molecules/Pagination';
-import Title, { TitleBox } from '../molecules/Title';
-import Search from '../molecules/Search';
-import DropDown from '../molecules/DropDown';
+import GalleryGrid from '@/components/organisms/GalleryGrid';
+import ProductCard from '@/components/organisms/card/ProductCard';
+import Pagination from '@/components/molecules/Pagination';
+import Title, { TitleBox } from '@/components/molecules/Title';
+import Search from '@/components/molecules/Search';
+import DropDown from '@/components/molecules/DropDown';
 import { GRADE_OPTIONS, GENRE_OPTIONS } from '@/constants/productConstants';
+import MyCardInfo from '@/components/organisms/MyCardInfo';
 
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
   // 인증 토큰 가져오기
-  const { accessToken } = useAuth();
+  const { accessToken, userName } = useAuth();
 
   // 페이지 상태 관리
   const [currentPage, setCurrentPage] = useState(0);
@@ -36,6 +37,16 @@ export default function MyPhotoPage() {
     total: 0,
     totalPages: 0,
   };
+
+  // 생성 정보 가져오기
+  const creationInfo = data?.creationInfo || {};
+  const remainingCount = creationInfo.remainingCreations ?? 0;
+  const maxCount = creationInfo.maxCreations ?? 3;
+  const isCreationDisabled = remainingCount <= 0;
+
+  // 서버에서 제공하는 현재 년도와 월 사용 (fallback으로 클라이언트 시간 사용)
+  const currentYear = creationInfo.currentYear ?? new Date().getFullYear();
+  const currentMonth = creationInfo.currentMonth ?? new Date().getMonth() + 1;
 
   // 검색 및 필터링된 포토카드 목록
   const filteredPhotos = useMemo(() => {
@@ -125,10 +136,17 @@ export default function MyPhotoPage() {
         <Title
           text="마이갤러리"
           action={{
-            label: '포토카드 생성하기',
-            href: '/market/my-photo/edit',
+            label: `포토카드 생성하기 (${remainingCount}/${maxCount})`,
+            href: isCreationDisabled ? undefined : '/market/my-photo/edit',
+            disabled: isCreationDisabled,
+            helperText: isCreationDisabled
+              ? '이번 달 생성 기회를 모두 사용했습니다.'
+              : `${currentYear}년 ${currentMonth}월`,
           }}
         />
+
+        {/* 나의 포토카드 정보 */}
+        <MyCardInfo userName={userName} countsGroup={data?.countsGroup} />
 
         <section className="mt-4 mb-6 flex items-center gap-4">
           {/* 검색 및 필터 영역 */}
