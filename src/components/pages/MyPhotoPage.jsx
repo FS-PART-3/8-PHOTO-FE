@@ -1,7 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import { useMyGalleryPhotos } from '@/state/useMarketQuery';
-import createAuthStore from '@/store/userStore';
+import useAuth from '@/store/userStore';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
 import Pagination from '../molecules/Pagination';
@@ -13,7 +13,7 @@ import { GRADE_OPTIONS, GENRE_OPTIONS } from '@/constants/productConstants';
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
   // 인증 토큰 가져오기
-  const { accessToken } = createAuthStore();
+  const { accessToken } = useAuth();
 
   // 페이지 상태 관리
   const [currentPage, setCurrentPage] = useState(0);

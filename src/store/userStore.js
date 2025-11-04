@@ -1,22 +1,7 @@
-import { create, createStore } from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-const defaultUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth`;
-
-/* 기본 리스폰스 처리 */
-async function responseHandler(res) {
-  if (!res.ok) {
-    // JSON이 아닌 텍스트 오류 메시지 처리
-    const errorText = await res.text();
-    throw new Error(errorText);
-  }
-  return res.json();
-}
-
-/* 기본 에러 처리 */
-async function errorHandler(err) {
-  console.log(err);
-}
+import { API_BASE_URL, API_ROUTES } from '@/constants/apiRoutes';
+import fetchClient from '@/lib/fetchClient';
 
 /* useAuth 훅 */
 const useAuth = create(
@@ -27,36 +12,20 @@ const useAuth = create(
       points: null,
       nextRewardTime: null,
       signup: async (name, email, password) => {
-        const body = {
+        const data = {
           name,
           email,
           password,
         };
-        const result = await fetch(`${defaultUrl}/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-          .then(responseHandler)
-          .catch(errorHandler);
-
-        // window.location.href = '/login';
+        const result = await fetchClient.post(API_ROUTES.AUTH.SIGNUP, data);
         return result;
       },
       login: async (email, password) => {
-        const body = {
+        const data = {
           email,
           password,
         };
-        const result = await fetch(`${defaultUrl}/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(body),
-        })
-          .then(responseHandler)
-          .catch(errorHandler);
-
+        const result = await fetchClient.post(API_ROUTES.AUTH.LOGIN, data);
         const { name, points, accessToken } = result;
 
         set({
@@ -70,12 +39,7 @@ const useAuth = create(
       },
       logout: async () => {
         // 백에 쿠키(리프레쉬토큰)를 지워달라고 하고,
-        const result = await fetch(`${defaultUrl}/logout`, {
-          method: 'POST',
-          credentials: 'include',
-        })
-          .then(responseHandler)
-          .catch(errorHandler);
+        const result = await fetchClient.post(API_ROUTES.AUTH.LOGOUT, {});
 
         // 프론트에서는 로컬(액세스토큰) 지우기.
         set({ accessToken: null, userName: null, points: null });
@@ -86,28 +50,22 @@ const useAuth = create(
         set({ accessToken });
       },
       getRefreshToken: async accessToken => {
-        const result = await fetch(`${defaultUrl}/getrefresh`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(responseHandler)
-          .catch(errorHandler);
-
-        // 백엔드에서 쿠키를 저장해준다.
+        // 요청 시 백엔드에서 쿠키를 저장해줍니다.
+        const result = await fetchClient.authPost(
+          API_ROUTES.AUTH.GETREFRESHTOKEN,
+          {},
+        );
         return result;
       },
       refresh: async () => {
-        const result = await fetch(`${defaultUrl}/refresh`, {
-          method: 'POST',
+        const options = {
           credentials: 'include', // 쿠키 기반 인증 시 필요
-        })
-          .then(responseHandler)
-          .catch(errorHandler);
-
+        };
+        const result = await fetchClient.post(
+          API_ROUTES.AUTH.REFRESH,
+          {},
+          options,
+        );
         return result;
       },
       /*
@@ -126,7 +84,7 @@ const useAuth = create(
 
         // Access Token 만료 시 (예: 401 Unauthorized)
         if (result.status === 401) {
-          await fetch(`${defaultUrl}/refresh`, {
+          await fetch(`${API_BASE_URL}${API_ROUTES.AUTH.REFRESH}`, {
             method: 'POST',
             credentials: 'include', // 쿠키 기반 인증 시 필요
           })
@@ -146,32 +104,21 @@ const useAuth = create(
               // 리프레시 실패 → 로그아웃 처리
               // 강제 리로드 (hook이나, api 함수 안에서는 router를 쓸 수 없어서 이게 가장 안전하네요.)
               // 전체 페이지 리로드가 발생합니다.
-              //get().logout();
-              console.log(err);
+              get().logout();
             });
         }
         return result;
       },
       // 페이지 권한 여부 등에 쓰이는 인가 여부 판단 api
       checkAuth: async () => {
-        const result = await get()
-          .authFetch(`${defaultUrl}/check`, {
-            method: 'POST',
-          })
-          .then(responseHandler)
-          .catch(errorHandler);
+        const result = await fetchClient.authPost(API_ROUTES.AUTH.CHECKAUTH);
         return result;
       },
       setNextRewardTime: () => {
         set({ nextRewardTime: new Date().getTime() + 20000 });
       },
       getUserData: async () => {
-        const result = await get()
-          .authFetch(`${defaultUrl}/userdata`, {
-            method: 'GET',
-          })
-          .then(responseHandler)
-          .catch(errorHandler);
+        const result = await fetchClient.authGet(API_ROUTES.AUTH.USERDATA);
         const { name, points } = result;
         set({ userName: name, points: points });
       },
@@ -187,3 +134,18 @@ const useAuth = create(
 );
 
 export default useAuth;
+
+// /* 기본 리스폰스 처리 */
+// async function responseHandler(res) {
+//   if (!res.ok) {
+//     // JSON이 아닌 텍스트 오류 메시지 처리
+//     const errorText = await res.text();
+//     throw new Error(errorText);
+//   }
+//   return res.json();
+// }
+
+// /* 기본 에러 처리 */
+// async function errorHandler(err) {
+//   console.log(err);
+// }
