@@ -1,7 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import { useMyGalleryPhotos } from '@/state/useMarketQuery';
-import createAuthStore from '@/store/userStore';
+import useAuth from '@/store/userStore';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
 import Pagination from '../molecules/Pagination';
@@ -13,7 +13,7 @@ import { GRADE_OPTIONS, GENRE_OPTIONS } from '@/constants/productConstants';
 // 마이갤러리 페이지 컴포넌트
 export default function MyPhotoPage() {
   // 인증 토큰 가져오기
-  const { accessToken } = createAuthStore();
+  const { accessToken } = useAuth();
 
   // 페이지 상태 관리
   const [currentPage, setCurrentPage] = useState(0);
@@ -36,6 +36,16 @@ export default function MyPhotoPage() {
     total: 0,
     totalPages: 0,
   };
+
+  // 생성 정보 가져오기
+  const creationInfo = data?.creationInfo || {};
+  const remainingCount = creationInfo.remainingCreations ?? 0;
+  const maxCount = creationInfo.maxCreations ?? 3;
+  const isCreationDisabled = remainingCount <= 0;
+
+  // 서버에서 제공하는 현재 년도와 월 사용 (fallback으로 클라이언트 시간 사용)
+  const currentYear = creationInfo.currentYear ?? new Date().getFullYear();
+  const currentMonth = creationInfo.currentMonth ?? new Date().getMonth() + 1;
 
   // 검색 및 필터링된 포토카드 목록
   const filteredPhotos = useMemo(() => {
@@ -125,8 +135,12 @@ export default function MyPhotoPage() {
         <Title
           text="마이갤러리"
           action={{
-            label: '포토카드 생성하기',
-            href: '/market/my-photo/edit',
+            label: `포토카드 생성하기 (${remainingCount}/${maxCount})`,
+            href: isCreationDisabled ? undefined : '/market/my-photo/edit',
+            disabled: isCreationDisabled,
+            helperText: isCreationDisabled
+              ? '이번 달 생성 기회를 모두 사용했습니다.'
+              : `${currentYear}년 ${currentMonth}월`,
           }}
         />
 
