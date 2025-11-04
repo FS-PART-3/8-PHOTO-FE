@@ -9,8 +9,6 @@ import useAuth from '@/store/userStore';
 import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button';
 
-import styles from '@/styles/components/auth.module.css';
-
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
 
@@ -36,7 +34,7 @@ export default function SignInPage() {
 
   return (
     <div className="flex h-lvh w-[100%] items-center justify-center">
-      <div className={styles.authBox}>
+      <div className="mx-15px lg:mx-20px my-auto flex h-fit w-full max-w-[520px] flex-col items-center gap-[40px]">
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Link href="/">
           <Image src={logo} alt="MainLogo" className="mb-[80px]" />
@@ -74,10 +72,10 @@ export default function SignInPage() {
           </Button>
           <SocialLogin />
         </form>
-        <div className="flex gap-[10px]">
-          <p className={styles.white}>최애의 포토가 처음이신가요?</p>
+        <div className="flex gap-[10px] text-[16px] font-normal">
+          <p className="text-[#fff]">최애의 포토가 처음이신가요?</p>
           <Link href="/sign-up">
-            <span className={styles.yellow}>회원가입하기</span>
+            <span className="text-[#efff04]">회원가입하기</span>
           </Link>
         </div>
       </div>
