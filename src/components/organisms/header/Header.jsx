@@ -8,7 +8,7 @@ export default function Header() {
   const [isDetailPage, setIsDetailPage] = useState(false);
 
   return (
-    <header className="w-full bg-black">
+    <header className="relative z-20 w-full bg-black">
       {isDetailPage ? <DetailPageHeader /> : <MainHeader />}
     </header>
   );
