@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import styles from '@/styles/components/Input.module.css';
 
 export default function Input({
   label,
@@ -29,9 +28,14 @@ export default function Input({
   };
 
   return (
-    <div className={`${styles.inputGroup} ${sizeClasses[size]}`}>
+    <div
+      className={`flex h-fit w-full flex-col gap-[6px] ${sizeClasses[size]}`}
+    >
       {label && (
-        <label htmlFor={id || name} className={styles.label}>
+        <label
+          htmlFor={id || name}
+          className="text-[16px] font-normal text-[#fff]"
+        >
           {label}
         </label>
       )}
@@ -43,7 +47,7 @@ export default function Input({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`${styles.input} ${error ? styles.error : ''}`}
+          className={`h-[55px] w-full rounded-[2px] border-1 bg-[#0f0f0f] px-[20px] py-[18px] text-[#fff] ${error ? 'border-[#c41013] focus:border-[#ffa3a5]' : 'border-[#ddd] focus:border-[#fff]'}`}
           required
         />
 
@@ -72,7 +76,9 @@ export default function Input({
           </div>
         )}
       </div>
-      {error && <span className={styles.errorMsg}>{error}</span>}
+      {error && (
+        <span className="texet-[14px] font-normal text-[#c41013]">{error}</span>
+      )}
     </div>
   );
 }

@@ -1,5 +1,3 @@
-'use client';
-
 import SignInPage from '@/components/pages/SignInPage.jsx';
 // 로그인 페이지
 export default function Page() {

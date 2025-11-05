@@ -5,13 +5,11 @@
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
 
-import styles from '@/styles/components/auth.module.css';
-
 import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button';
 import Link from 'next/link';
 import { useAuthInput } from '@/hooks/useAuthInput';
-import createAuthStore from '@/store/userStore';
+import useAuth from '@/store/userStore';
 import { useRouter } from 'next/navigation';
 import useAsync from '@/hooks/useAsync';
 import SocialLogin from '../molecules/socialLogin/SocialLogin';
@@ -19,7 +17,7 @@ import SocialLogin from '../molecules/socialLogin/SocialLogin';
 export default function SignUpPage() {
   const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
-  const { signup } = createAuthStore();
+  const { signup } = useAuth();
   const [pending, error, signupFunc] = useAsync(signup);
 
   const handleSubmit = async e => {
@@ -33,7 +31,7 @@ export default function SignUpPage() {
 
   return (
     <div className="flex h-lvh w-[100%] items-center justify-center">
-      <div className={styles.authBox}>
+      <div className="mx-15px lg:mx-20px my-auto flex h-fit w-full max-w-[520px] flex-col items-center gap-[40px]">
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Link href="/">
           <Image src={logo} alt="MainLogo" className="mb-[80px]" />
@@ -93,10 +91,10 @@ export default function SignUpPage() {
           </Button>
           <SocialLogin />
         </form>
-        <div className="flex gap-[10px]">
-          <p className={styles.white}>이미 최애의 포토 회원이신가요?</p>
+        <div className="flex gap-[10px] text-[16px] font-normal">
+          <p className="text-[#fff]">이미 최애의 포토 회원이신가요?</p>
           <Link href="/sign-in">
-            <span className={styles.yellow}>로그인하기</span>
+            <span className="text-[#efff04]">로그인하기</span>
           </Link>
         </div>
       </div>

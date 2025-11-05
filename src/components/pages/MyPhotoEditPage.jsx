@@ -13,7 +13,7 @@ import {
 } from '@/constants/productConstants';
 import { validatePhotoForm } from '@/schema/photoSchema';
 import { photoService } from '@/services/photoService';
-import Title from '../molecules/Title';
+import Title from '@/components/molecules/Title';
 import useAuth from '@/store/userStore';
 
 // 커스텀 드롭다운 컴포넌트

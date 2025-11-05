@@ -12,6 +12,7 @@ export default function SocialLogin({}) {
       <Image
         src={googleImage}
         className="absolute right-20 h-[50px] w-[50px]"
+        alt="google_icon"
       />
     </Link>
   );

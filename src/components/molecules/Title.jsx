@@ -11,24 +11,43 @@ const SIZE_CLS = {
   22: 'text-[22px]',
 };
 
-function TitleButton({ label, href, size = 'L', variant = 'primary' }) {
+function TitleButton({
+  label,
+  href,
+  size = 'L',
+  variant = 'primary',
+  disabled = false,
+}) {
   const isL = size === 'L';
   const isM = size === 'M';
   const isAuto = size === 'auto';
 
-  const base = 'flex items-center justify-center overflow-hidden rounded-[2px]';
+  const base =
+    'flex items-center justify-center overflow-hidden rounded-[2px] transition-opacity';
   const dims = isAuto
     ? 'h-[60px] px-6'
     : isL
       ? 'h-[60px] w-[440px] py-[17px]'
       : 'h-[60px] w-[342px] py-[17px]';
   const typo = isL ? 'text-[18px] font-bold' : 'text-[16px] font-bold';
-  const color =
-    variant === 'primary'
-      ? 'bg-[var(--color-main)] text-[var(--color-black)]'
-      : 'bg-[var(--color-black)] text-[var(--color-white)] border border-[var(--color-gray-100)]';
+
+  let color;
+  if (disabled) {
+    color =
+      'bg-[var(--color-gray-400)] text-[var(--color-gray-200)] cursor-not-allowed';
+  } else {
+    color =
+      variant === 'primary'
+        ? 'bg-[var(--color-main)] text-[var(--color-black)]'
+        : 'bg-[var(--color-black)] text-[var(--color-white)] border border-[var(--color-gray-100)]';
+  }
 
   const inner = <span className={typo}>{label}</span>;
+
+  if (disabled) {
+    return <div className={`${base} ${dims} ${color}`}>{inner}</div>;
+  }
+
   return href ? (
     <Link href={href} className={`${base} ${dims} ${color}`}>
       {inner}
@@ -92,18 +111,31 @@ export default function Title({
           {text}
         </h1>
         {action ? (
-          <TitleButton
-            label={action.label}
-            href={action.href}
-            size={action.size ?? 'L'}
-            variant={action.variant ?? 'primary'}
-          />
+          <div className="flex flex-row items-end gap-2">
+            {action.helperText && (
+              <p className="pr-1 text-sm text-[var(--color-gray-300)]">
+                {action.helperText}
+              </p>
+            )}
+            <TitleButton
+              label={action.label}
+              href={action.href}
+              size={action.size ?? 'L'}
+              variant={action.variant ?? 'primary'}
+              disabled={action.disabled ?? false}
+            />
+          </div>
         ) : null}
       </div>
 
       {divider && (
         <div
-          style={{ ...widthStyle, marginTop: `${dividerOffset}px`, height: '1px', background: dividerColor }}
+          style={{
+            ...widthStyle,
+            marginTop: `${dividerOffset}px`,
+            height: '1px',
+            background: dividerColor,
+          }}
         />
       )}
     </div>
