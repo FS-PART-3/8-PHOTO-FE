@@ -52,6 +52,8 @@
   --color-half-black: rgba(0, 0, 0, 0.5);
   --color-half-white: rgba(255, 255, 255, 0.05);
   --color-white-10: rgba(255, 255, 255, 0.1);
+
+  --color-red: var(--color-red);
 }
 
 body {

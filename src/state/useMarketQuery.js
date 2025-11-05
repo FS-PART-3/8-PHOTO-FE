@@ -34,3 +34,14 @@ export const useMyGalleryPhotos = (token, params = {}, options = {}) => {
     ...options,
   });
 };
+
+/**
+ * 마켓플레이스 포토카드 조회 훅
+ */
+export const useMarketplaceListings = (token, params = {}, options = {}) =>
+  useQuery({
+    queryKey: ['marketplace', params],
+    queryFn: () => photoService.getMarketplaceListings(token, params),
+    staleTime: 1000 * 60 * 5,
+    ...options,
+  });

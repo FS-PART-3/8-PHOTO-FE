@@ -1,10 +1,12 @@
+import MarketDetailPageComponent from '@/components/pages/MarketDetailPage';
 // 포토카드 상세페이지
-export default function MarketDetailPage({ params }) {
+export default async function MarketDetailPage({ params }) {
+  const { id } = await params;
+  const listingId = String(id);
   return (
     <div className="market-detail-page">
-      <h1>포토카드 상세페이지</h1>
-      <p>ID: {params.id}</p>
       {/* MarketDetailPage 컴포넌트가 여기에 추가될 예정 */}
+      <MarketDetailPageComponent listingId={listingId} />
     </div>
   );
 }

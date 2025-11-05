@@ -1,3 +1,4 @@
+import { MARKET_CARD_TYPE } from '@/constants/productConstants';
 import Image from 'next/image';
 
 /**
@@ -19,12 +20,12 @@ export default function CardPriceInfo({ price, quantity, initQuantity, type }) {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[16px] text-gray-300">
-            {type === 'my-card' ? '수량' : '잔여'}
+            {type === MARKET_CARD_TYPE.MY_CARD ? '수량' : '잔여'}
           </span>
           <strong className="text-[18px] text-white">
             {quantity}{' '}
             <span className="text-gray-300">
-              {type === 'original' && ` / ${initQuantity ?? 0}`}
+              {type === MARKET_CARD_TYPE.ORIGINAL && ` / ${initQuantity ?? 0}`}
             </span>
           </strong>
         </div>

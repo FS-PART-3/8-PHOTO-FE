@@ -85,7 +85,7 @@ export default function SeongEun95Page() {
         {data?.cards?.map(card => (
           <ProductCard
             key={card.id}
-            type="original"
+            type={MARKET_CARD_TYPE.ORIGINAL}
             cardId={card.id}
             title={card.title}
             grade={card.grade}
