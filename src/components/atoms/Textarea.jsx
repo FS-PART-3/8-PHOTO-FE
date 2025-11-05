@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import styles from '@/styles/components/Input.module.css';
 
 export default function Textarea({
   label,

@@ -5,8 +5,6 @@ import useAuth from '@/store/userStore';
 import Button from '@/components/atoms/Button';
 import fetchClient from '@/lib/fetchClient';
 
-import styles from '../../../../styles/components/RandomBoxModal.module.css';
-
 import Image from 'next/image';
 import randomBox_1 from './randomBox_1.png';
 import randomBox_2 from './randomBox_2.png';
