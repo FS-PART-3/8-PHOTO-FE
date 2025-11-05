@@ -22,10 +22,10 @@ ChartJS.register(
 );
 
 export default function PointGraph({ pointHistory }) {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const day = today.getDate();
 
   const [labels, setLabels] = useState([]);
   const [dataSet, setDataSet] = useState([]);
@@ -43,12 +43,15 @@ export default function PointGraph({ pointHistory }) {
     for (let point of pointHistory) {
       const _date = new Date(point.createdAt);
       if (_date.getFullYear() !== year || _date.getMonth() !== month) {
+        if (_date < today) {
+          _pointData[0] += point.amount; //
+        }
         continue;
       }
-      _pointData[date.getDate() - 1] += point.amount;
+      _pointData[_date.getDate() - 1] += point.amount;
     }
-    for (let i = 2; i <= lastDay; i++) {
-      _pointData[i] += _pointData[i - 1];
+    for (let i = 1; i <= lastDay; i++) {
+      _pointData[i] = _pointData[i] + _pointData[i - 1];
     }
     setLabels(_labels);
     setDataSet(_pointData);

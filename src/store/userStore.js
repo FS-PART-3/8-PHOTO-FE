@@ -11,6 +11,12 @@ const useAuth = create(
       userName: null,
       points: null,
       nextRewardTime: null,
+      setUserName: name => {
+        set({ userName: name });
+      },
+      setPoints: amount => {
+        set({ points: amount });
+      },
       signup: async (name, email, password) => {
         const data = {
           name,
@@ -118,7 +124,7 @@ const useAuth = create(
         set({ nextRewardTime: new Date().getTime() + 20000 });
       },
       getUserData: async () => {
-        const result = await fetchClient.authGet(API_ROUTES.AUTH.USERDATA);
+        const result = await fetchClient.authGet(API_ROUTES.USERS.DATA);
         const { name, points } = result;
         set({ userName: name, points: points });
       },

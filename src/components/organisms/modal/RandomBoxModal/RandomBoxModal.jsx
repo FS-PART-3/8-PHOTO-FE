@@ -5,14 +5,12 @@ import useAuth from '@/store/userStore';
 import Button from '@/components/atoms/Button';
 import fetchClient from '@/lib/fetchClient';
 
-import styles from '../../../../styles/components/RandomBoxModal.module.css';
-
 import Image from 'next/image';
 import randomBox_1 from './randomBox_1.png';
 import randomBox_2 from './randomBox_2.png';
 import randomBox_3 from './randomBox_3.png';
-import closeIcon from './cancel_icon.svg';
 import pointIcon from './point_icon.svg';
+import Modal from '../Modal';
 
 //랜덤 상자가 1시간 마다 포인트를 주는데
 //유일한 통화 발행처이기 때문에 중요합니다.
@@ -23,9 +21,10 @@ import pointIcon from './point_icon.svg';
 //2. api 기능
 
 export default function RandomBoxModal() {
-  const { nextRewardTime, setNextRewardTime } = useAuth();
+  const { nextRewardTime, setNextRewardTime, checkAuth, points, setPoints } =
+    useAuth();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isRecieved, setIsRecieved] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
 
@@ -60,12 +59,17 @@ export default function RandomBoxModal() {
   };
 
   useEffect(() => {
-    if (!nextRewardTime) {
-      return;
-    }
     let timer = null;
-    timer = makeTimer();
+    //인증 받은 유저면 타이머가 됐을 때 띄우도록 했는데.. 좀 더 생각해보겠습니다.
+    const setTimer = async () => {
+      const res = await checkAuth();
+      if (!res.authenticated || !nextRewardTime) {
+        return;
+      }
+      timer = makeTimer();
+    };
 
+    setTimer();
     /* ureEffect의 "정리 함수"에도 clearInterval을 넣어서 반드시 Interval 함수 제거. */
     return () => clearInterval(timer);
   }, [nextRewardTime]);
@@ -82,6 +86,9 @@ export default function RandomBoxModal() {
     const result = await fetchClient.authPost(`/api/points/reward`, {
       amount: _amount,
     });
+    if (result.id) {
+      setPoints(points + _amount);
+    }
     setIsRecieved(true);
   };
 
@@ -93,96 +100,92 @@ export default function RandomBoxModal() {
   };
 
   return (
-    <>
-      {isOpen && (
-        <div className="bg-blcak relative z-30 flex h-full w-full items-center justify-center">
-          <div className="fixed top-[80px] flex h-fit w-fit flex-col items-center gap-[94px] rounded-[2px] bg-[#161616] px-[100px] py-[80px]">
-            <div className="flex flex-col items-center gap-[40px] text-center text-[#fff]">
-              <div className="text-[46px]">
-                <span>랜덤</span>
-                <span className="text-[#EFFF04]">포인트</span>
-              </div>
-              {!isRecieved && (
-                <span className="text-[20px]">
-                  1시간마다 돌아오는 기회!
-                  <br />
-                  랜덤 상자 뽑기를 통해 포인트를 획득하세요!
-                  {selectedBox}
-                </span>
-              )}
-              {isRecieved && (
-                <div>
-                  <Image src={pointIcon} alt="pointIcon" />
-                  <div className="text-[32px]">
-                    <span className="text-[#EFFF04]">{amount}P </span>
-                    <span>획득!</span>
-                  </div>
-                </div>
-              )}
-              <div className="flex gap-[10px] text-[16px]">
-                <span>다음 기회까지 남은 시간</span>
-                <span className="text-[#EFFF04]">{`${outForm.minutes}분 ${outForm.seconds}초`}</span>
+    <Modal
+      width={isRecieved ? 'md' : 'xl'}
+      isOpen={isOpen}
+      onClose={() => {
+        setIsOpen(false);
+      }}
+    >
+      <div className="top-[80px] flex h-fit w-fit flex-col items-center gap-[94px] rounded-[2px] bg-[#161616] px-[100px] py-[80px]">
+        <div className="flex flex-col items-center gap-[40px] text-center text-[#fff]">
+          <div className="text-[46px]">
+            <span>랜덤</span>
+            <span className="text-[#EFFF04]">포인트</span>
+          </div>
+          {!isRecieved && (
+            <span className="text-[20px]">
+              1시간마다 돌아오는 기회!
+              <br />
+              랜덤 상자 뽑기를 통해 포인트를 획득하세요!
+              {selectedBox}
+            </span>
+          )}
+          {isRecieved && (
+            <div>
+              <Image src={pointIcon} alt="pointIcon" />
+              <div className="text-[32px]">
+                <span className="text-[#EFFF04]">{amount}P </span>
+                <span>획득!</span>
               </div>
             </div>
-            {!isRecieved && (
-              <div className="flex flex-col items-center gap-[76px]">
-                <div className="relative grid h-fit w-fit grid-cols-3 items-end gap-[60px]">
-                  <button
-                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                    onClick={() => setSelectedBox(1)}
-                  >
-                    <Image
-                      src={randomBox_1}
-                      alt="box_1"
-                      className="h-[100%] w-[100%]"
-                      style={{
-                        opacity: isSelected(1) ? 1 : 0.3,
-                      }}
-                    />
-                  </button>
-                  <button
-                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                    onClick={() => setSelectedBox(2)}
-                  >
-                    <Image
-                      src={randomBox_2}
-                      alt="box_2"
-                      className="h-[100%] w-[100%]"
-                      style={{
-                        opacity: isSelected(2) ? 1 : 0.3,
-                      }}
-                    />
-                  </button>
-                  <button
-                    className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                    onClick={() => setSelectedBox(3)}
-                  >
-                    <Image
-                      src={randomBox_3}
-                      alt="box_3"
-                      className="h-[100%] w-[100%]"
-                      style={{
-                        opacity: isSelected(3) ? 1 : 0.3,
-                      }}
-                    />
-                  </button>
-                </div>
-                {selectedBox && (
-                  <Button thikness="thin" size="l" onClick={handleGetPoint}>
-                    선택완료
-                  </Button>
-                )}
-              </div>
-            )}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-[30px] right-[30px] cursor-pointer"
-            >
-              <Image src={closeIcon} alt="close" />
-            </button>
+          )}
+          <div className="flex gap-[10px] text-[16px]">
+            <span>다음 기회까지 남은 시간</span>
+            <span className="text-[#EFFF04]">{`${outForm.minutes}분 ${outForm.seconds}초`}</span>
           </div>
         </div>
-      )}
-    </>
+        {!isRecieved && (
+          <div className="flex flex-col items-center gap-[76px]">
+            <div className="relative grid h-fit w-full grid-cols-3 items-end gap-[60px]">
+              <button
+                className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
+                onClick={() => setSelectedBox(1)}
+              >
+                <Image
+                  src={randomBox_1}
+                  alt="box_1"
+                  className="h-[100%] w-[100%]"
+                  style={{
+                    opacity: isSelected(1) ? 1 : 0.3,
+                  }}
+                />
+              </button>
+              <button
+                className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
+                onClick={() => setSelectedBox(2)}
+              >
+                <Image
+                  src={randomBox_2}
+                  alt="box_2"
+                  className="h-[100%] w-[100%]"
+                  style={{
+                    opacity: isSelected(2) ? 1 : 0.3,
+                  }}
+                />
+              </button>
+              <button
+                className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
+                onClick={() => setSelectedBox(3)}
+              >
+                <Image
+                  src={randomBox_3}
+                  alt="box_3"
+                  className="h-[100%] w-[100%]"
+                  style={{
+                    opacity: isSelected(3) ? 1 : 0.3,
+                  }}
+                />
+              </button>
+            </div>
+            {selectedBox && (
+              <Button thikness="thin" size="l" onClick={handleGetPoint}>
+                선택완료
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </Modal>
   );
 }

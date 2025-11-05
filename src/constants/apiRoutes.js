@@ -3,6 +3,7 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_UR;
 
 const API_PREFIXES = {
   AUTH: '/api/auth',
+  USERS: '/api/users',
   PRODUCTS: '/api/products',
 };
 
@@ -15,12 +16,11 @@ export const API_ROUTES = {
     GETREFRESHTOKEN: `${API_PREFIXES.AUTH}/refreshtoken`,
     REFRESH: `${API_PREFIXES.AUTH}/refresh`,
     CHECKAUTH: `${API_PREFIXES.AUTH}/check`,
-    USERDATA: `${API_PREFIXES.AUTH}/userdata`,
+    RESET_PW: `${API_PREFIXES.AUTH}/reset-password`,
   },
-  USER: {
-    // PROFILE: `${API_BASE_URL}/user/profile`,
-    // UPDATE: `${API_BASE_URL}/user/update`,
-    // DELETE: `${API_BASE_URL}/user/delete`,
+  USERS: {
+    DATA: `${API_PREFIXES.USERS}/data`,
+    NICKNAME: `${API_PREFIXES.USERS}/name`,
   },
   PRODUCTS: {
     // LIST: `${API_BASE_URL}/products`,
