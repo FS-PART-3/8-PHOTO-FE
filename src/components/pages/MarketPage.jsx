@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMarketplaceListings } from '@/state/useMarketQuery';
 import useAuth from '@/store/userStore';
 import MarketFilters from '../organisms/MarketFilters';
 import MarketPhotoList from '../organisms/MarketPhotoList';
 import { SORT_OPTIONS } from '@/constants/productConstants';
+import InfinityScrollBar from '../molecules/InfinityScrollBar';
 
 const INITIAL_QUERY = {
   search: '',
@@ -19,7 +20,7 @@ const INITIAL_QUERY = {
 export default function MarketPage() {
   const router = useRouter();
   const { accessToken } = useAuth();
-
+  const observerRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -52,12 +53,39 @@ export default function MarketPage() {
   };
 
   // 마켓플레이스 데이터 조회
-  const { data, isPending, isError } = useMarketplaceListings(
-    accessToken,
-    query,
-  );
+  const {
+    data,
+    isPending,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMarketplaceListings(accessToken, query);
 
-  console.log(data);
+  const allCards = data?.pages?.flatMap(page => page.data) ?? [];
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        // 관찰 대상이 화면에 보이고, 다음 페이지가 있으며, 현재 로딩 중이 아닐 때
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
+    );
+
+    const currentTarget = observerRef.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // 필터 값 객체 (DropDown 컴포넌트에서 사용)
   const filterValues = {
@@ -80,7 +108,7 @@ export default function MarketPage() {
 
       {/* 마켓 포토카드 목록 */}
       <MarketPhotoList
-        cards={data?.data}
+        cards={allCards}
         isPending={isPending}
         isError={isError}
         isAuthed={isAuthed}
@@ -88,6 +116,13 @@ export default function MarketPage() {
         onLoginClose={() => setLoginOpen(false)}
         onLoginConfirm={() => router.push('/auth/login')}
         onCardClick={handleCardClick}
+      />
+
+      {/* 무한 스크롤 트리거 영역 */}
+      <InfinityScrollBar
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        observerRef={observerRef}
       />
     </div>
   );

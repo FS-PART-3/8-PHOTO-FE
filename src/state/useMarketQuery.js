@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { photoService } from '@/services/photoService';
 
 /**
@@ -39,9 +39,29 @@ export const useMyGalleryPhotos = (token, params = {}, options = {}) => {
  * 마켓플레이스 포토카드 조회 훅
  */
 export const useMarketplaceListings = (token, params = {}, options = {}) =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ['marketplace', params],
-    queryFn: () => photoService.getMarketplaceListings(token, params),
+    queryFn: ({ pageParam }) =>
+      photoService.getMarketplaceListings(token, {
+        ...params,
+        cursor: pageParam, // cursor 파라미터 추가
+        take: 15, // 한 번에 가져올 개수
+      }),
+    initialPageParam: undefined, // 첫 페이지는 cursor 없이 시작
+    getNextPageParam: lastPage => {
+      // 응답에서 data 배열 가져오기
+      const items = lastPage.data ?? [];
+
+      // 데이터가 15개 미만이면 마지막 페이지로 간주
+      if (items.length < 15) {
+        return undefined;
+      }
+
+      // 마지막 아이템의 ID를 다음 cursor로 반환
+      const nextCursor = items[items.length - 1]?.id;
+
+      return nextCursor;
+    },
     staleTime: 1000 * 60 * 5,
     ...options,
   });
