@@ -9,6 +9,11 @@ const nextConfig = {
         port: '4000',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '8-photo-fe-storage.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
     ],
   },
 };
