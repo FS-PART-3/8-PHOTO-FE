@@ -1,34 +1,12 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
 
 import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
-
-const alarmList = [
-  {
-    id: 1,
-    isRead: false,
-    message: '알림 메시지',
-    createdAt: '2025-10-21 14:00:00',
-  },
-  {
-    id: 2,
-    isRead: true,
-    message: '알림 메시지',
-    createdAt: '2025-04-21 06:00:00',
-  },
-  {
-    id: 3,
-    isRead: false,
-    message: '알림 메시지',
-    createdAt: '2023-07-21 06:00:00',
-  },
-];
 
 export default function LoginedNav() {
   const { accessToken, logout, points } = useAuth();
@@ -47,7 +25,7 @@ export default function LoginedNav() {
     console.log('logout');
   };
 
-  const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
+  const hasUnreadAlarms = notificationList?.data?.some(alarm => !alarm.isRead);
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -59,7 +37,7 @@ export default function LoginedNav() {
       <ul className="xs:flex hidden items-center gap-4 sm:gap-7">
         <li>
           <span className="text-[14px] font-bold text-gray-200">
-            {points} P
+            {points || 0} P
           </span>
         </li>
         {/* 알림 */}
@@ -90,7 +68,10 @@ export default function LoginedNav() {
             onClick={handleClickShowAlarm}
           />
           {isAlarmOpen && (
-            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
+            <Alarm
+              alarmList={notificationList}
+              onClose={handleClickCloseAlarm}
+            />
           )}
         </li>
       </ul>

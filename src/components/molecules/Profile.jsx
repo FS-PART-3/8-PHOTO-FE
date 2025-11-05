@@ -12,7 +12,7 @@ export default function Profile() {
   return (
     <div className="relative z-0 w-fit">
       <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-        <span className="beskin-h6 text-white">{userName || ''}</span>
+        <span className="beskin-h6 text-white">{userName || '유저명'}</span>
       </button>
       {isOpen && (
         <div className="absolute right-[0] z-10 flex h-fit w-[260px] flex-col divide-y-1 divide-solid divide-[#5a5a5a] bg-[#161616]">
