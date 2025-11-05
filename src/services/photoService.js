@@ -61,4 +61,32 @@ export const photoService = {
       },
     });
   },
+
+  /**
+   * 마켓플레이스 포토카드 목록 조회
+   * @param {Object} params - 쿼리 파라미터
+   * @param {string} params.search - 검색어 (선택)
+   * @param {string} params.grade - 등급 필터 (선택)
+   * @param {string} params.genre - 장르 필터 (선택)
+   * @param {string} params.soldOut - 품절 여부 필터 (선택)
+   * @param {string} params.sort - 정렬 기준 (선택)
+   * @returns {Promise} API 응답
+   */
+  async getMarketplaceListings(token, params = {}) {
+    const queryParams = new URLSearchParams();
+
+    const { search, grade, genre, soldOut, sort } = params;
+
+    if (search) queryParams.append('search', search);
+    if (grade) queryParams.append('grade', grade);
+    if (genre) queryParams.append('genre', genre);
+    if (soldOut) queryParams.append('soldOut', soldOut);
+    if (sort) queryParams.append('sort', sort);
+
+    return fetchClient.authGet(`/api/marketplace?${queryParams.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };
