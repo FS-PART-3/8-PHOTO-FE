@@ -24,21 +24,26 @@ const marketService = {
       quantity,
     });
   },
-  async getMyExchangeOffers(listingId) {
-    // 내가 해당 판매글에 제시한 교환 목록
+  getMyExchangeOffers(listingId) {
     return fetchClient.authGet(
-      `/api/marketplace/${listingId}/exchange-offers?mine=1`,
+      `/api/marketplace/${listingId}/exchange-offers/mine`,
     );
   },
-  async cancelExchangeOffer(offerId) {
-    // 제안 취소
-    return fetchClient.authPost(`/api/exchange-offers/${offerId}/cancel`, {});
+  getOffersForMyListing(listingId) {
+    return fetchClient.authGet(`/api/marketplace/${listingId}/exchange-offers`);
+  },
+  cancelExchangeOffer(offerId) {
+    return fetchClient.authPatch(
+      `/api/marketplace/exchange-offers/${offerId}/cancel`,
+    );
   },
 
   async createExchangeOffer(listingId, payload) {
     const id = encodeURIComponent(listingId);
+    const { offeredDescription, offeredPhotoId } = payload;
     return fetchClient.authPost(`/api/marketplace/${id}/exchanges`, {
-      offeredDescription: payload.offeredDescription,
+      offeredDescription: offeredDescription?.trim?.() ?? '',
+      offeredPhotoId: String(offeredPhotoId),
     });
   },
 };

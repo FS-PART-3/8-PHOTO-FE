@@ -77,7 +77,7 @@ export default function ExchangeSelectModalWithFilters({
     if (!selectedId) return;
     const desc = (offeredDescription ?? '').trim();
     if (!desc) return;
-    onConfirm?.({ offeredDescription: desc });
+    onConfirm?.({ offeredDescription: desc, offeredPhotoId: selectedId });
     setProposeOpen(false);
     onClose?.();
   };

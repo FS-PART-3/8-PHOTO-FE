@@ -93,7 +93,12 @@ export default function ExchangeProposeModal({
               </button>
               <button
                 type="button"
-                onClick={() => onConfirm?.({ offeredDescription: desc.trim() })}
+                onClick={() =>
+                  onConfirm?.({
+                    offeredDescription: desc.trim(),
+                    offeredPhotoId: card.id,
+                  })
+                }
                 disabled={!desc.trim() || loading}
                 className="h-[48px] min-w-[160px] rounded-[2px] bg-[var(--color-main)] px-6 text-base font-bold text-[var(--color-black)] disabled:opacity-50"
               >

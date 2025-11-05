@@ -1,13 +1,16 @@
 'use client';
-
 import { useQuery } from '@tanstack/react-query';
 import marketService from '@/services/marketService';
 
 export function useMyExchangeOffersQuery(listingId) {
   return useQuery({
-    queryKey: ['market', 'my-exchange-offers', listingId],
-    queryFn: () => marketService.getMyExchangeOffers(listingId),
-    enabled: !!listingId && !!accessToken,
-    staleTime: 60 * 1000,
+    queryKey: ['exchange', 'mine', listingId],
+    queryFn: async () => {
+      const res = await marketService.getMyExchangeOffers(listingId);
+      const items = Array.isArray(res?.items) ? res.items : res;
+      return Array.isArray(items) ? items : [];
+    },
+    enabled: !!listingId,
+    staleTime: 30_000,
   });
 }

@@ -4,16 +4,21 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import marketService from '@/services/marketService';
 
 export function useCancelExchangeOfferMutation(listingId) {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: offerId => marketService.cancelExchangeOffer(offerId),
     onSuccess: () => {
-      qc.invalidateQueries({
+      queryClient.invalidateQueries({
+        queryKey: ['market', 'received-exchange-offers', listingId],
+      });
+      queryClient.invalidateQueries({
         queryKey: ['market', 'my-exchange-offers', listingId],
       });
-      qc.invalidateQueries({ queryKey: ['market', 'detail', listingId] });
-      qc.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['market', 'detail', listingId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
   });
 }

@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import { useState } from 'react';
 import { useMarketDetailQuery } from '@/state/useMarketDetailQuery';
@@ -10,28 +11,35 @@ import PurchaseConfirmModal from '@/components/organisms/purchase/PurchaseConfir
 import { useMyExchangeOffersQuery } from '@/state/useMyExchangeOffersQuery';
 import { useCancelExchangeOfferMutation } from '@/state/useCancelExchangeOfferMutation';
 import ExchangeProposedCard from '@/components/organisms/exchange/ExchangeProposedCard';
-
 import { useCreateExchangeOfferMutation } from '@/state/useCreateExchangeOfferMutation';
 import ExchangeSelectModal from '@/components/organisms/exchange/ExchangeSelectModal';
+import ExchangeCancelModal from '@/components/organisms/exchange/ExchangeCancelModal';
 import { useMyGalleryPhotos } from '@/state/useMarketQuery';
 import useAuth from '@/store/userStore';
 
 export default function MarketDetailPageComponent({ listingId }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [buyCount, setBuyCount] = useState(1);
+  const [exchangeOpen, setExchangeOpen] = useState(false);
+
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState(null);
 
   const { data, isLoading, error } = useMarketDetailQuery(listingId);
   const createExchangeMutation = useCreateExchangeOfferMutation(listingId);
   const purchaseMutation = usePurchaseMutation(listingId);
-
-  const [exchangeOpen, setExchangeOpen] = useState(false);
+  const cancelMutation = useCancelExchangeOfferMutation(listingId);
 
   const accessToken = useAuth(s => s.accessToken);
 
+  const myOffersQ = useMyExchangeOffersQuery(listingId);
+
   // 내가 제시한 교환 목록
-  const { data: myOffersData, isLoading: myOffersLoading } =
-    useMyExchangeOffersQuery(listingId);
-  const cancelMutation = useCancelExchangeOfferMutation(listingId);
+  const myOffers = Array.isArray(myOffersQ.data)
+    ? myOffersQ.data
+    : Array.isArray(myOffersQ.data?.items)
+      ? myOffersQ.data.items
+      : [];
   const {
     data: myGalleryData,
     isLoading: myGalleryLoading,
@@ -57,10 +65,14 @@ export default function MarketDetailPageComponent({ listingId }) {
 
   const myGalleryItems = galleryItems.filter(c => Number(c?.quantity ?? 0) > 0);
 
-  const handleConfirmExchange = async ({ offeredDescription }) => {
+  const handleConfirmExchange = async ({
+    offeredDescription,
+    offeredPhotoId,
+  }) => {
     try {
       await createExchangeMutation.mutateAsync({
-        offeredDescription: String(offeredDescription ?? '').trim(),
+        offeredDescription,
+        offeredPhotoId,
       });
       setExchangeOpen(false);
     } catch (e) {
@@ -84,6 +96,18 @@ export default function MarketDetailPageComponent({ listingId }) {
     preferredDescription,
   } = data;
 
+  // 교환 취소 모달 열기
+  function openCancelModal(offer) {
+    setSelectedOffer(offer);
+    setCancelOpen(true);
+  }
+
+  function handleConfirmCancel() {
+    if (!selectedOffer) return;
+    cancelMutation.mutate(selectedOffer.id);
+    setCancelOpen(false);
+    setSelectedOffer(null);
+  }
   // CardBuyerInfo에서 전달한 수량으로 모달 오픈
   const handleBuyClick = count => {
     setBuyCount(count);
@@ -104,16 +128,6 @@ export default function MarketDetailPageComponent({ listingId }) {
       alert(e.message ?? '구매 중 오류가 발생했습니다.');
     }
   };
-
-  const myOffers = Array.isArray(myOffersData?.items)
-    ? myOffersData.items
-    : Array.isArray(myOffersData?.data)
-      ? myOffersData.data
-      : Array.isArray(myOffersData?.results)
-        ? myOffersData.results
-        : Array.isArray(myOffersData)
-          ? myOffersData
-          : [];
 
   return (
     <main className="min-h-screen bg-[var(--color-black)] px-[220px] py-[60px] text-white">
@@ -194,7 +208,8 @@ export default function MarketDetailPageComponent({ listingId }) {
       <section className="mt-24">
         <h3 className="mb-4 text-2xl font-bold">내가 제시한 교환 목록</h3>
         <hr className="mb-10 border-[var(--color-gray-400)]" />
-        {myOffersLoading ? (
+
+        {myOffersQ.isLoading ? (
           <div className="py-10 text-white/70">불러오는 중...</div>
         ) : myOffers.length === 0 ? (
           <div className="rounded-xl border border-white/10 p-8 text-white/50">
@@ -206,12 +221,25 @@ export default function MarketDetailPageComponent({ listingId }) {
               <ExchangeProposedCard
                 key={offer.id}
                 offer={offer}
-                onCancel={id => cancelMutation.mutate(id)}
+                onCancel={() => openCancelModal(offer)}
               />
             ))}
           </div>
         )}
       </section>
+      {/* 취소 확인 모달 */}
+      <ExchangeCancelModal
+        open={cancelOpen}
+        offer={selectedOffer}
+        title={selectedOffer?.myCard?.title}
+        grade={selectedOffer?.myCard?.grade}
+        loading={cancelMutation.isPending}
+        onConfirm={handleConfirmCancel}
+        onClose={() => {
+          setCancelOpen(false);
+          setSelectedOffer(null);
+        }}
+      />
     </main>
   );
 }
