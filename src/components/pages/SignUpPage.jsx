@@ -30,17 +30,14 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex h-lvh w-[100%] items-center justify-center">
+    <div className="flex h-lvh w-full items-center justify-center">
       <div className="mx-15px lg:mx-20px my-auto flex h-fit w-full max-w-[520px] flex-col items-center gap-[40px]">
         {/* SignInPage 컴포넌트가 여기에 추가될 예정 */}
         <Link href="/">
           <Image src={logo} alt="MainLogo" className="mb-[80px]" />
         </Link>
-        <form
-          className="flex w-[100%] flex-col gap-[44px]"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex w-[100%] flex-col gap-[34px]">
+        <form className="flex w-full flex-col" onSubmit={handleSubmit}>
+          <div className="flex w-full flex-col">
             <Input
               label="이메일"
               type="email"
@@ -86,10 +83,15 @@ export default function SignUpPage() {
               size="lg"
             />
           </div>
-          <Button thikness="thin" disabled={!isSignUpSubmitActive && !pending}>
-            {pending ? '요청 중...' : '가입하기'}
-          </Button>
-          <SocialLogin />
+          <div className="flex flex-col gap-[34px]">
+            <Button
+              thikness="thin"
+              disabled={!isSignUpSubmitActive && !pending}
+            >
+              {pending ? '요청 중...' : '가입하기'}
+            </Button>
+            <SocialLogin />
+          </div>
         </form>
         <div className="flex gap-[10px] text-[16px] font-normal">
           <p className="text-[#fff]">이미 최애의 포토 회원이신가요?</p>

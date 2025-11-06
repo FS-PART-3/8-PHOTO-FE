@@ -5,13 +5,14 @@ import useAuth from '@/store/userStore';
 import { useEffect } from 'react';
 
 export function AuthProvider({ children }) {
-  const { userName, getUserData, checkAuth, accessToken, logout } = useAuth();
+  const { accessToken, userName, points, getUserData, checkAuth, logout } =
+    useAuth();
   useEffect(() => {
     const reload = async () => {
       if (accessToken) {
         const res = await checkAuth();
         if (res.authenticated) {
-          if (!userName) {
+          if (!userName || !points) {
             getUserData();
           }
         } else {

@@ -21,6 +21,8 @@ import Modal from '../Modal';
 //2. api 기능
 
 export default function RandomBoxModal() {
+  let timer = null;
+
   const { nextRewardTime, setNextRewardTime, checkAuth, points, setPoints } =
     useAuth();
 
@@ -59,13 +61,13 @@ export default function RandomBoxModal() {
   };
 
   useEffect(() => {
-    let timer = null;
     //인증 받은 유저면 타이머가 됐을 때 띄우도록 했는데.. 좀 더 생각해보겠습니다.
     const setTimer = async () => {
       const res = await checkAuth();
       if (!res.authenticated || !nextRewardTime) {
         return;
       }
+      clearInterval(timer);
       timer = makeTimer();
     };
 
@@ -94,7 +96,7 @@ export default function RandomBoxModal() {
 
   const isSelected = num => {
     if (!selectedBox) {
-      return true;
+      return false;
     }
     return num === selectedBox;
   };
@@ -140,12 +142,13 @@ export default function RandomBoxModal() {
             <div className="relative grid h-fit w-full grid-cols-3 items-end gap-[60px]">
               <button
                 className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                onClick={() => setSelectedBox(1)}
+                onClick={handleGetPoint}
+                onMouseOver={() => setSelectedBox(1)}
               >
                 <Image
                   src={randomBox_1}
                   alt="box_1"
-                  className="h-[100%] w-[100%]"
+                  className="h-full w-full"
                   style={{
                     opacity: isSelected(1) ? 1 : 0.3,
                   }}
@@ -153,12 +156,13 @@ export default function RandomBoxModal() {
               </button>
               <button
                 className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                onClick={() => setSelectedBox(2)}
+                onClick={handleGetPoint}
+                onMouseOver={() => setSelectedBox(2)}
               >
                 <Image
                   src={randomBox_2}
                   alt="box_2"
-                  className="h-[100%] w-[100%]"
+                  className="h-full w-full"
                   style={{
                     opacity: isSelected(2) ? 1 : 0.3,
                   }}
@@ -166,23 +170,19 @@ export default function RandomBoxModal() {
               </button>
               <button
                 className="transition-filter relative h-[200px] cursor-pointer transition-shadow transition-transform duration-200 ease-in-out hover:-translate-y-[10%] hover:shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:brightness-[0.95]"
-                onClick={() => setSelectedBox(3)}
+                onClick={handleGetPoint}
+                onMouseOver={() => setSelectedBox(3)}
               >
                 <Image
                   src={randomBox_3}
                   alt="box_3"
-                  className="h-[100%] w-[100%]"
+                  className="h-full w-full"
                   style={{
                     opacity: isSelected(3) ? 1 : 0.3,
                   }}
                 />
               </button>
             </div>
-            {selectedBox && (
-              <Button thikness="thin" size="l" onClick={handleGetPoint}>
-                선택완료
-              </Button>
-            )}
           </div>
         )}
       </div>
