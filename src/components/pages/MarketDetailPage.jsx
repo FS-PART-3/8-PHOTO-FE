@@ -146,7 +146,7 @@ export default function MarketDetailPageComponent({ listingId }) {
                 ? myPhotoCard.watermarkUrl
                 : myPhotoCard?.imgUrl || '/assets/images/card-img.png'
             }
-            alt={myPhotoCard?.title}
+            alt={myPhotoCard?.title || 'photo-card'}
             width={960}
             height={720}
             className="h-auto w-full rounded-2xl object-cover"
