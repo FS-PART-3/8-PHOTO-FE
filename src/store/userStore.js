@@ -7,15 +7,20 @@ import fetchClient from '@/lib/fetchClient';
 const useAuth = create(
   persist(
     (set, get) => ({
-      accessToken: null,
+      accessToken: '',
       userName: null,
       points: null,
       nextRewardTime: null,
+      currentPage: '/',
+      hasHydrated: false,
       setUserName: name => {
         set({ userName: name });
       },
       setPoints: amount => {
         set({ points: amount });
+      },
+      setHasHydrated: value => {
+        set({ hasHydrated: value });
       },
       signup: async (name, email, password) => {
         const data = {
@@ -45,17 +50,14 @@ const useAuth = create(
       },
       logout: async () => {
         // 백에 쿠키(리프레쉬토큰)를 지워달라고 하고,
-        const result = await fetchClient.post(API_ROUTES.AUTH.LOGOUT, {});
-
+        fetchClient.post(API_ROUTES.AUTH.LOGOUT, {});
         // 프론트에서는 로컬(액세스토큰) 지우기.
-        set({ accessToken: null, userName: null, points: null });
-        window.location.href = '/sign-in'; // 로그인 페이지로
-        return result;
+        set({ accessToken: '', userName: null, points: null });
       },
       setAccessToken: async accessToken => {
         set({ accessToken });
       },
-      getRefreshToken: async accessToken => {
+      getRefreshToken: async () => {
         // 요청 시 백엔드에서 쿠키를 저장해줍니다.
         const result = await fetchClient.authPost(
           API_ROUTES.AUTH.GETREFRESHTOKEN,
@@ -124,9 +126,17 @@ const useAuth = create(
         set({ nextRewardTime: new Date().getTime() + 3600000 });
       },
       getUserData: async () => {
-        const result = await fetchClient.authGet(API_ROUTES.USERS.DATA);
+        const result = await fetchClient.get(API_ROUTES.USERS.DATA, {
+          headers: {
+            Authorization: `Bearer ${get().accessToken}`,
+          },
+        });
+        if (!result?.name) {
+          return false;
+        }
         const { name, points } = result;
         set({ userName: name, points: points });
+        return true;
       },
     }),
     {
@@ -134,7 +144,11 @@ const useAuth = create(
       partialize: state => ({
         accessToken: state.accessToken,
         nextRewardTime: state.nextRewardTime,
+        hasHydrated: state.hasHydrated,
       }),
+      onRehydrateStorage: () => state => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import useAuth from '@/store/userStore';
 
-import Button from '@/components/atoms/Button';
 import fetchClient from '@/lib/fetchClient';
 
 import Image from 'next/image';
@@ -20,11 +19,10 @@ import Modal from '../Modal';
 //1. 글씨체
 //2. api 기능
 
-export default function RandomBoxModal() {
+export default function RandomPoints() {
   let timer = null;
 
-  const { nextRewardTime, setNextRewardTime, checkAuth, points, setPoints } =
-    useAuth();
+  const { nextRewardTime, setNextRewardTime, points, setPoints } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isRecieved, setIsRecieved] = useState(false);
@@ -63,8 +61,7 @@ export default function RandomBoxModal() {
   useEffect(() => {
     //인증 받은 유저면 타이머가 됐을 때 띄우도록 했는데.. 좀 더 생각해보겠습니다.
     const setTimer = async () => {
-      const res = await checkAuth();
-      if (!res.authenticated || !nextRewardTime) {
+      if (!points || !nextRewardTime) {
         return;
       }
       clearInterval(timer);

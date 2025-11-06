@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import useAuth from '@/store/userStore';
+import ProtectedLink from './ProtectedLink';
 
 export default function Profile() {
   const { userName, points } = useAuth();
@@ -26,24 +27,30 @@ export default function Profile() {
             </div>
           </div>
           <div className="flex flex-col gap-[15px] p-[20px]">
-            <Link href="/market" className="text-[14px] font-bold text-white">
+            <ProtectedLink
+              href="/market"
+              className="text-[14px] font-bold text-white"
+            >
               마켓플레이스
-            </Link>
-            <Link
+            </ProtectedLink>
+            <ProtectedLink
               href="/market/my-photo"
               className="text-[14px] font-bold text-white"
             >
               마이갤러리
-            </Link>
-            <Link
+            </ProtectedLink>
+            <ProtectedLink
               href="/market/my-selling"
               className="text-[14px] font-bold text-white"
             >
               판매 중인 포토카드
-            </Link>
-            <Link href="/my" className="text-[14px] font-bold text-white">
+            </ProtectedLink>
+            <ProtectedLink
+              href="/my"
+              className="text-[14px] font-bold text-white"
+            >
               마이페이지
-            </Link>
+            </ProtectedLink>
           </div>
         </div>
       )}
