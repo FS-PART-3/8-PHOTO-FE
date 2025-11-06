@@ -93,4 +93,18 @@ export const photoService = {
       },
     });
   },
+
+  /**
+   * 포토카드 판매 등록
+   * @param {string} token - 인증 토큰
+   * @param {Object} data - 판매 등록 데이터
+   * @returns {Promise} API 응답
+   */
+  async createListing(token, data) {
+    return fetchClient.authPost('/api/marketplace/listings', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

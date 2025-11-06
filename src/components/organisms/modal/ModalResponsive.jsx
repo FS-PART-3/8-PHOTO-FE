@@ -26,7 +26,7 @@ export default function ModalResponsive({ isOpen, onClose, children }) {
         <button
           aria-label="닫기"
           onClick={onClose}
-          className="absolute top-[30px] right-[30px] grid h-8 w-8 place-items-center text-[#A4A4A4] hover:text-white"
+          className="absolute top-[30px] right-[30px] grid h-8 w-8 cursor-pointer place-items-center text-[#A4A4A4] hover:text-white"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path
