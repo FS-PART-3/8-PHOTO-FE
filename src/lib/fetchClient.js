@@ -28,10 +28,17 @@ async function request(endpoint, options = {}, authRequired = false) {
       : await fetch(url, config);
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        error: '요청 처리 중 오류가 발생했습니다.',
-      }));
-      throw new Error(error.error || `HTTP Error: ${response.status}`);
+      // 에러 응답 파싱 시도
+      const errorData = await response.json().catch(() => null);
+
+      // 다양한 에러 메시지 형식 처리
+      let errorMessage = '요청 처리 중 오류가 발생했습니다.';
+
+      if (errorData) {
+        errorMessage = errorData.message || errorMessage;
+      }
+
+      throw new Error(errorMessage);
     }
 
     return await response.json();
