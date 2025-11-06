@@ -78,13 +78,14 @@ export default function SellDetailModal({
             <div className="flex flex-col">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
                 <Image
-                  src={
-                    card.imgUrl ? card.imgUrl : '/assets/images/card-img.png'
-                  }
+                  src={card.imgUrl}
                   alt={card.title}
                   fill
                   sizes="(max-width:768px) 100vw, 50vw"
                   className="object-cover"
+                  onError={e => {
+                    e.currentTarget.src = '/assets/images/card-img.png';
+                  }}
                 />
               </div>
             </div>
@@ -209,6 +210,11 @@ export default function SellDetailModal({
                 className="h-[120px] w-full resize-none border border-gray-400 bg-transparent p-4 text-sm text-white placeholder:text-white/40"
                 placeholder="내용을 입력해 주세요"
               />
+              {errors.description && (
+                <p className="mt-1 text-xs text-red-400">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
 
             {/* 버튼 */}

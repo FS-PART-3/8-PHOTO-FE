@@ -13,9 +13,15 @@ export const sellFormSchema = z.object({
     .number()
     .min(1, '수량은 최소 1개 이상이어야 합니다.')
     .int('수량은 정수여야 합니다.'),
-  grade: z.string().min(1, '등급을 선택해주세요.'),
-  genre: z.string().min(1, '장르를 선택해주세요.'),
-  description: z.string().optional(),
+  grade: z
+    .string()
+    .min(1, '등급을 선택해주세요.')
+    .refine(val => val !== '', { message: '등급을 선택해주세요.' }),
+  genre: z
+    .string()
+    .min(1, '장르를 선택해주세요.')
+    .refine(val => val !== '', { message: '장르를 선택해주세요.' }),
+  description: z.string().min(1, '교환 희망 설명을 입력해주세요.'),
 });
 
 /**
