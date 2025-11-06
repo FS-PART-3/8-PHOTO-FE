@@ -4,9 +4,15 @@ import { useState } from 'react';
  * 판매 모달 검색/필터 로직 커스텀 훅
  */
 export function useSellFilters(items = []) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [inputValue, setInputValue] = useState(''); // 입력 필드 값
+  const [searchQuery, setSearchQuery] = useState(''); // 실제 검색어
   const [selectedGrade, setSelectedGrade] = useState({ label: '', value: '' });
   const [selectedGenre, setSelectedGenre] = useState({ label: '', value: '' });
+
+  // 검색 실행 함수
+  const executeSearch = () => {
+    setSearchQuery(inputValue);
+  };
 
   // 필터링된 아이템
   let filteredItems = [...items];
@@ -28,14 +34,17 @@ export function useSellFilters(items = []) {
 
   // 필터 초기화
   const resetFilters = () => {
+    setInputValue('');
     setSearchQuery('');
     setSelectedGrade({ label: '', value: '' });
     setSelectedGenre({ label: '', value: '' });
   };
 
   return {
+    inputValue,
+    setInputValue,
     searchQuery,
-    setSearchQuery,
+    executeSearch,
     selectedGrade,
     setSelectedGrade,
     selectedGenre,

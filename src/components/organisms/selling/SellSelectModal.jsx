@@ -24,8 +24,10 @@ export default function SellSelectModal({
   const { userName } = useAuth();
   // 커스텀 훅 사용
   const {
+    inputValue,
+    setInputValue,
     searchQuery,
-    setSearchQuery,
+    executeSearch,
     selectedGrade,
     setSelectedGrade,
     selectedGenre,
@@ -76,9 +78,9 @@ export default function SellSelectModal({
           <div className="mt-4 mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex-1 sm:max-w-[320px]">
               <Search
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onSubmit={() => {}}
+                value={inputValue}
+                onChange={e => setInputValue(e.target.value)}
+                onSubmit={executeSearch}
                 placeholder="검색"
                 showSearchIcon
               />
