@@ -49,6 +49,7 @@ export default function ProductCard({
       <Link href={`/market/${cardId}`} className="">
         <CardImage
           imageUrl={imageUrl}
+          watermarkUrl={watermarkUrl}
           title={title}
           status={status}
           type={type}

@@ -6,11 +6,20 @@ const DEFAULT_IMAGE_URL = '/assets/images/card-img.png';
 /**
  * 카드 이미지 및 상태 표시 컴포넌트
  * @param imageUrl - 카드 이미지 URL
+ * @param watermarkUrl - 워터마크 이미지 URL
  * @param title - 카드 제목 (alt 텍스트용)
  * @param status - 카드 상태
  */
-export default function CardImage({ imageUrl, title, status, type }) {
+export default function CardImage({
+  imageUrl,
+  watermarkUrl,
+  title,
+  status,
+  type,
+}) {
   const isForSale = status !== 'SOLD_OUT' && type === 'for-sale';
+
+  const displayUrl = watermarkUrl || imageUrl || DEFAULT_IMAGE_URL;
 
   return (
     <div className="relative">
@@ -22,7 +31,7 @@ export default function CardImage({ imageUrl, title, status, type }) {
 
       <div className="relative aspect-[3/2.3]">
         <Image
-          src={imageUrl || DEFAULT_IMAGE_URL}
+          src={displayUrl}
           alt={title}
           fill
           className="object-cover"
