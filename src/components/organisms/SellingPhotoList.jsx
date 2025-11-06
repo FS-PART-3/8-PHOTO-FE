@@ -33,6 +33,7 @@ export default function SellingPhotoList({ cards, isPending, isError }) {
           grade={item.grade}
           genre={item.genre}
           imageUrl={item.imageUrl}
+          watermarkUrl={item.watermarkUrl}
           status={item.status}
           price={item.price}
           quantity={item.quantity}
