@@ -121,7 +121,7 @@ const useAuth = create(
         return result;
       },
       setNextRewardTime: () => {
-        set({ nextRewardTime: new Date().getTime() + 20000 });
+        set({ nextRewardTime: new Date().getTime() + 3600000 });
       },
       getUserData: async () => {
         const result = await fetchClient.authGet(API_ROUTES.USERS.DATA);

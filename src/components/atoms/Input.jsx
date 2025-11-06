@@ -11,7 +11,7 @@ export default function Input({
   placeholder,
   value,
   onChange,
-  error = '',
+  error = null,
   size = 'md',
 }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -76,8 +76,14 @@ export default function Input({
           </div>
         )}
       </div>
-      {error && (
-        <span className="texet-[14px] font-normal text-[#c41013]">{error}</span>
+      {error !== null && (
+        <div className="flex h-[34px] w-full items-start">
+          {error && (
+            <span className="texet-[14px] font-normal text-[#c41013]">
+              {error}
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
@@ -94,7 +100,7 @@ export default function Input({
 // }) {
 //   return (
 //     <div className={styles.inputGroup}>
-//       <div className="flex w-[100%] flex-col gap-[10px]">
+//       <div className="flex w-full flex-col gap-[10px]">
 //         {label && (
 //           <label htmlFor={name} className={styles.label}>
 //             {label}
