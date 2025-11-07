@@ -120,6 +120,7 @@ export default function SellSelectModal({
                   price={card.price}
                   quantity={card.quantity}
                   initQuantity={card.initQuantity}
+                  availableQuantity={card.availableQuantity}
                   userName={userName}
                   onClick={() => handleSelectCard(card.id)}
                 />

@@ -50,7 +50,7 @@ export default function SellDetailModal({
   // Early return은 Hook 호출 후에
   if (!card) return null;
 
-  const maxQuantity = card.quantity || 1;
+  const maxQuantity = card.availableQuantity || 0;
 
   // 선택된 등급/장르 옵션
   const selectedGradeOption =

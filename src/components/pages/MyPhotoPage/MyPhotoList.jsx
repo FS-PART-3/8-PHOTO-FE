@@ -58,6 +58,7 @@ export default function MyPhotoList({
           imageUrl={card.imgUrl}
           price={card.price}
           quantity={card.quantity}
+          availableQuantity={card.availableQuantity}
           description={card.description}
         />
       ))}
