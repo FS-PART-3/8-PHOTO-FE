@@ -1,8 +1,8 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import marketService from '@/services/marketService';
 import { useRouter } from 'next/navigation';
+import marketService from '@/services/marketService';
 /**
  * 포토카드 구매 요청 훅
  * @param {string} listingId - 판매글 ID
@@ -26,9 +26,12 @@ export function usePurchaseMutation(listingId) {
       });
       queryClient.invalidateQueries({ queryKey: ['market', 'list'] });
 
+      // 마이갤러리 데이터도 갱신
+      queryClient.invalidateQueries({ queryKey: ['my-gallery'] });
+
       const qs = new URLSearchParams({
-        title: title,
-        grade: grade,
+        title,
+        grade,
         count: String(count),
       }).toString();
 
@@ -42,8 +45,8 @@ export function usePurchaseMutation(listingId) {
       const count = Math.max(1, Number(vars?.quantity ?? 1));
 
       const qs = new URLSearchParams({
-        title: title,
-        grade: grade,
+        title,
+        grade,
         count: String(count),
       }).toString();
       router.replace(`/market/${listingId}/purchase-fail?${qs}`);

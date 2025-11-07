@@ -17,6 +17,7 @@ import CardExchangeSection from './CardExchangeSection';
  * @param price - 카드 가격
  * @param quantity - 카드 잔여 수량
  * @param initQuantity - 카드 초기 수량
+ * @param availableQuantity - 카드 거래 가능 수량
  * @param userName - 카드 판매자 이름
  * @param status - 카드 상태 (FOR_SALE, SOLD_OUT, FOR_EXCHANGE, CANCELLED)
  * @param description - 교환 설명 (exchange 타입일 때만 사용)
@@ -41,6 +42,7 @@ export default function ProductCard({
   price,
   quantity,
   initQuantity,
+  availableQuantity,
   userName,
   description,
   onReject,
@@ -79,6 +81,7 @@ export default function ProductCard({
             price={price}
             quantity={quantity}
             initQuantity={initQuantity}
+            availableQuantity={availableQuantity}
             type={type}
           />
         )}
