@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+import useClickOutside from '@/hooks/useClickOutside';
 
 // 드롭다운 컴포넌트
 export default function DropDown({
@@ -21,17 +22,7 @@ export default function DropDown({
   const dropdownRef = useRef(null);
 
   // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = event => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  useClickOutside(dropdownRef, () => setIsOpen(false));
 
   const handleSelect = option => {
     onChange(option);
