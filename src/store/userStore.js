@@ -73,7 +73,6 @@ const useAuth = create(
         return result;
       },
       refresh: async () => {
-        console.log('얌마');
         const options = {
           credentials: 'include', // 쿠키 기반 인증 시 필요
         };
@@ -109,6 +108,7 @@ const useAuth = create(
             result = await fetch(url, options);
           } else {
             get().logout();
+            window.location.href = '/sign-in';
             console.log('Session expired. Please log in again.');
           }
         }

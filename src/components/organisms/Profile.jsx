@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import ProtectedLink from '../molecules/ProtectedLink';
 
 export default function Profile({ userName, point }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,24 +28,24 @@ export default function Profile({ userName, point }) {
           </div>
           <div className="w-full border-t border-[#5a5a5a]" />
           <div className="flex flex-col gap-[15px] p-5">
-            <Link
+            <ProtectedLink
               href="/market"
               className="font-['Noto_Sans_KR'] text-[14px] font-bold text-white"
             >
               마켓플레이스
-            </Link>
-            <Link
+            </ProtectedLink>
+            <ProtectedLink
               href="/market/my-photo"
               className="font-['Noto_Sans_KR'] text-[14px] font-bold text-white"
             >
               마이갤러리
-            </Link>
-            <Link
+            </ProtectedLink>
+            <ProtectedLink
               href="/market/my-selling"
               className="font-['Noto_Sans_KR'] text-[14px] font-bold text-white"
             >
               판매 중인 포토카드
-            </Link>
+            </ProtectedLink>
           </div>
         </div>
       )}

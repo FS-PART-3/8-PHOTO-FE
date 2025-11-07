@@ -9,9 +9,9 @@ import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
 
 export default function LoginedNav() {
-  const { accessToken, logout, points } = useAuth();
+  const { logout, points } = useAuth();
 
-  const { data: notificationList } = useNotificationList(accessToken);
+  const { data: notificationList } = useNotificationList();
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 

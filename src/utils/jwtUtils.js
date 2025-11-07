@@ -4,9 +4,13 @@ function decodeJWT(token) {
   return decoded.exp; // UNIX timestamp
 }
 
-export function isExpired(accessToken) {
-  const exp = decodeJWT(accessToken);
+export function isExpired(token) {
+  const exp = decodeJWT(token);
   const expiresAt = exp * 1000;
   const result = expiresAt < new Date().getTime();
   return result;
+}
+
+export function isTokenNotExpired(token) {
+  return !!token && !isExpired(token);
 }
