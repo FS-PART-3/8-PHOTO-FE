@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import ModalResponsive from '@/components/organisms/Modal/ModalResponsive';
+import ModalResponsive from '@/components/organisms/modal/ModalResponsive';
 import DropDown from '@/components/molecules/DropDown';
 import {
   GRADE_OPTIONS,
