@@ -7,11 +7,11 @@ import fetchClient from '@/lib/fetchClient';
 const useAuth = create(
   persist(
     (set, get) => ({
-      accessToken: '',
+      accessToken: null,
       userName: null,
       points: null,
+      provider: null,
       nextRewardTime: null,
-      currentPage: '/',
       hasHydrated: false,
       setUserName: name => {
         set({ userName: name });
@@ -37,11 +37,11 @@ const useAuth = create(
           password,
         };
         const result = await fetchClient.post(API_ROUTES.AUTH.LOGIN, data);
-        const { name, points, accessToken } = result;
-
+        const { name, points, provider, accessToken } = result;
         set({
           userName: name,
           points,
+          provider,
           accessToken,
         });
         get().setNextRewardTime();
@@ -134,8 +134,8 @@ const useAuth = create(
         if (!result?.name) {
           return false;
         }
-        const { name, points } = result;
-        set({ userName: name, points: points });
+        const { name, points, provider } = result;
+        set({ userName: name, points, provider });
         return true;
       },
     }),

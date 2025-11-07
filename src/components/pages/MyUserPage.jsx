@@ -11,6 +11,7 @@ import PointGraph from '../organisms/PointGraph';
 import useAuth from '@/store/userStore';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import Modal from '../organisms/modal/Modal';
+import { sellingService } from '@/services/sellingService';
 
 export default function MyUserPage({}) {
   const [pointHistory, setPointHistory] = useState([]);
@@ -143,7 +144,7 @@ function PointHist({ pointHistory }) {
 }
 
 function UserData({}) {
-  const { userName, points, setUserName } = useAuth();
+  const { userName, points, provider, setUserName } = useAuth();
   const [editMode, setEditMode] = useState('none');
   const [values, setValues] = useState({
     name: '',
@@ -159,6 +160,44 @@ function UserData({}) {
   });
   const [modalMsg, setModalMsg] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [onSale, setOnSale] = useState(0);
+  const [soldout, setSoldout] = useState(0);
+
+  useEffect(() => {
+    const loadSaleHistory = async () => {
+      const pageSize = 20;
+      let cntOnSale = 0;
+      let cntSoldout = 0;
+      let res;
+      let page = 1;
+      do {
+        res = await sellingService.getMySellingPhotos({
+          page,
+          limit: pageSize,
+          ststus: 'FOR_SALE',
+        });
+        cntOnSale += res.countsGroup.totalCounts;
+        console.log(res.countsGroup);
+        page++;
+      } while (res.countsGroup.totalCounts >= pageSize);
+      page = 1;
+      do {
+        res = await sellingService.getMySellingPhotos({
+          page,
+          limit: pageSize,
+          ststus: 'SOLD_OUT',
+        });
+        cntSoldout += res.countsGroup.totalCounts;
+        page++;
+      } while (res.countsGroup.totalCounts >= pageSize);
+
+      setOnSale(cntOnSale);
+      setSoldout(cntSoldout);
+    };
+
+    loadSaleHistory();
+  }, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -244,7 +283,7 @@ function UserData({}) {
                 <label className="beskin-h5">내 닉네임:</label>
                 <span className="text-[20px]">{userName}</span>
               </div>
-              {editMode !== 'name' && (
+              {editMode !== 'name' && provider === 'local' && (
                 <button
                   className="h-fit cursor-pointer text-white/70 hover:text-white/90"
                   onClick={() => {
@@ -256,7 +295,7 @@ function UserData({}) {
               )}
             </div>
             <div className="flex h-fit justify-start">
-              {editMode !== 'pw' && (
+              {editMode !== 'pw' && provider === 'local' && (
                 <button
                   className="h-fit cursor-pointer text-white/70 hover:text-white/90"
                   onClick={() => {
@@ -359,15 +398,15 @@ function UserData({}) {
       <div className="m-0 flex h-fit w-full divide-x-1 divide-solid divide-white rounded-xl border-[1px] border-white bg-black p-0 text-white">
         <div className="flex h-fit w-full flex-col p-4 text-center">
           <span>포인트</span>
-          <span>{points}</span>
+          <span>{points || 0}</span>
         </div>
         <div className="flex h-fit w-full flex-col p-4 text-center">
           <span>판매 중인 상품</span>
-          <span>{0}개</span>
+          <span>{onSale}개</span>
         </div>
         <div className="flex h-fit w-full flex-col p-4 text-center">
           <span>성사된 거래</span>
-          <span>{0}건</span>
+          <span>{soldout}건</span>
         </div>
       </div>
       <Modal
