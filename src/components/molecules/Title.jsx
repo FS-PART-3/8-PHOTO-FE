@@ -17,13 +17,14 @@ function TitleButton({
   size = 'L',
   variant = 'primary',
   disabled = false,
+  onClick,
 }) {
   const isL = size === 'L';
   const isM = size === 'M';
   const isAuto = size === 'auto';
 
   const base =
-    'flex items-center justify-center overflow-hidden rounded-[2px] transition-opacity';
+    'flex items-center justify-center overflow-hidden rounded-[2px] transition-opacity cursor-pointer';
   const dims = isAuto
     ? 'h-[60px] px-6'
     : isL
@@ -48,13 +49,23 @@ function TitleButton({
     return <div className={`${base} ${dims} ${color}`}>{inner}</div>;
   }
 
-  return href ? (
-    <Link href={href} className={`${base} ${dims} ${color}`}>
-      {inner}
-    </Link>
-  ) : (
-    <div className={`${base} ${dims} ${color}`}>{inner}</div>
-  );
+  if (href) {
+    return (
+      <Link href={href} className={`${base} ${dims} ${color}`}>
+        {inner}
+      </Link>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={`${base} ${dims} ${color}`}>
+        {inner}
+      </button>
+    );
+  }
+
+  return <div className={`${base} ${dims} ${color}`}>{inner}</div>;
 }
 
 export default function Title({
@@ -123,6 +134,7 @@ export default function Title({
               size={action.size ?? 'L'}
               variant={action.variant ?? 'primary'}
               disabled={action.disabled ?? false}
+              onClick={action.onClick}
             />
           </div>
         ) : null}

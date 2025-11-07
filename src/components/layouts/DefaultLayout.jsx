@@ -1,5 +1,5 @@
 import Header from '../organisms/header/Header';
-import RandomBoxModal from '../organisms/modal/RandomBoxModal/RandomBoxModal';
+import RandomPoints from '../organisms/modal/RandomPoints/RandomPoints';
 
 // 기본 레이아웃 컴포넌트
 export default function DefaultLayout({ children }) {
@@ -7,7 +7,7 @@ export default function DefaultLayout({ children }) {
     <div className="default-layout">
       <Header />
       {children}
-      <RandomBoxModal />
+      <RandomPoints />
     </div>
   );
 }
