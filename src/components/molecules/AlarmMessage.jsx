@@ -1,5 +1,6 @@
 'use client';
 
+import { useReadNotification } from '@/state/useNotificationQuery';
 import { formatTimeAgo } from '@/utils/formatTimeAgo';
 
 // 알림 컴포넌트
@@ -19,8 +20,10 @@ export default function AlarmMessage({
     return isRead ? 'text-gray-300' : 'bg-half-white text-[var(--color-white)]';
   };
 
+  const { mutate: readNotification } = useReadNotification(id);
+
   const handleClick = () => {
-    console.log(id);
+    readNotification();
   };
 
   const responsiveStyles =
