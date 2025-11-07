@@ -8,7 +8,13 @@ import Image from 'next/image';
  * @param initQuantity - 초기 수량 (original 타입일 때만 사용)
  * @param type - 카드 타입
  */
-export default function CardPriceInfo({ price, quantity, initQuantity, type }) {
+export default function CardPriceInfo({
+  price,
+  quantity,
+  initQuantity,
+  availableQuantity,
+  type,
+}) {
   return (
     <>
       <div className="mt-2 border-t border-gray-400 pt-4">
@@ -18,12 +24,18 @@ export default function CardPriceInfo({ price, quantity, initQuantity, type }) {
             {price} P
           </strong>
         </div>
+        {type === MARKET_CARD_TYPE.MY_CARD && (
+          <div className="flex items-center justify-between">
+            <span className="text-[16px] text-gray-300">총 수량</span>
+            <strong className="text-[18px] text-white">{quantity}</strong>
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <span className="text-[16px] text-gray-300">
-            {type === MARKET_CARD_TYPE.MY_CARD ? '수량' : '잔여'}
+            {type === MARKET_CARD_TYPE.MY_CARD ? '거래 가능 수량' : '잔여'}
           </span>
           <strong className="text-[18px] text-white">
-            {quantity}{' '}
+            {availableQuantity}{' '}
             <span className="text-gray-300">
               {type === MARKET_CARD_TYPE.ORIGINAL && ` / ${initQuantity ?? 0}`}
             </span>

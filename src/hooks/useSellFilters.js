@@ -17,6 +17,9 @@ export function useSellFilters(items = []) {
   // 필터링된 아이템
   let filteredItems = [...items];
 
+  // availableQuantity가 1 이상인 항목만 표시
+  filteredItems = filteredItems.filter(p => p.availableQuantity >= 1);
+
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
     filteredItems = filteredItems.filter(
