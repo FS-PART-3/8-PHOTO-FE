@@ -9,9 +9,14 @@ import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
 
 export default function LoginedNav() {
-  const { accessToken, logout, points } = useAuth();
+  const { logout, points } = useAuth();
 
-  const { data: notificationList } = useNotificationList(accessToken);
+  const {
+    data: notificationData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useNotificationList();
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
 
@@ -25,7 +30,11 @@ export default function LoginedNav() {
     console.log('logout');
   };
 
-  const hasUnreadAlarms = notificationList?.data?.some(alarm => !alarm.isRead);
+  // 모든 페이지의 알림을 확인하여 읽지 않은 알림이 있는지 체크
+  const hasUnreadAlarms =
+    notificationData?.pages?.some(page =>
+      page.data?.some(alarm => !alarm.isRead),
+    ) || false;
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -46,7 +55,15 @@ export default function LoginedNav() {
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
-          {isAlarmOpen && <Alarm alarmList={notificationList} />}
+          {isAlarmOpen && (
+            <Alarm
+              alarmPages={notificationData?.pages}
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              onClose={handleClickCloseAlarm}
+            />
+          )}
         </li>
         {/* 사용자 */}
         <li>
@@ -69,7 +86,10 @@ export default function LoginedNav() {
           />
           {isAlarmOpen && (
             <Alarm
-              alarmList={notificationList}
+              alarmPages={notificationData?.pages}
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
               onClose={handleClickCloseAlarm}
             />
           )}
