@@ -4,7 +4,11 @@ import { useEffect } from 'react';
 import ModalResponsive from '@/components/organisms/modal/ModalResponsive';
 import Search from '@/components/molecules/Search';
 import DropDown from '@/components/molecules/DropDown';
-import { GRADE_OPTIONS, GENRE_OPTIONS } from '@/constants/productConstants';
+import {
+  GRADE_OPTIONS,
+  GENRE_OPTIONS,
+  MARKET_CARD_TYPE,
+} from '@/constants/productConstants';
 import SellSelectableCard from '@/components/organisms/selling/SellSelectableCard';
 import SellDetailModal from '@/components/organisms/selling/SellDetailModal';
 import { useSellFilters } from '@/hooks/useSellFilters';
@@ -110,7 +114,7 @@ export default function SellSelectModal({
               {filteredItems.map(card => (
                 <SellSelectableCard
                   key={card.id}
-                  type="my-card"
+                  type={MARKET_CARD_TYPE.MY_CARD}
                   cardId={card.id}
                   title={card.title}
                   grade={card.grade}
