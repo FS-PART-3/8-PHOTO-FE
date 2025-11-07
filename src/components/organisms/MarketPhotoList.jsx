@@ -43,6 +43,7 @@ export default function MarketPhotoList({
                 grade={listing.photoCards?.[0]?.grade}
                 genre={listing.photoCards?.[0]?.genre}
                 imageUrl={listing.photoCards?.[0]?.imgUrl}
+                watermarkUrl={listing.photoCards?.[0]?.watermarkUrl}
                 status={listing.status}
                 price={listing.price}
                 quantity={listing.quantity}

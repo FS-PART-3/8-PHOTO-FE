@@ -13,6 +13,7 @@ import CardExchangeSection from './CardExchangeSection';
  * @param grade - 카드 등급 (COMMON, RARE, SUPER RARE, LEGENDARY)
  * @param genre - 카드 장르 (풍경, 인물, 동물, 식물, 사물)
  * @param imageUrl - 카드 이미지 주소
+ * @param watermarkUrl - 워터마크 이미지 주소
  * @param price - 카드 가격
  * @param quantity - 카드 잔여 수량
  * @param initQuantity - 카드 초기 수량
@@ -35,6 +36,7 @@ export default function ProductCard({
   grade,
   genre,
   imageUrl,
+  watermarkUrl,
   status,
   price,
   quantity,
@@ -49,6 +51,7 @@ export default function ProductCard({
       <Link href={`/market/${cardId}`} className="">
         <CardImage
           imageUrl={imageUrl}
+          watermarkUrl={watermarkUrl}
           title={title}
           status={status}
           type={type}
