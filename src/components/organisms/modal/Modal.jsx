@@ -17,38 +17,46 @@ export default function Modal({
 
   useEffect(() => {
     if (!isOpen) return;
-    const onKey = (e) => e.key === 'Escape' && onClose?.();
+    const onKey = e => e.key === 'Escape' && onClose?.();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const widthClass = width === 'lg' ? 'w-[704px]' : 'w-[560px]';
+  const widthTemplate = {
+    md: 'w-[560px]',
+    lg: 'w-[704px]',
+    xl: 'w-[1034px]',
+  };
+
+  const widthClass = widthTemplate[width];
 
   return (
     <div
       className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#000000CC]"
       role="dialog"
       aria-modal="true"
-      onClick={(e) => {
-
+      onClick={e => {
         if (e.target === e.currentTarget) onClose?.();
       }}
     >
       <div
         ref={dialogRef}
-        className={`relative ${widthClass} rounded-[2px] bg-[#161616] overflow-hidden`}
+        className={`relative ${widthClass} overflow-hidden rounded-[2px] bg-[#161616]`}
       >
-
         <button
           aria-label="닫기"
           onClick={onClose}
-          className="absolute right-[30px] top-[30px] grid h-8 w-8 place-items-center text-[#A4A4A4] hover:text-white"
+          className="absolute top-[30px] right-[30px] grid h-8 w-8 place-items-center text-[#A4A4A4] hover:text-white"
         >
-
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
 
@@ -67,7 +75,7 @@ export default function Modal({
               )}
               {description && (
                 <p
-                  className="mt-[12px] text-[16px] font-normal leading-[1.6] text-[#A4A4A4] whitespace-pre-line"
+                  className="mt-[12px] text-[16px] leading-[1.6] font-normal whitespace-pre-line text-[#A4A4A4]"
                   style={{ fontFamily: 'var(--font-primary)' }}
                 >
                   {description}

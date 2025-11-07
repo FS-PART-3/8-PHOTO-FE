@@ -2,20 +2,78 @@
 'use client';
 
 import useAuth from '@/store/userStore';
-import { useEffect } from 'react';
+import { isExpired } from '@/utils/jwtUtils';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getPathType } from '@/utils/authUtils';
+import LoadingDots from '@/components/molecules/LoadingDots';
 
 export function AuthProvider({ children }) {
-  // 인증 로직이 여기에 추가될 예정
-  const { userName, getUserData, checkAuth, accessToken } = useAuth();
+  const pathName = usePathname();
+  const {
+    hasHydrated,
+    accessToken,
+    userName,
+    points,
+    getUserData,
+    checkAuth,
+    logout,
+  } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
-    if (accessToken) {
-      //유저 정보가 있으면, 서버 갱신 여부와 상관없이 새로 안 받아옵니다.
-      //포인트의 변화가 있어도 최신화 안됩니다.
-      if (!userName) {
-        getUserData();
+    const reload = async () => {
+      const pathType = getPathType(pathName);
+      if (hasHydrated) {
+        if (pathType === 'protected') {
+          if (accessToken) {
+            //만료되었다면, 다시 토큰 유효성 검사 요청.
+            if (isExpired(accessToken)) {
+              const res = await checkAuth();
+              if (res.authenticated) {
+              } else {
+                //자동 리프레쉬 후 검사도 통과하지 못했다면,
+                logout();
+                router.push('/'); //랜딩 페이지로 이동
+                return;
+              }
+            }
+            /* 인증 통과 */
+            if (!userName || !points) {
+              getUserData();
+            }
+          } else {
+            router.push('/'); //랜딩페이지로 이동
+          }
+        }
+
+        if (pathType === 'ghestOnly') {
+          if (accessToken) {
+            router.push('/'); //랜딩페이지로 이동
+          }
+        }
+
+        if (pathType === 'free') {
+          if (accessToken) {
+            //만료되었다면, 다시 토큰 유효성 검사 요청.
+            if (!isExpired(accessToken)) {
+              const res = await checkAuth();
+              if (res.authenticated) {
+                if (!userName || !points) {
+                  getUserData();
+                }
+              }
+            }
+          }
+        }
       }
-    }
-  }, []);
+    };
+    reload();
+  }, [accessToken, pathName]);
+
+  if (!hasHydrated) {
+    return <LoadingDots />;
+  }
 
   return <>{children}</>;
 }

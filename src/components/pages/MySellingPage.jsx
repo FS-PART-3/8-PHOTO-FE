@@ -14,7 +14,7 @@ const ITEMS_PER_PAGE = 12;
 
 // 나의 판매 포토카드 페이지 컴포넌트
 export default function MySellingPage() {
-  const { accessToken, useName } = useAuth();
+  const { useName } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   // 통합된 쿼리 상태 관리
@@ -41,10 +41,7 @@ export default function MySellingPage() {
     setQuery(prev => ({ ...prev, page: newPage }));
   };
 
-  const { data, isPending, error, isError } = useMySellingPhotos(
-    accessToken,
-    query,
-  );
+  const { data, isPending, error, isError } = useMySellingPhotos(query);
 
   return (
     <div className="mx-auto mt-[60px] w-full max-w-[1200px]">

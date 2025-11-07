@@ -1,18 +1,18 @@
-export const getNotificationList = async token => {
-  try {
-    const result = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+import fetchClient from '@/lib/fetchClient';
+
+export const notificationService = {
+  getNotificationList({ cursor, limit = 5 } = {}) {
+    const url = cursor
+      ? `/api/notifications?cursor=${cursor}&limit=${limit}`
+      : `/api/notifications?limit=${limit}`;
+    return fetchClient.authGet(url);
+  },
+
+  readNotification(notificationId) {
+    return fetchClient.authPatch(`/api/notifications/${notificationId}/read`, {
+      body: {
+        notificationId,
       },
-    );
-    return result.json();
-  } catch (error) {
-    console.error('알림 목록 조회 중 오류가 발생했습니다.');
-    throw error;
-  }
+    });
+  },
 };

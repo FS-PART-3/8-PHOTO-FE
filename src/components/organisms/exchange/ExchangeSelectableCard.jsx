@@ -18,7 +18,7 @@ export default function ExchangeSelectableCard({ data, selected, onSelect }) {
     <button
       onClick={onSelect}
       className={[
-        'group w-full rounded-xl border bg-[#171717] text-left transition',
+        'group w-full border bg-[#171717] text-left transition',
         selected
           ? 'border-white/40 shadow-lg'
           : 'border-white/10 hover:border-white/20',

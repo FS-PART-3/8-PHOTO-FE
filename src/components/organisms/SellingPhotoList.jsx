@@ -1,5 +1,6 @@
 'use client';
 
+import { MARKET_CARD_TYPE } from '@/constants/productConstants';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
 
@@ -27,12 +28,13 @@ export default function SellingPhotoList({ cards, isPending, isError }) {
       {cards.map(item => (
         <ProductCard
           key={item.id}
-          type="for-sale"
+          type={MARKET_CARD_TYPE.FOR_SALE}
           cardId={item.id}
           title={item.title}
           grade={item.grade}
           genre={item.genre}
           imageUrl={item.imageUrl}
+          watermarkUrl={item.watermarkUrl}
           status={item.status}
           price={item.price}
           quantity={item.quantity}

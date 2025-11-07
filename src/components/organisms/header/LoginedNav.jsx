@@ -1,41 +1,29 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
+import useClickOutside from '@/hooks/useClickOutside';
 
 import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
 
-const alarmList = [
-  {
-    id: 1,
-    isRead: false,
-    message: '알림 메시지',
-    createdAt: '2025-10-21 14:00:00',
-  },
-  {
-    id: 2,
-    isRead: true,
-    message: '알림 메시지',
-    createdAt: '2025-04-21 06:00:00',
-  },
-  {
-    id: 3,
-    isRead: false,
-    message: '알림 메시지',
-    createdAt: '2023-07-21 06:00:00',
-  },
-];
-
 export default function LoginedNav() {
-  const { accessToken, logout, points } = useAuth();
+  const { logout, points } = useAuth();
 
-  const { data: notificationList } = useNotificationList(accessToken);
+  const {
+    data: notificationData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useNotificationList();
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  const alarmRef = useRef(null);
+
+  // 외부 클릭 시 알림 닫기
+  useClickOutside(alarmRef, () => setIsAlarmOpen(false));
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -47,7 +35,11 @@ export default function LoginedNav() {
     console.log('logout');
   };
 
-  const hasUnreadAlarms = alarmList.some(alarm => !alarm.isRead);
+  // 모든 페이지의 알림을 확인하여 읽지 않은 알림이 있는지 체크
+  const hasUnreadAlarms =
+    notificationData?.pages?.some(page =>
+      page.data?.some(alarm => !alarm.isRead),
+    ) || false;
 
   const handleClickCloseAlarm = () => {
     setIsAlarmOpen(false);
@@ -59,16 +51,24 @@ export default function LoginedNav() {
       <ul className="xs:flex hidden items-center gap-4 sm:gap-7">
         <li>
           <span className="text-[14px] font-bold text-gray-200">
-            {points} P
+            {points || 0} P
           </span>
         </li>
         {/* 알림 */}
-        <li className="relative">
+        <li className="relative" ref={alarmRef}>
           <AlarmButton
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
-          {isAlarmOpen && <Alarm alarmList={notificationList} />}
+          {isAlarmOpen && (
+            <Alarm
+              alarmPages={notificationData?.pages}
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              onClose={handleClickCloseAlarm}
+            />
+          )}
         </li>
         {/* 사용자 */}
         <li>
@@ -84,13 +84,19 @@ export default function LoginedNav() {
 
       {/* 모바일 네비게이션 */}
       <ul className="xs:hidden flex flex-col items-center gap-4">
-        <li className="h-[24px]">
+        <li className="h-[24px]" ref={alarmRef}>
           <AlarmButton
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
           />
           {isAlarmOpen && (
-            <Alarm alarmList={alarmList} onClose={handleClickCloseAlarm} />
+            <Alarm
+              alarmPages={notificationData?.pages}
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              onClose={handleClickCloseAlarm}
+            />
           )}
         </li>
       </ul>

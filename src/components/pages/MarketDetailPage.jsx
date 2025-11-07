@@ -141,10 +141,18 @@ export default function MarketDetailPageComponent({ listingId }) {
         <div className="flex-1">
           <Image
             src={'/assets/images/card-img.png'} //{myPhotoCard?.imgUrl || '/assets/images/logo.svg'}
-            alt={myPhotoCard?.title}
+            // src={
+            //   myPhotoCard?.watermarkUrl
+            //     ? myPhotoCard.watermarkUrl
+            //     : myPhotoCard?.imgUrl || '/assets/images/card-img.png'
+            // }
+            alt={myPhotoCard?.title || 'photo-card'}
             width={960}
             height={720}
             className="h-auto w-full rounded-2xl object-cover"
+            // onError={e => {
+            //   e.currentTarget.src = '/assets/images/card-img.png';
+            // }}
           />
         </div>
         {/* 구매 정보 */}

@@ -70,20 +70,38 @@ export const photoService = {
    * @param {string} params.genre - 장르 필터 (선택)
    * @param {string} params.soldOut - 품절 여부 필터 (선택)
    * @param {string} params.sort - 정렬 기준 (선택)
+   * @param {string} params.cursor - 커서 (선택)
+   * @param {number} params.take - 한 번에 가져올 개수 (기본값: 15)
    * @returns {Promise} API 응답
    */
   async getMarketplaceListings(token, params = {}) {
     const queryParams = new URLSearchParams();
 
-    const { search, grade, genre, soldOut, sort } = params;
+    const { search, grade, genre, soldOut, sort, cursor, take } = params;
 
     if (search) queryParams.append('search', search);
     if (grade) queryParams.append('grade', grade);
     if (genre) queryParams.append('genre', genre);
     if (soldOut) queryParams.append('soldOut', soldOut);
     if (sort) queryParams.append('sort', sort);
+    if (cursor) queryParams.append('cursor', cursor); // cursor 추가
+    if (take) queryParams.append('take', take); // take 추가
 
     return fetchClient.authGet(`/api/marketplace?${queryParams.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+
+  /**
+   * 포토카드 판매 등록
+   * @param {string} token - 인증 토큰
+   * @param {Object} data - 판매 등록 데이터
+   * @returns {Promise} API 응답
+   */
+  async createListing(token, data) {
+    return fetchClient.authPost('/api/marketplace/listings', data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
