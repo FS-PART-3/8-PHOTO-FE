@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Alarm from '../Alarm';
 import AlarmButton from '@/components/atoms/AlarmButton';
 import Profile from '@/components/molecules/Profile';
+import useClickOutside from '@/hooks/useClickOutside';
 
 import useAuth from '@/store/userStore';
 import { useNotificationList } from '@/state/useNotificationQuery';
@@ -14,6 +15,10 @@ export default function LoginedNav() {
   const { data: notificationList } = useNotificationList(accessToken);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  const alarmRef = useRef(null);
+
+  // 외부 클릭 시 알림 닫기
+  useClickOutside(alarmRef, () => setIsAlarmOpen(false));
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
@@ -41,7 +46,7 @@ export default function LoginedNav() {
           </span>
         </li>
         {/* 알림 */}
-        <li className="relative">
+        <li className="relative" ref={alarmRef}>
           <AlarmButton
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}
@@ -62,7 +67,7 @@ export default function LoginedNav() {
 
       {/* 모바일 네비게이션 */}
       <ul className="xs:hidden flex flex-col items-center gap-4">
-        <li className="h-[24px]">
+        <li className="h-[24px]" ref={alarmRef}>
           <AlarmButton
             isAlarm={hasUnreadAlarms}
             onClick={handleClickShowAlarm}

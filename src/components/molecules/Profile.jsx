@@ -1,17 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import useAuth from '@/store/userStore';
 import ProtectedLink from './ProtectedLink';
+import useClickOutside from '@/hooks/useClickOutside';
 
 export default function Profile() {
   const { userName, points } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
+  const profileRef = useRef(null);
+
+  // 외부 클릭 시 프로필 드롭다운 닫기
+  useClickOutside(profileRef, () => setIsOpen(false));
 
   return (
-    <div className="relative z-0 w-fit">
+    <div className="relative z-0 w-fit" ref={profileRef}>
       <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
         <span className="beskin-h6 text-white">{userName || '유저명'}</span>
       </button>
