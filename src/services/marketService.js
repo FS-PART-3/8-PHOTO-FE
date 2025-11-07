@@ -11,6 +11,7 @@ const marketService = {
       initQuantity: data.initQuantity ?? data.quantity ?? 0,
       status: data.status,
       seller: data.seller,
+      sellerId: data.sellerId,
       myPhotoCard: data.myPhotoCard,
       preferredGrade: data.preferredGrade ?? null,
       preferredGenre: data.preferredGenre ?? null,
@@ -37,6 +38,19 @@ const marketService = {
       `/api/marketplace/exchange-offers/${offerId}/cancel`,
     );
   },
+  acceptExchangeOffer(offerId) {
+    return fetchClient.authPatch(
+      `/api/marketplace/exchange-offers/${offerId}/accept`,
+    );
+  },
+  cancelListing(listingId) {
+    return fetchClient.authPatch(`/api/marketplace/${listingId}/cancel`);
+  },
+  rejectExchangeOffer(offerId) {
+    return fetchClient.authPatch(
+      `/api/marketplace/exchange-offers/${offerId}/reject`,
+    );
+  },
 
   async createExchangeOffer(listingId, payload) {
     const id = encodeURIComponent(listingId);
@@ -46,6 +60,10 @@ const marketService = {
       offeredPhotoId: String(offeredPhotoId),
     });
   },
-};
 
+  async updateListing(listingId, payload) {
+    const id = encodeURIComponent(listingId);
+    return fetchClient.authPatch(`/api/marketplace/${id}`, payload);
+  },
+};
 export default marketService;
