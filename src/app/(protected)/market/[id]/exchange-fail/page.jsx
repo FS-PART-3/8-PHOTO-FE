@@ -1,5 +1,6 @@
 'use client';
 
+import ProtectedLink from '@/components/molecules/ProtectedLink';
 import Link from 'next/link';
 
 export default async function ExchangeFailPage({ params, searchParams }) {
@@ -18,12 +19,12 @@ export default async function ExchangeFailPage({ params, searchParams }) {
             포토카드 교환 제시에 실패했습니다.
           </p>
 
-          <Link
+          <ProtectedLink
             href="/market"
             className="inline-block rounded border border-white/40 px-8 py-4 text-base transition hover:bg-white hover:text-black"
           >
             마켓플레이스로 돌아가기
-          </Link>
+          </ProtectedLink>
         </div>
       </div>
     </main>

@@ -5,7 +5,7 @@ export const useMySellingPhotos = (params = {}, options = {}) =>
   useQuery({
     queryKey: ['my-selling-photos', params],
     queryFn: () => sellingService.getMySellingPhotos(params),
-    enabled: !!token,
+    enabled: true,
     staleTime: 1000 * 60 * 5,
     ...options,
   });

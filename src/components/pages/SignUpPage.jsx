@@ -1,24 +1,27 @@
 // 회원가입 페이지 컴포넌트
 'use client';
 
-// 로그인 페이지
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
 
+import useAsync from '@/hooks/useAsync';
+import useAuth from '@/store/userStore';
+import { useAuthInput } from '@/hooks/useAuthInput';
+import SocialLogin from '../molecules/socialLogin/SocialLogin';
+import Modal from '../organisms/modal/Modal';
+
 import Input from '@/components/atoms/Input.jsx';
 import Button from '@/components/atoms/Button';
-import Link from 'next/link';
-import { useAuthInput } from '@/hooks/useAuthInput';
-import useAuth from '@/store/userStore';
-import { useRouter } from 'next/navigation';
-import useAsync from '@/hooks/useAsync';
-import SocialLogin from '../molecules/socialLogin/SocialLogin';
 
 export default function SignUpPage() {
   const router = useRouter();
   const { values, errors, isSignUpSubmitActive, onChange } = useAuthInput();
   const { signup } = useAuth();
-  const [pending, error, signupFunc] = useAsync(signup);
+  const [pending, error, setError, signupFunc] = useAsync(signup);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -100,6 +103,17 @@ export default function SignUpPage() {
           </Link>
         </div>
       </div>
+      <Modal
+        isOpen={error}
+        onClose={() => {
+          setError(null);
+        }}
+        onConfirm={() => {
+          setError(null);
+        }}
+      >
+        <span className="text-[#fff]">{error}</span>
+      </Modal>
     </div>
   );
 }

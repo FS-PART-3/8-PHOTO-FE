@@ -1,3 +1,4 @@
+import ProtectedLink from '@/components/molecules/ProtectedLink';
 import Link from 'next/link';
 
 export default async function ExchangeSuccessPage({ params, searchParams }) {
@@ -16,12 +17,12 @@ export default async function ExchangeSuccessPage({ params, searchParams }) {
             포토카드 교환 제시에 성공했습니다!
           </p>
 
-          <Link
+          <ProtectedLink
             href="/market/my-selling"
             className="inline-block rounded border border-white/40 px-8 py-4 text-base transition hover:bg-white hover:text-black"
           >
             나의 판매 포토카드에서 확인하기
-          </Link>
+          </ProtectedLink>
         </div>
       </div>
     </main>
