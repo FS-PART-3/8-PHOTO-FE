@@ -1,25 +1,26 @@
 // 로그인 페이지 컴포넌트
 'use client';
 
-// 로그인 페이지
 import Link from 'next/link';
-import { useAuthInput } from '@/hooks/useAuthInput';
-import useAuth from '@/store/userStore';
-
-import Input from '@/components/atoms/Input.jsx';
-import Button from '@/components/atoms/Button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import Image from 'next/image';
 import logo from '../../../public/assets/images/logo.svg';
 
-import SocialLogin from '../molecules/socialLogin/SocialLogin';
-import { useRouter } from 'next/navigation';
 import useAsync from '@/hooks/useAsync';
+import useAuth from '@/store/userStore';
+import { useAuthInput } from '@/hooks/useAuthInput';
+import SocialLogin from '../molecules/socialLogin/SocialLogin';
+import Modal from '../organisms/modal/Modal';
+
+import Input from '@/components/atoms/Input.jsx';
+import Button from '@/components/atoms/Button';
 
 export default function SignInPage() {
   const { values, errors, isLogInSubmitActive, onChange } = useAuthInput();
   const { login } = useAuth();
-  const [pending, error, loginFunc] = useAsync(login);
+  const [pending, error, setError, loginFunc] = useAsync(login);
 
   const router = useRouter();
 
@@ -78,6 +79,17 @@ export default function SignInPage() {
           </Link>
         </div>
       </div>
+      <Modal
+        isOpen={error}
+        onClose={() => {
+          setError(null);
+        }}
+        onConfirm={() => {
+          setError(null);
+        }}
+      >
+        <span className="text-[#fff]">{error}</span>
+      </Modal>
     </div>
   );
 }

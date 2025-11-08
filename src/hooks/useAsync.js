@@ -10,14 +10,15 @@ function useAsync(asyncFunction) {
       setPending(true);
       return await asyncFunction(...args);
     } catch (error) {
-      setError(error);
+      console.log(error);
+      setError(error.message);
       return;
     } finally {
       setPending(false);
     }
   };
 
-  return [pending, error, wrappedFunction];
+  return [pending, error, setError, wrappedFunction];
 }
 
 export default useAsync;

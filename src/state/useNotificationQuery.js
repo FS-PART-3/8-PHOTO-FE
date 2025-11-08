@@ -42,8 +42,5 @@ export const useReadNotification = notificationId => {
         queryKey: [QUERY_KEYS.NOTIFICATION_LIST],
       });
     },
-    onError: error => {
-      console.error(error);
-    },
   });
 };

@@ -1,3 +1,4 @@
+import ProtectedLink from '@/components/molecules/ProtectedLink';
 import Link from 'next/link';
 
 export default async function PurchaseSuccessPage({ params, searchParams }) {
@@ -19,12 +20,12 @@ export default async function PurchaseSuccessPage({ params, searchParams }) {
             {title ? ` | ${title}` : ''}] {count}장 구매에 성공했습니다!
           </p>
 
-          <Link
+          <ProtectedLink
             href="/market/my-photo"
             className="inline-block rounded border border-white/40 px-8 py-4 text-base transition hover:bg-white hover:text-black"
           >
             마이갤러리에서 확인하기
-          </Link>
+          </ProtectedLink>
         </div>
       </div>
     </main>
