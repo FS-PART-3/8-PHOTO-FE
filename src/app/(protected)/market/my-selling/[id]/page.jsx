@@ -37,5 +37,5 @@ export default function SellerPage({ params }) {
     );
   }
 
-  return <SellerDetailPage listingId={listingId} />;
+  return <SellerDetailPageComponent listingId={listingId} />;
 }
