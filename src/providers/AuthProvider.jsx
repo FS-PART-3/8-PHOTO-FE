@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { getPathType } from '@/utils/authUtils';
 import LoadingDots from '@/components/molecules/LoadingDots';
 import useAsync from '@/hooks/useAsync';
-import { hydrate } from '@tanstack/react-query';
 
 export function AuthProvider({ children }) {
   const {

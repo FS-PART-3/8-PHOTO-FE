@@ -75,7 +75,7 @@ export default function SellerDetailPageComponent({ listingId }) {
     if (!listingId) return;
     cancelMut.mutate(undefined, {
       onSuccess: () => {
-        (setCancelOpen(false), router.push('/market/my-gallery'));
+        (setCancelOpen(false), router.push('/market/my-photo'));
       },
       onError: err => console.error('판매 내리기 실패:', err),
     });
@@ -115,12 +115,19 @@ export default function SellerDetailPageComponent({ listingId }) {
       <div className="flex gap-16">
         <div className="flex-1">
           <Image
-            src={'/assets/images/card-img.png'} //{imgUrl || '/assets/images/card-img.png'}
+            src={
+              myPhotoCard?.watermarkUrl
+                ? myPhotoCard.watermarkUrl
+                : myPhotoCard?.imgUrl || '/assets/images/card-img.png'
+            }
             alt={title || 'photo'}
             width={960}
             height={720}
             className="h-auto w-full rounded-2xl object-cover"
             priority
+            onError={e => {
+              e.currentTarget.src = '/assets/images/card-img.png';
+            }}
           />
         </div>
 

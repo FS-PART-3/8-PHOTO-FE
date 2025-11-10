@@ -4,6 +4,7 @@ import CardImage from './CardImage';
 import CardInfo from './CardInfo';
 import CardPriceInfo from './CardPriceInfo';
 import CardExchangeSection from './CardExchangeSection';
+import { MARKET_CARD_TYPE } from '@/constants/productConstants';
 
 /**
  * 프로젝트 전반에 들어가는 상품 카드 컴포넌트
@@ -50,7 +51,7 @@ export default function ProductCard({
 }) {
   return (
     <article className="border-white-10 block w-full border p-10">
-      <Link href={`/market/${cardId}`} className="">
+      {type === MARKET_CARD_TYPE.MY_CARD ? (
         <CardImage
           imageUrl={imageUrl}
           watermarkUrl={watermarkUrl}
@@ -58,7 +59,17 @@ export default function ProductCard({
           status={status}
           type={type}
         />
-      </Link>
+      ) : (
+        <Link href={`/market/${cardId}`} className="">
+          <CardImage
+            imageUrl={imageUrl}
+            watermarkUrl={watermarkUrl}
+            title={title}
+            status={status}
+            type={type}
+          />
+        </Link>
+      )}
 
       <div className="mt-6">
         <CardInfo

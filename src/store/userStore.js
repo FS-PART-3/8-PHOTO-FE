@@ -76,7 +76,7 @@ const useAuth = create(
         const options = {
           credentials: 'include', // 쿠키 기반 인증 시 필요
         };
-        const result = await fetchClient.post(
+        const result = await fetchClient.authPost(
           API_ROUTES.AUTH.REFRESH,
           {},
           options,
