@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
 
         if (pathType === 'ghestOnly') {
           if (accessToken) {
-            router.push('/'); //랜딩페이지로 이동
+            router.push('/my'); //랜딩페이지로 이동
           }
         }
 

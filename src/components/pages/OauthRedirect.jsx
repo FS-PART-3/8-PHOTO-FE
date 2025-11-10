@@ -16,7 +16,7 @@ function OAuthContent() {
       setAccessToken(accessToken); //1. 액세스토큰을 로컬에 저장.
       getRefreshToken(accessToken); //2.리프레쉬 토큰 요청 후 백엔드가 쿠키에 저장해줌.
       // 3. 메인 페이지 등으로 이동
-      router.push('/');
+      router.push('/my');
     } else {
       // 실패 처리
       alert('로그인 실패');
