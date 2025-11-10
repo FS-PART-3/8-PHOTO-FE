@@ -3,8 +3,9 @@
 import { MARKET_CARD_TYPE } from '@/constants/productConstants';
 import GalleryGrid from '../organisms/GalleryGrid';
 import ProductCard from '../organisms/card/ProductCard';
+import { memo } from 'react';
 
-export default function SellingPhotoList({ cards, isPending, isError }) {
+export default memo(function SellingPhotoList({ cards, isPending, isError }) {
   if (isPending) {
     return <div className="py-10 text-center text-white">로딩 중</div>;
   }
@@ -45,4 +46,4 @@ export default function SellingPhotoList({ cards, isPending, isError }) {
       ))}
     </GalleryGrid>
   );
-}
+});
