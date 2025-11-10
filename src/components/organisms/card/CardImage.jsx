@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { STATUS_MAP } from '@/constants/productConstants';
+import { STATUS_MAP, MARKET_CARD_TYPE } from '@/constants/productConstants';
 
 const DEFAULT_IMAGE_URL = '/assets/images/card-img.png';
 
@@ -17,7 +17,7 @@ export default function CardImage({
   status,
   type,
 }) {
-  const isForSale = status !== 'SOLD_OUT' && type === 'for-sale';
+  const isForSale = status !== 'SOLD_OUT' && type === MARKET_CARD_TYPE.FOR_SALE;
 
   const displayUrl = watermarkUrl || imageUrl || DEFAULT_IMAGE_URL;
 
@@ -39,16 +39,18 @@ export default function CardImage({
             e.currentTarget.src = DEFAULT_IMAGE_URL;
           }}
         />
-        {status === 'SOLD_OUT' && type === 'for-sale' && (
-          <div className="absolute inset-0 grid place-items-center bg-black/55 backdrop-blur-[1px]">
-            <Image
-              src="/assets/icons/ic-sold-out.svg"
-              alt="sold-out"
-              width={200}
-              height={229}
-            />
-          </div>
-        )}
+        {status === 'SOLD_OUT' &&
+          (type === MARKET_CARD_TYPE.FOR_SALE ||
+            type === MARKET_CARD_TYPE.ORIGINAL) && (
+            <div className="absolute inset-0 grid place-items-center bg-black/55 backdrop-blur-[1px]">
+              <Image
+                src="/assets/icons/ic-sold-out.svg"
+                alt="sold-out"
+                width={200}
+                height={229}
+              />
+            </div>
+          )}
       </div>
     </div>
   );
