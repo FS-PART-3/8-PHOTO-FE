@@ -17,5 +17,6 @@ export function getPathType(pathname) {
   if (pathname === '/') return 'ghestOnly';
   if (isProtectedPath(pathname)) return 'protected';
   if (isGhestOnlyPath(pathname)) return 'ghestOnly';
+  if (pathname === '/') return 'ghestOnly';
   return 'free';
 }

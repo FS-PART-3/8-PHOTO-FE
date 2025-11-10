@@ -6,7 +6,7 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export function useMarketDetailQuery(listingId, options = {}) {
   return useQuery({
-    queryKey: [QUERY_KEYS.MARKET.DETAIL, listingId],
+    queryKey: QUERY_KEYS.MARKET.DETAIL(listingId),
     queryFn: () => marketService.getListingDetail(listingId),
     enabled: Boolean(listingId),
     staleTime: 60 * 1000,

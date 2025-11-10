@@ -1,8 +1,9 @@
+import fetchClient from '@/lib/fetchClient';
 /**
  * 판매 관련 API 서비스
  */
 export const sellingService = {
-  async getMySellingPhotos(token, params = {}) {
+  async getMySellingPhotos(params = {}) {
     const {
       page = 1,
       limit = 12,
@@ -27,14 +28,9 @@ export const sellingService = {
       }
     });
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/my-photo-cards/sales?${queryParams.toString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const response = await fetchClient.authGet(
+      `/api/my-photo-cards/sales?${queryParams.toString()}`,
     );
-    return response.json();
+    return response;
   },
 };

@@ -7,11 +7,11 @@ import fetchClient from '@/lib/fetchClient';
 const useAuth = create(
   persist(
     (set, get) => ({
-      accessToken: '',
+      accessToken: null,
       userName: null,
       points: null,
+      provider: null,
       nextRewardTime: null,
-      currentPage: '/',
       hasHydrated: false,
       setUserName: name => {
         set({ userName: name });
@@ -36,12 +36,19 @@ const useAuth = create(
           email,
           password,
         };
-        const result = await fetchClient.post(API_ROUTES.AUTH.LOGIN, data);
-        const { name, points, accessToken } = result;
-
+        const options = {
+          credentials: 'include', // 쿠키 기반 인증 시 필요
+        };
+        const result = await fetchClient.post(
+          API_ROUTES.AUTH.LOGIN,
+          data,
+          options,
+        );
+        const { name, points, provider, accessToken } = result;
         set({
           userName: name,
           points,
+          provider,
           accessToken,
         });
         get().setNextRewardTime();
@@ -92,28 +99,18 @@ const useAuth = create(
 
         // Access Token 만료 시 (예: 401 Unauthorized)
         if (result.status === 401) {
-          await fetch(`${API_BASE_URL}${API_ROUTES.AUTH.REFRESH}`, {
-            method: 'POST',
-            credentials: 'include', // 쿠키 기반 인증 시 필요
-          })
-            .then(async res => {
-              if (res.ok) {
-                const newAccessToken = res.json().accessToken;
-                set({ accessToken: newAccessToken });
-
-                // 원래 요청 재시도
-                options.headers.Authorization = `Bearer ${newAccessToken}`;
-                result = await fetch(url, options);
-              } else {
-                throw new Error('Session expired. Please log in again.');
-              }
-            })
-            .catch(err => {
-              // 리프레시 실패 → 로그아웃 처리
-              // 강제 리로드 (hook이나, api 함수 안에서는 router를 쓸 수 없어서 이게 가장 안전하네요.)
-              // 전체 페이지 리로드가 발생합니다.
-              get().logout();
-            });
+          const res = await get().refresh();
+          if (res.ok) {
+            const newAccessToken = res.accessToken;
+            set({ accessToken: newAccessToken });
+            // 원래 요청 재시도
+            options.headers.Authorization = `Bearer ${newAccessToken}`;
+            result = await fetch(url, options);
+          } else {
+            get().logout();
+            window.location.href = '/sign-in';
+            console.log('Session expired. Please log in again.');
+          }
         }
         return result;
       },
@@ -134,8 +131,8 @@ const useAuth = create(
         if (!result?.name) {
           return false;
         }
-        const { name, points } = result;
-        set({ userName: name, points: points });
+        const { name, points, provider } = result;
+        set({ userName: name, points, provider });
         return true;
       },
     }),

@@ -7,71 +7,76 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getPathType } from '@/utils/authUtils';
 import LoadingDots from '@/components/molecules/LoadingDots';
+import useAsync from '@/hooks/useAsync';
+import { hydrate } from '@tanstack/react-query';
 
 export function AuthProvider({ children }) {
-  const pathName = usePathname();
   const {
     hasHydrated,
     accessToken,
     userName,
     points,
     getUserData,
-    checkAuth,
+    refresh,
     logout,
   } = useAuth();
   const router = useRouter();
+  const pathName = usePathname();
+  const pathType = getPathType(pathName);
+  const [pending, error, setError, refreshFunc] = useAsync(refresh);
 
   useEffect(() => {
-    const reload = async () => {
-      const pathType = getPathType(pathName);
-      if (hasHydrated) {
-        if (pathType === 'protected') {
-          if (accessToken) {
-            //만료되었다면, 다시 토큰 유효성 검사 요청.
-            if (isExpired(accessToken)) {
-              const res = await checkAuth();
-              if (res.authenticated) {
-              } else {
-                //자동 리프레쉬 후 검사도 통과하지 못했다면,
-                logout();
-                router.push('/'); //랜딩 페이지로 이동
-                return;
-              }
-            }
-            /* 인증 통과 */
-            if (!userName || !points) {
-              getUserData();
-            }
-          } else {
-            router.push('/'); //랜딩페이지로 이동
-          }
+    //페이지 권한 검사를 프로바이더에서 하는 게 정석인지 잘 모르겠습니다...
+    //고민고민 끝에 (로컬 토큰 저장 = 클라이언트 방식 = 프로바이더) 형태로 정착했지만,
+    //제가 만든 권한 검사 로직이 올바른지도 잘 모르겠습니다..
+    //auth 너무 어렵습니다.
+    const check = async () => {
+      if (pathType === 'protected') {
+        if (!accessToken) {
+          logout();
+          router.replace('/sign-in');
+          return;
         }
-
-        if (pathType === 'ghestOnly') {
-          if (accessToken) {
-            router.push('/my'); //랜딩페이지로 이동
-          }
-        }
-
-        if (pathType === 'free') {
-          if (accessToken) {
-            //만료되었다면, 다시 토큰 유효성 검사 요청.
-            if (!isExpired(accessToken)) {
-              const res = await checkAuth();
-              if (res.authenticated) {
-                if (!userName || !points) {
-                  getUserData();
-                }
-              }
-            }
+        if (isExpired(accessToken)) {
+          const result = await refreshFunc();
+          if (!result?.accessToken) {
+            logout();
+            router.replace('/sign-in');
+            return;
           }
         }
       }
-    };
-    reload();
-  }, [accessToken, pathName]);
 
-  if (!hasHydrated) {
+      if (pathType === 'ghestOnly' && accessToken) {
+        if (isExpired(accessToken)) {
+          const result = await refreshFunc();
+          if (result?.accessToken) {
+            router.replace('/my');
+          } else {
+            logout();
+          }
+        } else {
+          router.replace('/my');
+          return;
+        }
+      }
+    };
+
+    const reload = async () => {
+      if (pathType !== 'ghestOnly' && accessToken) {
+        if (!userName || !points) {
+          getUserData();
+        }
+      }
+    };
+
+    if (hasHydrated) {
+      reload();
+      check();
+    }
+  }, [pathName, hasHydrated, accessToken]);
+
+  if (!hasHydrated || pending) {
     return <LoadingDots />;
   }
 
