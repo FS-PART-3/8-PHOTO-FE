@@ -51,8 +51,16 @@ export default function ProductCard({
 }) {
   return (
     <article className="border-white-10 block w-full border p-10">
-      {
-        (type = MARKET_CARD_TYPE.MY_CARD ? (
+      {type === MARKET_CARD_TYPE.MY_CARD ? (
+        <CardImage
+          imageUrl={imageUrl}
+          watermarkUrl={watermarkUrl}
+          title={title}
+          status={status}
+          type={type}
+        />
+      ) : (
+        <Link href={`/market/${cardId}`} className="">
           <CardImage
             imageUrl={imageUrl}
             watermarkUrl={watermarkUrl}
@@ -60,18 +68,8 @@ export default function ProductCard({
             status={status}
             type={type}
           />
-        ) : (
-          <Link href={`/market/${cardId}`} className="">
-            <CardImage
-              imageUrl={imageUrl}
-              watermarkUrl={watermarkUrl}
-              title={title}
-              status={status}
-              type={type}
-            />
-          </Link>
-        ))
-      }
+        </Link>
+      )}
 
       <div className="mt-6">
         <CardInfo
