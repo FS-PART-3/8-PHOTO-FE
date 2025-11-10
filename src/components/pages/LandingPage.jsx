@@ -1,25 +1,27 @@
-import Header from '../organisms/header/Header';
+'use client';
+
 import Button from '../atoms/Button';
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
     <main className="bg-[var(--color-black)] text-[var(--color-white)]">
-      <div className="relative mx-auto h-[4281px] w-[1920px] overflow-hidden">
-        <div className="relative mt-[13px] w-screen">
-          <div className="relative mx-auto h-[1086px] w-[1798px] overflow-visible">
+      <div className="relative mx-auto h-[4281px] w-full max-w-[1920px] overflow-hidden">
+        <div className="relative mt-[13px] w-full">
+          <div className="relative mx-auto h-[1086px] w-full max-w-[1798px] overflow-visible">
             <img
               src="/assets/images/landingbg.svg"
               alt=""
-              className="absolute inset-0 h-[1086px] w-[1798px]"
+              className="absolute inset-0 mx-auto h-[1086px] w-[1798px]"
             />
 
             <img
               src="/assets/images/logo.svg"
               alt="로고"
-              className="pointer-events-none absolute top-[77px] left-[832px] z-[2] h-[23.2px] w-[138.94px] select-none"
+              className="pointer-events-none absolute top-[77px] left-[50%] z-[2] h-[23.2px] w-[138.94px] -translate-x-1/2 select-none"
             />
 
-            <div className="pointer-events-none absolute top-[123px] left-[734px] z-[2] h-[96px] w-[328px] select-none">
+            <div className="pointer-events-none absolute top-[123px] left-[50%] z-[2] h-[96px] w-[328px] -translate-x-1/2 select-none">
               <p className="text-center text-[40px] leading-[48px] font-[700] text-[var(--color-white)]">
                 구하기 어려웠던
                 <br />
@@ -29,33 +31,28 @@ export default function LandingPage() {
             </div>
 
             <div
-              className="absolute z-[4]"
+              className="absolute left-[50%] z-[4] w-[226px] -translate-x-1/2"
               style={{
                 top: 252,
-                left: 786,
-                right: 786,
                 height: 55,
               }}
             >
-              <Button
-                variant="primary"
-                thikness="thin"
-                size="m"
-                className="h-full !min-h-[55px] w-full !max-w-none !rounded-[2px] !bg-[var(--color-main)] px-0 py-[17px] text-[16px] font-[700] !text-[var(--color-black)]"
-              >
-                최애 찾으러 가기
-              </Button>
+              <Link href="/market" className="h-full w-full">
+                <Button variant="primary" thikness="thin" size="m">
+                  최애 찾으러 가기
+                </Button>
+              </Link>
             </div>
           </div>
 
           <img
             src="/assets/images/landing.svg"
             alt="랜딩 이미지"
-            className="pointer-events-none absolute top-[319px] left-[calc((100vw-1798px)/2-58px)] z-[3] h-[765px] w-[1917px] select-none"
+            className="pointer-events-none absolute top-[319px] left-[50%] z-[3] h-[765px] w-[1917px] -translate-x-1/2 select-none"
           />
 
-          <div className="relative mx-auto mt-[138px] w-[1798px]">
-            <div className="ml-[428px] w-[325px]">
+          <div className="relative mx-auto mt-[138px] flex w-full max-w-[1798px] flex-col items-center">
+            <div className="w-[325px]">
               <p className="text-[36px] font-[700] whitespace-nowrap text-[var(--color-white)]">
                 포인트로{' '}
                 <span className="text-[var(--color-main)]">안전하게 거래</span>
@@ -71,12 +68,12 @@ export default function LandingPage() {
             <img
               src="/assets/images/landing-img2.svg"
               alt="랜딩 이미지 2"
-              className="pointer-events-none relative z-[10] mt-[8px] mb-[35px] ml-[428px] block h-[518px] w-[1068px] select-none"
+              className="pointer-events-none relative z-[10] mt-[8px] mb-[35px] block h-[518px] w-[1068px] select-none"
             />
           </div>
 
           <div
-            className="pointer-events-none absolute top-[1524px] left-[calc((100vw-1798px)/2+501px)] z-[0] h-[1480px] w-[1480px] rounded-[9999px] select-none"
+            className="pointer-events-none absolute top-[1524px] left-[50%] z-[0] h-[1480px] w-[1480px] -translate-x-1/2 rounded-[9999px] select-none"
             style={{
               opacity: 0.2,
               background: 'linear-gradient(180deg, #EFFF04 0%, #0F0F0F 100%)',
@@ -85,7 +82,7 @@ export default function LandingPage() {
             }}
           />
 
-          <section className="relative z-[2] mx-auto mt-[35px] h-[800px] w-[1920px] overflow-hidden bg-[var(--color-black)]">
+          <section className="relative z-[2] mx-auto mt-[35px] h-[800px] w-full max-w-[1920px] overflow-hidden bg-[var(--color-black)]">
             <div className="relative h-full w-full">
               <div
                 className="pointer-events-none absolute top-[407px] left-[83px] z-[0] h-[1606px] w-[1606px] rounded-[9999px] select-none"
@@ -98,8 +95,8 @@ export default function LandingPage() {
                 }}
               />
 
-              <div className="absolute top-[128px] left-0 z-[10] w-[1920px]">
-                <div className="ml-[428px] w-[389px]">
+              <div className="absolute top-[128px] left-0 z-[10] flex w-full max-w-[1920px] flex-col items-center">
+                <div className="w-[389px]">
                   <p className="text-[36px] font-[700] whitespace-nowrap text-[var(--color-white)]">
                     알림으로 보다{' '}
                     <span className="text-[#04B8FF]">빨라진 거래</span>
@@ -114,15 +111,15 @@ export default function LandingPage() {
                 <img
                   src="/assets/images/landing-img3.svg"
                   alt="랜딩 이미지 3"
-                  className="pointer-events-none mt-[9px] ml-[427px] block h-auto w-[1068px] select-none"
+                  className="pointer-events-none mt-[9px] block h-auto w-[1068px] select-none"
                 />
               </div>
             </div>
           </section>
 
-          <section className="relative z-[2] mx-auto h-[900px] w-[1920px] overflow-hidden bg-[var(--color-black)]">
+          <section className="relative z-[2] mx-auto h-[900px] w-full max-w-[1920px] overflow-hidden bg-[var(--color-black)]">
             <div
-              className="absolute top-[307px] left-0 h-[594px] w-[1920px]"
+              className="absolute top-[307px] left-0 h-[594px] w-full max-w-[1920px]"
               style={{
                 background: 'linear-gradient(180deg, #0F0F0F 0%, #262900 100%)',
               }}
@@ -161,8 +158,8 @@ export default function LandingPage() {
               />
             </div>
 
-            <div className="absolute top-[133px] left-0 z-[10] w-[1920px]">
-              <div className="ml-[428px]" style={{ width: 392 }}>
+            <div className="absolute top-[133px] left-0 z-[10] flex w-full max-w-[1920px] flex-col items-center">
+              <div style={{ width: 392 }}>
                 <p className="text-[36px] font-[700] whitespace-nowrap text-[var(--color-white)]">
                   랜덤 상자로{' '}
                   <span className="text-[var(--color-main)]">포인트 받자!</span>{' '}
@@ -178,14 +175,17 @@ export default function LandingPage() {
               <img
                 src="/assets/images/landing-img4.svg"
                 alt="랜덤 상자 미리보기"
-                className="pointer-events-none mt-[40px] ml-[515.55px] block h-auto w-[888.89px] select-none"
+                className="pointer-events-none mt-[40px] block h-auto w-[888.89px] select-none"
               />
             </div>
           </section>
 
           <div className="h-[1px]" />
-          <div className="w-screen bg-[var(--color-black)]">
-            <div className="relative mx-auto" style={{ marginTop: 114 }}>
+          <div className="w-full max-w-[100vw] bg-[var(--color-black)]">
+            <div
+              className="relative mx-auto flex flex-col items-center"
+              style={{ marginTop: 114 }}
+            >
               <img
                 src="/assets/images/photo.svg"
                 alt="photo"
@@ -193,37 +193,35 @@ export default function LandingPage() {
                 style={{
                   width: 103.69505,
                   height: 150.93391,
-                  marginLeft: 881.47,
                 }}
               />
 
               <p
-                className="pointer-events-none absolute text-[28px] leading-[28px] font-[700] whitespace-nowrap text-[var(--color-white)] select-none"
+                className="pointer-events-none text-[28px] leading-[28px] font-[700] whitespace-nowrap text-[var(--color-white)] select-none"
                 style={{
-                  top: 178.25391,
-                  left: 801,
-                  right: 780,
+                  marginTop: 27.32,
                 }}
               >
                 나의 최애를 지금 찾아보세요!
               </p>
 
-              <button
-                className="absolute text-[16px] font-[700] whitespace-nowrap select-none"
+              <Link
+                href="/market"
                 style={{
-                  top: 233.64391,
-                  left: 847,
-                  right: 847,
+                  marginTop: 27.39,
                   width: 226,
                   height: 55,
-                  padding: '17px 0',
-                  background: 'var(--color-main)',
-                  color: 'var(--color-black)',
-                  borderRadius: '2px',
                 }}
               >
-                최애 찾으러 가기
-              </button>
+                <Button
+                  variant="primary"
+                  thikness="thin"
+                  size="m"
+                  className="h-full w-full !rounded-[2px] !bg-[var(--color-main)] text-[16px] font-[700] !text-[var(--color-black)]"
+                >
+                  최애 찾으러 가기
+                </Button>
+              </Link>
 
               <div style={{ height: 161 }} />
             </div>
