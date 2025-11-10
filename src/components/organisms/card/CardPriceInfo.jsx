@@ -35,7 +35,7 @@ export default function CardPriceInfo({
             {type === MARKET_CARD_TYPE.MY_CARD ? '거래 가능 수량' : '잔여'}
           </span>
           <strong className="text-[18px] text-white">
-            {availableQuantity}{' '}
+            {MARKET_CARD_TYPE.FOR_SALE ? quantity : availableQuantity}{' '}
             <span className="text-gray-300">
               {type === MARKET_CARD_TYPE.ORIGINAL && ` / ${initQuantity ?? 0}`}
             </span>

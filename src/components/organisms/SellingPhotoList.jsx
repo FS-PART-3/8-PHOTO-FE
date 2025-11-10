@@ -39,6 +39,7 @@ export default function SellingPhotoList({ cards, isPending, isError }) {
           price={item.price}
           quantity={item.quantity}
           initQuantity={item.initQuantity}
+          availableQuantity={item.availableQuantity}
           userName={item.user.name}
         />
       ))}
