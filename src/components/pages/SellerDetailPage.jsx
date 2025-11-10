@@ -75,7 +75,7 @@ export default function SellerDetailPageComponent({ listingId }) {
     if (!listingId) return;
     cancelMut.mutate(undefined, {
       onSuccess: () => {
-        (setCancelOpen(false), router.push('/market/my-gallery'));
+        (setCancelOpen(false), router.push('/market/my-photo'));
       },
       onError: err => console.error('판매 내리기 실패:', err),
     });
