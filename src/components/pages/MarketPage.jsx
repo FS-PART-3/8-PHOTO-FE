@@ -121,7 +121,10 @@ export default function MarketPage() {
     isFetchingNextPage,
   } = useMarketplaceListings(accessToken, query);
 
-  const allCards = marketplaceData?.pages?.flatMap(page => page.data) ?? [];
+  const allCards =
+    marketplaceData?.pages
+      ?.flatMap(page => page.data)
+      ?.filter(card => card.status !== 'CANCELLED') ?? [];
 
   useEffect(() => {
     const observer = new IntersectionObserver(

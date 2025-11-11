@@ -27,11 +27,18 @@ export default function ExchangeSelectableCard({ data, selected, onSelect }) {
       {/* 이미지 */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
-          src="/assets/images/card-img.png" //{imgUrl || '/assets/images/logo.svg'}
+          src={
+            card?.watermarkUrl
+              ? card.watermarkUrl
+              : card?.imgUrl || '/assets/images/card-img.png'
+          }
           alt={title || 'photocard'}
           fill
           sizes="(max-width:768px) 100vw, 50vw"
           className="object-cover transition-transform group-hover:scale-[1.02]"
+          onError={e => {
+            e.currentTarget.src = '/assets/images/card-img.png';
+          }}
         />
       </div>
 

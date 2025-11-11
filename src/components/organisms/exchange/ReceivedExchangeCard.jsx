@@ -18,12 +18,19 @@ export default function ReceivedExchangeCard({ offer, onAccept, onReject }) {
       {/* 이미지 */}
       <div className="relative mb-5 aspect-[4/3] overflow-hidden">
         <Image
-          src="/assets/images/card-img.png" //{card?.imgUrl || '/assets/images/card-img.png'}
+          src={
+            card?.watermarkUrl
+              ? card.watermarkUrl
+              : card?.imgUrl || '/assets/images/card-img.png'
+          }
           alt={card?.title || '교환 제안 카드'}
           fill
           sizes="360px"
           className="object-cover"
           priority={false}
+          onError={e => {
+            e.currentTarget.src = '/assets/images/card-img.png';
+          }}
         />
       </div>
 
