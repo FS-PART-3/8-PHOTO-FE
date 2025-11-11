@@ -34,11 +34,18 @@ export default function ExchangeProposeModal({
           <div className="rounded-2xl border border-white/10 bg-[#171717] p-6">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
               <Image
-                src="/assets/images/card-img.png" //{card.imgUrl || '/assets/images/logo.svg'}
+                src={
+                  card?.watermarkUrl
+                    ? card.watermarkUrl
+                    : card?.imgUrl || '/assets/images/card-img.png'
+                }
                 alt={card.title}
                 fill
                 sizes="(max-width:768px) 100vw, 50vw"
                 className="object-cover"
+                onError={e => {
+                  e.currentTarget.src = '/assets/images/card-img.png';
+                }}
               />
             </div>
 

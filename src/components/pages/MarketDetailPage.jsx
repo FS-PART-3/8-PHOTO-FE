@@ -140,7 +140,6 @@ export default function MarketDetailPageComponent({ listingId }) {
       <div className="flex gap-16">
         <div className="flex-1">
           <Image
-            // src={myPhotoCard?.imgUrl || '/assets/images/card-img.png'}
             src={
               myPhotoCard?.watermarkUrl
                 ? myPhotoCard.watermarkUrl

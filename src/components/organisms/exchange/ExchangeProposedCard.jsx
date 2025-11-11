@@ -22,12 +22,19 @@ export default function ExchangeProposedCard({ offer, onCancel }) {
       {/* 이미지 */}
       <div className="relative mb-5 aspect-[4/3] overflow-hidden">
         <Image
-          src="/assets/images/card-img.png" //{`/${card?.imgUrl || 'assets/images/logo.svg'}`}
+          src={
+            card?.watermarkUrl
+              ? card.watermarkUrl
+              : card?.imgUrl || '/assets/images/card-img.png'
+          }
           alt={card?.title || '교환 제시 카드'}
           fill
           sizes="360px"
           className="object-cover"
           priority
+          onError={e => {
+            e.currentTarget.src = '/assets/images/card-img.png';
+          }}
         />
       </div>
 
