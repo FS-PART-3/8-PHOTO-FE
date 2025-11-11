@@ -23,7 +23,7 @@ export default function LoginedNav() {
   const alarmRef = useRef(null);
 
   // 외부 클릭 시 알림 닫기
-  useClickOutside(alarmRef, () => setIsAlarmOpen(false));
+  // useClickOutside(alarmRef, () => setIsAlarmOpen(false));
 
   const handleClickShowAlarm = () => {
     console.log('show alarm');
