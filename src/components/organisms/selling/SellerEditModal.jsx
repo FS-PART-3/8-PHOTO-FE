@@ -67,11 +67,6 @@ export default function SellerEditModal({ open, onClose, items, onUpdate }) {
   }, [open, wasOpened, initialForm]);
 
   const handleUpdate = async () => {
-    console.log('수정하기 클릭됨');
-    console.log('초기판매수량:', items?.quantity ?? 1);
-    console.log('보낼 가격:', form.price);
-    console.log('보낼 수량(count):', count);
-    console.log('기존 원래 initial quantity:', form.quantity);
     const payload = {
       price: Number(form.price) || 0,
       quantity: Number(count) || 1,
@@ -103,12 +98,19 @@ export default function SellerEditModal({ open, onClose, items, onUpdate }) {
           {imgUrl ? (
             <div className="relative h-72 w-full">
               <Image
-                src={'/assets/images/card-img.png'} //{imgUrl}
+                src={
+                  myPhotoCard?.watermarkUrl
+                    ? myPhotoCard.watermarkUrl
+                    : myPhotoCard?.imgUrl || '/assets/images/card-img.png'
+                }
                 alt="preview"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 priority
+                onError={e => {
+                  e.currentTarget.src = '/assets/images/card-img.png';
+                }}
               />
             </div>
           ) : (
